@@ -39,13 +39,13 @@ All team members should follow the getting starting guide.  See: [2023 Getting S
 ## Build an Example Project Capable of Meeting the Expected Outcome
 
 1. Create a New WPILib Project
-    a. by using one of the WPILib 'command' based examples 
-       i. Select Command Example 
-       ii. Motor Control with Encoder
-    b. select project directory - e.g., %root%/camp/username
-    c. Name your project with something that reflects the expected outcome
-    d. Team Number - 4682
-    e. Click Generate Project
+    a. by using one of the WPILib 'command' based examples<br>
+       i. Select Command Example<br>
+       ii. Motor Control with Encoder<br>
+    b. select project directory - e.g., %root%/camp/username<br>
+    c. Name your project with something that reflects the expected outcome<br>
+    d. Team Number - 4682<br>
+    e. Click Generate Project<br>
 2. Import External Packages
 3. Research expected APIs that will be needed
 4. Add appropriate command classes
