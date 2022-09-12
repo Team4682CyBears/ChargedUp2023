@@ -38,7 +38,7 @@ All team members should follow the getting starting guide.  See: [2023 Getting S
 
 ## Build an Example Project Capable of Meeting the Expected Outcome
 
-1. Create a New WPILib Project
+1. Create a New WPILib Project<br>
     a. by using one of the WPILib 'command' based examples<br>
        i. Select Command Example<br>
        ii. Motor Control with Encoder<br>
