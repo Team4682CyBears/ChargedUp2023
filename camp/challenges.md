@@ -31,7 +31,7 @@ All team members should follow the getting starting guide.  See: [2023 Getting S
 ##  Sign Up As the Owner for an Example Project
 
 1. Create a feature branch from the [ChargedUp2023 Repo](https://github.com/Team4682CyBears/ChargedUp2023)
-2. Make an edit to this file [challanges.md](https://github.com/Team4682CyBears/ChargedUp2023/blob/main/camp/challanges.md) and add your name as the 'owner' in one of the unassigned '??' above 
+2. Make an edit to this file [challenges.md](https://github.com/Team4682CyBears/ChargedUp2023/blob/main/camp/challenges.md) and add your name as the 'owner' in one of the unassigned '??' above 
 3. Create a pull request with the change
 4. Have a mentor approve your pull request
 5. Merge the PR
