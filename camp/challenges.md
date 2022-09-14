@@ -13,7 +13,7 @@ The table below highlights various challanges that coder members will be assigne
 |--|--|--|--|
 | XBox Controller Left Stick Y direction | Talon motor  | Use of the input of the Left stick y double/floating point value to control the speed of the motor | AsherB |
 | Multi-function joystick twist | Neo Motor | Use of the input of the joystick twist axist double/floating point value to control the speed of the motor | ?? |
-| Button board two buttons | bag motor on/off in forward and reverse directions | Use one button to drive the motor in forward direction and the other button press to run the motor in the other direction | ?? |
+| Button board two buttons | bag motor on/off in forward and reverse directions | Use one button to drive the motor in forward direction and the other button press to run the motor in the other direction | MatthewGetachew |
 | XBox Controller D-Pad up/down | Pneumatic double soleniod enable/disable | The intent here is to trigger a pneumatic solenoid using the xbox controller D-pad input as boolean values. | ?? |
 | Beam break sensor | bag motor on/off in a single direction | Every time a beam break sensor is broken turn motor on, otherwise turn off motor | josie |
 | Distance sensor | Small neo motor? | As something comes into view of the sensor closer and closer motor speed increases.  When nothing is in view the motor is off | ?? |
