@@ -18,6 +18,7 @@ The table below highlights various challanges that coder members will be assigne
 | Beam break sensor | bag motor on/off in a single direction | Every time a beam break sensor is broken turn motor on, otherwise turn off motor | josie |
 | Distance sensor | Small neo motor? | As something comes into view of the sensor closer and closer motor speed increases.  When nothing is in view the motor is off | ?? |
 | NavX various movements | Musical notes functionality on a Talon motor | Every time an axis movement on the navx occurs one of 6 notes is played on the Talon. | ?? |
+| Various Buttons on Button Board  | Control both climber arms | Control Yogi style climber arms for demo in BB programming classes. | mmcaams |
 
 
 # Expected Activity Breakdown
