@@ -10,10 +10,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.Console;
-
-import javax.lang.model.util.ElementScanner6;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;

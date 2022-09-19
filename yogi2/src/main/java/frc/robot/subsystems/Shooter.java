@@ -10,10 +10,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.*;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -21,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.ShooterAutomatic;
 import frc.robot.common.Gains;
 import frc.robot.common.MotorUtils;
 
@@ -39,57 +40,54 @@ public class Shooter extends SubsystemBase implements Sendable
   private static final int kPIDLoopIdx = 0;
   private static final int kTimeoutMs = 30;
 
-  private WPI_TalonFX topMotor = new WPI_TalonFX(Constants.shooterMotorTopCanId);
-  private WPI_TalonFX bottomMotor = new WPI_TalonFX(Constants.shooterMotorBottomCanId);
-
-  private Gains topMotorGains = new Gains(0.1, 0.001, 5, 1023/20660.0, 300, 1.00);
-  private Gains bottomMotorGains = new Gains(0.1, 0.001, 5, 1023/20660.0, 300, 1.00);
+  private CANSparkMax topMotor = new CANSparkMax(Constants.shooterMotorTopCanId, MotorType.kBrushless);
+  private CANSparkMax bottomMotor = new CANSparkMax(Constants.shooterMotorBottomCanId, MotorType.kBrushless);
+  private SparkMaxPIDController topPidController = topMotor.getPIDController();
+  private SparkMaxPIDController bottomPidController = bottomMotor.getPIDController();
+  private RelativeEncoder topEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
+  private RelativeEncoder bottomEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
+  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
   /**
    * Constructor
    */
   public Shooter()
   {
-    // based on content found at:
-    // https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20General/VelocityClosedLoop/src/main/java/frc/robot/Robot.java
-
-    topMotor.configFactoryDefault();
-    topMotor.setNeutralMode(NeutralMode.Coast);
+      // PID coefficients
+      kP = 6e-5; 
+      kI = 0;
+      kD = 0; 
+      kIz = 0; 
+      kFF = 0.000015; 
+      kMaxOutput = 1.0; 
+      kMinOutput = -1.0;
+      maxRPM = 5700;
+  
+    // update the motor
+    topMotor.restoreFactoryDefaults();
+    topMotor.setIdleMode(IdleMode.kCoast);
     topMotor.setInverted(Constants.shooterTopMotorDefaultDirection);
-    topMotor.configNeutralDeadband(Shooter.kMinDeadband);
-    topMotor.configSelectedFeedbackSensor(
-      TalonFXFeedbackDevice.IntegratedSensor,
-      Shooter.kPIDLoopIdx,
-      Shooter.kTimeoutMs);
 
-    topMotor.configNominalOutputForward(0, Shooter.kTimeoutMs);
-    topMotor.configNominalOutputReverse(0, Shooter.kTimeoutMs);
-    topMotor.configPeakOutputForward(1.0, Shooter.kTimeoutMs);
-    topMotor.configPeakOutputReverse(-1.0, Shooter.kTimeoutMs);
+    // set PID coefficients
+    topPidController.setP(kP);
+    topPidController.setI(kI);
+    topPidController.setD(kD);
+    topPidController.setIZone(kIz);
+    topPidController.setFF(kFF);
+    topPidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    topMotor.config_kF(Shooter.kPIDLoopIdx, this.topMotorGains.kF, Shooter.kTimeoutMs);
-    topMotor.config_kP(Shooter.kPIDLoopIdx, this.topMotorGains.kP, Shooter.kTimeoutMs);
-    topMotor.config_kI(Shooter.kPIDLoopIdx, this.topMotorGains.kI, Shooter.kTimeoutMs);
-    topMotor.config_kD(Shooter.kPIDLoopIdx, this.topMotorGains.kD, Shooter.kTimeoutMs);
-
-    bottomMotor.configFactoryDefault();
-    bottomMotor.setNeutralMode(NeutralMode.Coast);
+    // update the motor
+    bottomMotor.restoreFactoryDefaults();
+    bottomMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setInverted(Constants.shooterBottomMotorDefaultDirection);
-    bottomMotor.configNeutralDeadband(Shooter.kMinDeadband);
-    bottomMotor.configSelectedFeedbackSensor(
-      TalonFXFeedbackDevice.IntegratedSensor,
-      Shooter.kPIDLoopIdx,
-      Shooter.kTimeoutMs);
-
-    bottomMotor.configNominalOutputForward(0, Shooter.kTimeoutMs);
-    bottomMotor.configNominalOutputReverse(0, Shooter.kTimeoutMs);
-    bottomMotor.configPeakOutputForward(1.0, Shooter.kTimeoutMs);
-    bottomMotor.configPeakOutputReverse(-1.0, Shooter.kTimeoutMs);
-
-    bottomMotor.config_kF(Shooter.kPIDLoopIdx, this.bottomMotorGains.kF, Shooter.kTimeoutMs);
-    bottomMotor.config_kP(Shooter.kPIDLoopIdx, this.bottomMotorGains.kP, Shooter.kTimeoutMs);
-    bottomMotor.config_kI(Shooter.kPIDLoopIdx, this.bottomMotorGains.kI, Shooter.kTimeoutMs);
-    bottomMotor.config_kD(Shooter.kPIDLoopIdx, this.bottomMotorGains.kD, Shooter.kTimeoutMs);
+    
+    // set PID coefficients
+    bottomPidController.setP(kP);
+    bottomPidController.setI(kI);
+    bottomPidController.setD(kD);
+    bottomPidController.setIZone(kIz);
+    bottomPidController.setFF(kFF);
+    bottomPidController.setOutputRange(kMinOutput, kMaxOutput);
 
     CommandScheduler.getInstance().registerSubsystem(this);
   }
@@ -131,8 +129,7 @@ public class Shooter extends SubsystemBase implements Sendable
   public boolean isShooterVelocityUpToSpeedBottom(double targetRpm, double targetToleranceRpm)
   {
     return this.isMotorErrorWithinToleranceUsingVelocity(
-      bottomMotor.getSelectedSensorVelocity(Shooter.kPIDLoopIdx),
-      bottomMotor.getClosedLoopError(Shooter.kPIDLoopIdx),
+      bottomEncoder.getVelocity(),
       targetRpm,
       targetToleranceRpm,
       Shooter.bottomShooterGearRatio);
@@ -147,8 +144,7 @@ public class Shooter extends SubsystemBase implements Sendable
   public boolean isShooterVelocityUpToSpeedTop(double targetRpm, double targetToleranceRpm)
   {
     return this.isMotorErrorWithinToleranceUsingVelocity(
-      topMotor.getSelectedSensorVelocity(Shooter.kPIDLoopIdx),
-      topMotor.getClosedLoopError(Shooter.kPIDLoopIdx),
+      topEncoder.getVelocity(),
       targetRpm,
       targetToleranceRpm,
       Shooter.topShooterGearRatio);
@@ -214,7 +210,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterManualBottom(double speed)
   {
-    bottomMotor.set(ControlMode.PercentOutput, MotorUtils.truncateValue(speed, -1.0, 1.0));
+    bottomMotor.set(MotorUtils.truncateValue(speed, -1.0, 1.0));
   }
 
   /**
@@ -223,7 +219,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterManualTop(double speed)
   {
-    topMotor.set(ControlMode.PercentOutput, MotorUtils.truncateValue(speed, -1.0, 1.0));
+    topMotor.set(MotorUtils.truncateValue(speed, -1.0, 1.0));
   }
 
   /**
@@ -232,9 +228,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterVelocityBottom(double revolutionsPerMinute)
   {
-    bottomMotor.set(
-      ControlMode.Velocity,
-      this.convertShooterRpmToMotorUnitsPer100Ms(revolutionsPerMinute, Shooter.bottomShooterGearRatio));
+    bottomPidController.setReference(revolutionsPerMinute, CANSparkMax.ControlType.kVelocity);
   }
 
   /**
@@ -243,9 +237,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterVelocityTop(double revolutionsPerMinute)
   {
-    topMotor.set(
-      ControlMode.Velocity,
-      this.convertShooterRpmToMotorUnitsPer100Ms(revolutionsPerMinute, Shooter.topShooterGearRatio));
+    topPidController.setReference(revolutionsPerMinute, CANSparkMax.ControlType.kVelocity);
   }
 
   /**
@@ -253,20 +245,18 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void stopShooter()
   {
-    topMotor.set(ControlMode.PercentOutput, 0.0);
-    bottomMotor.set(ControlMode.PercentOutput, 0.0);
+    topMotor.set(0.0);
+    bottomMotor.set(0.0);
   }
 
-  private double convertShooterRpmToMotorUnitsPer100Ms(double targetRpm, double targetGearRatio)
+  private double convertShooterRpmToMotorRpm(double targetRpm, double targetGearRatio)
   {
-    double targetUnitsPer100ms = 
+    double convertedTargetRpm = 
       MotorUtils.truncateValue(
         targetRpm,
-        Constants.talonMaximumRevolutionsPerMinute * -1.0,
-        Constants.talonMaximumRevolutionsPerMinute) *
-      Constants.CtreTalonFx500EncoderTicksPerRevolution *
-      targetGearRatio / 600.0;
-    return targetUnitsPer100ms;
+        Constants.neoMaximumRevolutionsPerMinute * -1.0,
+        Constants.neoMaximumRevolutionsPerMinute) * targetGearRatio;
+    return convertedTargetRpm;
   }
 
   /**
@@ -275,7 +265,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   private double getBottomShooterRevolutionsPerMinute()
   {
-    return (bottomMotor.getSelectedSensorVelocity() / Constants.CtreTalonFx500EncoderTicksPerRevolution) * 600.0 * Shooter.bottomShooterGearRatio;
+    return bottomEncoder.getVelocity() * Shooter.bottomShooterGearRatio;
   }
 
   /**
@@ -284,7 +274,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   private double getTopShooterRevolutionsPerMinute()
   {
-    return (topMotor.getSelectedSensorVelocity() / Constants.CtreTalonFx500EncoderTicksPerRevolution) * 600.0 * Shooter.topShooterGearRatio;
+    return topEncoder.getVelocity() * Shooter.topShooterGearRatio;
   }
 
   /**
@@ -293,7 +283,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   private double getBottomMotorSpeed()
   {
-    return bottomMotor.getMotorOutputPercent() / 100.0;
+    return bottomMotor.getAppliedOutput();
   }
 
   /**
@@ -302,7 +292,7 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   private double getTopMotorSpeed()
   {
-    return topMotor.getMotorOutputPercent() / 100.0;
+    return topMotor.getAppliedOutput();
   }
 
   private String getShooterIntakeDescription()
@@ -328,29 +318,24 @@ public class Shooter extends SubsystemBase implements Sendable
   }
 
   private boolean isMotorErrorWithinToleranceUsingVelocity(
-    double motorVelocityInMotorUnits,
-    double motorErrorInMotorUnits,
+    double motorVelocityInRpm,
     double targetVelocityRpm,
     double targetToleranceRpm,
     double gearRatio)
   {
-    double actualMotorErrorInMotorUnits = Math.abs(motorErrorInMotorUnits);
-    double targetVelocityInMotorUnits = this.convertShooterRpmToMotorUnitsPer100Ms(targetVelocityRpm, gearRatio);
-    double targetVelocityToleranceInMotorUnits = this.convertShooterRpmToMotorUnitsPer100Ms(Math.abs(targetToleranceRpm), gearRatio);
+    double targetVelocityInMotorRpm = this.convertShooterRpmToMotorRpm(targetVelocityRpm, gearRatio);
+    double targetVelocityToleranceInMotorRpm = this.convertShooterRpmToMotorRpm(Math.abs(targetToleranceRpm), gearRatio);
 
-    boolean withinVelocityBounds = motorVelocityInMotorUnits > targetVelocityInMotorUnits - targetVelocityToleranceInMotorUnits &&
-      motorVelocityInMotorUnits < targetVelocityInMotorUnits + targetVelocityToleranceInMotorUnits;
-    boolean withinErrorBounds = actualMotorErrorInMotorUnits < targetVelocityToleranceInMotorUnits;
+    boolean withinVelocityBounds = motorVelocityInRpm > targetVelocityInMotorRpm - targetVelocityToleranceInMotorRpm &&
+      motorVelocityInRpm < targetVelocityInMotorRpm + targetVelocityToleranceInMotorRpm;
     /*
     System.out.println(
-      "motorVelocityInMotorUnits=" + motorVelocityInMotorUnits +
-      " targetVelocityInMotorUnits=" + targetVelocityInMotorUnits +
-      " actualMotorErrorInMotorUnits=" + actualMotorErrorInMotorUnits +
-      " targetVelocityToleranceInMotorUnits=" + targetVelocityToleranceInMotorUnits +
-      " withinVelocityBounds" + (withinVelocityBounds ? " YES" : " NO") +
-      " withinErrorBounds" + (withinErrorBounds ? " YES" : " NO")
+      "motorVelocityInRpm=" + motorVelocityInRpm +
+      " targetVelocityInMotorRpm=" + targetVelocityInMotorRpm +
+      " targetVelocityToleranceInMotorRpm=" + targetVelocityToleranceInMotorRpm +
+      " withinVelocityBounds" + (withinVelocityBounds ? " YES" : " NO")
       );
     */
-    return withinErrorBounds && withinVelocityBounds;
+    return withinVelocityBounds;
   }
 }

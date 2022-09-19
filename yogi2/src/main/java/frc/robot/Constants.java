@@ -39,9 +39,8 @@ public final class Constants
   public static final double RevNeoEncoderTicksPerRevolution = 42; 
 
   // shooter 
-  // inverts - see: https://docs.ctre-phoenix.com/en/stable/ch13_MC.html#talon-fx-specific-inverts
-  public static TalonFXInvertType shooterBottomMotorDefaultDirection = TalonFXInvertType.CounterClockwise;
-  public static TalonFXInvertType shooterTopMotorDefaultDirection = TalonFXInvertType.Clockwise;
+  public static boolean shooterBottomMotorDefaultDirection = true;
+  public static boolean shooterTopMotorDefaultDirection = false;
 
   // Angle arms magic numbers
   public static final double angleArmsManualMotorStopSpeed = 0.0;
