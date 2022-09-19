@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase implements Sendable
   private SparkMaxPIDController bottomPidController = bottomMotor.getPIDController();
   private RelativeEncoder topEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
   private RelativeEncoder bottomEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
-  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
+  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   /**
    * Constructor
@@ -61,35 +61,34 @@ public class Shooter extends SubsystemBase implements Sendable
       kFF = 0.000015; 
       kMaxOutput = 1.0; 
       kMinOutput = -1.0;
-      maxRPM = 5700;
   
-    // update the motor
-    topMotor.restoreFactoryDefaults();
-    topMotor.setIdleMode(IdleMode.kCoast);
-    topMotor.setInverted(Constants.shooterTopMotorDefaultDirection);
+      // update the motor
+      topMotor.restoreFactoryDefaults();
+      topMotor.setIdleMode(IdleMode.kCoast);
+      topMotor.setInverted(Constants.shooterTopMotorDefaultDirection);
 
-    // set PID coefficients
-    topPidController.setP(kP);
-    topPidController.setI(kI);
-    topPidController.setD(kD);
-    topPidController.setIZone(kIz);
-    topPidController.setFF(kFF);
-    topPidController.setOutputRange(kMinOutput, kMaxOutput);
+      // set PID coefficients
+      topPidController.setP(kP);
+      topPidController.setI(kI);
+      topPidController.setD(kD);
+      topPidController.setIZone(kIz);
+      topPidController.setFF(kFF);
+      topPidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    // update the motor
-    bottomMotor.restoreFactoryDefaults();
-    bottomMotor.setIdleMode(IdleMode.kCoast);
-    bottomMotor.setInverted(Constants.shooterBottomMotorDefaultDirection);
-    
-    // set PID coefficients
-    bottomPidController.setP(kP);
-    bottomPidController.setI(kI);
-    bottomPidController.setD(kD);
-    bottomPidController.setIZone(kIz);
-    bottomPidController.setFF(kFF);
-    bottomPidController.setOutputRange(kMinOutput, kMaxOutput);
+      // update the motor
+      bottomMotor.restoreFactoryDefaults();
+      bottomMotor.setIdleMode(IdleMode.kCoast);
+      bottomMotor.setInverted(Constants.shooterBottomMotorDefaultDirection);
+      
+      // set PID coefficients
+      bottomPidController.setP(kP);
+      bottomPidController.setI(kI);
+      bottomPidController.setD(kD);
+      bottomPidController.setIZone(kIz);
+      bottomPidController.setFF(kFF);
+      bottomPidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    CommandScheduler.getInstance().registerSubsystem(this);
+      CommandScheduler.getInstance().registerSubsystem(this);
   }
   
   @Override
@@ -228,7 +227,11 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterVelocityBottom(double revolutionsPerMinute)
   {
-    bottomPidController.setReference(revolutionsPerMinute, CANSparkMax.ControlType.kVelocity);
+    double truncatedRpm = MotorUtils.truncateValue(
+      revolutionsPerMinute,
+      -1.0 * Constants.neoMaximumRevolutionsPerMinute,
+      Constants.neoMaximumRevolutionsPerMinute);
+    bottomPidController.setReference(truncatedRpm, CANSparkMax.ControlType.kVelocity);
   }
 
   /**
@@ -237,7 +240,11 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public void setShooterVelocityTop(double revolutionsPerMinute)
   {
-    topPidController.setReference(revolutionsPerMinute, CANSparkMax.ControlType.kVelocity);
+    double truncatedRpm = MotorUtils.truncateValue(
+      revolutionsPerMinute,
+      -1.0 * Constants.neoMaximumRevolutionsPerMinute,
+      Constants.neoMaximumRevolutionsPerMinute);
+    topPidController.setReference(truncatedRpm, CANSparkMax.ControlType.kVelocity);
   }
 
   /**
@@ -318,7 +325,7 @@ public class Shooter extends SubsystemBase implements Sendable
   }
 
   private boolean isMotorErrorWithinToleranceUsingVelocity(
-    double motorVelocityInRpm,
+    double actualMotorVelocityInRpm,
     double targetVelocityRpm,
     double targetToleranceRpm,
     double gearRatio)
@@ -326,11 +333,11 @@ public class Shooter extends SubsystemBase implements Sendable
     double targetVelocityInMotorRpm = this.convertShooterRpmToMotorRpm(targetVelocityRpm, gearRatio);
     double targetVelocityToleranceInMotorRpm = this.convertShooterRpmToMotorRpm(Math.abs(targetToleranceRpm), gearRatio);
 
-    boolean withinVelocityBounds = motorVelocityInRpm > targetVelocityInMotorRpm - targetVelocityToleranceInMotorRpm &&
-      motorVelocityInRpm < targetVelocityInMotorRpm + targetVelocityToleranceInMotorRpm;
+    boolean withinVelocityBounds = actualMotorVelocityInRpm > targetVelocityInMotorRpm - targetVelocityToleranceInMotorRpm &&
+    actualMotorVelocityInRpm < targetVelocityInMotorRpm + targetVelocityToleranceInMotorRpm;
     /*
     System.out.println(
-      "motorVelocityInRpm=" + motorVelocityInRpm +
+      "actualMotorVelocityInRpm=" + actualMotorVelocityInRpm +
       " targetVelocityInMotorRpm=" + targetVelocityInMotorRpm +
       " targetVelocityToleranceInMotorRpm=" + targetVelocityToleranceInMotorRpm +
       " withinVelocityBounds" + (withinVelocityBounds ? " YES" : " NO")
