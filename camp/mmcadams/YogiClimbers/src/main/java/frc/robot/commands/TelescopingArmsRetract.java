@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.TelescopingArms;
 
-public class TelescopingArmRetract extends CommandBase
+public class TelescopingArmsRetract extends CommandBase
 {
   private TelescopingArms telescopingArmSubsystem;
   private boolean done = false;
 
-  public TelescopingArmRetract(TelescopingArms telescopingArmSubsystem)
+  public TelescopingArmsRetract(TelescopingArms telescopingArmSubsystem)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.telescopingArmSubsystem = telescopingArmSubsystem;

@@ -135,8 +135,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     TelescopingArmExtendHigh high = new TelescopingArmExtendHigh(armsSubsystem);
-    TelescopingArmExtendHigh retract = new TelescopingArmExtendHigh(armsSubsystem);
-    SequentialCommandGroup group = new SequentialCommandGroup(high, retract);
+    TelescopingArmsRetract retract = new TelescopingArmsRetract(armsSubsystem);
+    SequentialCommandGroup group = new SequentialCommandGroup(high.withTimeout(5.0), retract.withTimeout(6.0));
     return group;
   }
 }
