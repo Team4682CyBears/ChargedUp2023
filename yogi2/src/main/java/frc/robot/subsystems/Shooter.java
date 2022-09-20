@@ -23,23 +23,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.common.Gains;
 import frc.robot.common.MotorUtils;
 
 public class Shooter extends SubsystemBase implements Sendable
 {
-  // Talon info
-  private static final double talonMaximumTicksPerSecond = Constants.talonMaximumRevolutionsPerMinute * Constants.CtreTalonFx500EncoderTicksPerRevolution / 60;
-  private static final double velocitySufficientWarmupThreshold = 0.8;
 
   // Shooter gearing - currently 1:1
   private static final double topShooterGearRatio = 1.0;
   private static final double bottomShooterGearRatio = 1.0;
   
-  private static final double kMinDeadband = 0.001;
-  private static final int kPIDLoopIdx = 0;
-  private static final int kTimeoutMs = 30;
-
   private CANSparkMax topMotor = new CANSparkMax(Constants.shooterMotorTopCanId, MotorType.kBrushless);
   private CANSparkMax bottomMotor = new CANSparkMax(Constants.shooterMotorBottomCanId, MotorType.kBrushless);
   private SparkMaxPIDController topPidController = topMotor.getPIDController();
@@ -53,6 +45,12 @@ public class Shooter extends SubsystemBase implements Sendable
    */
   public Shooter()
   {
+      // TODO - tune the 'gain' values below for the shooter setup on the actual 'yogi' robot 
+      // ideally the values will differ for the top shooter motor and the bottom shooter motor (yet another change)
+      // this mostly because the top shooter has more mass and angular momentum than the bottom one
+
+      // the magic numbers here come from
+      // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Velocity%20Closed%20Loop%20Control/src/main/java/frc/robot/Robot.java 
       // PID coefficients
       kP = 6e-5; 
       kI = 0;

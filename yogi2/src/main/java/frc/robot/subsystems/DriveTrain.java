@@ -390,14 +390,18 @@ public class DriveTrain extends SubsystemBase implements Sendable
   {
     if(motorsInitalizedForSmartMotion == false)
     {
+      // TODO - tune the 'gain' values below for the drive setup on the actual 'yogi' robot 
+
+      // the magic numbers here come from
+      // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Smart%20Motion%20Example/src/main/java/frc/robot/Robot.java
       // PID coefficients
       kP = 5e-5; 
       kI = 1e-6;
       kD = 0; 
       kIz = 0; 
       kFF = 0.000156; 
-      kMaxOutput = 1; 
-      kMinOutput = -1;
+      kMaxOutput = 1.0; 
+      kMinOutput = -1.0;
       maxRPM = Constants.neoMaximumRevolutionsPerMinute;   
   
       // Smart Motion Coefficients
