@@ -37,7 +37,10 @@ public final class Constants {
     public static final int telescopingArmsMotorRightCanId = 14;
 
     // max time for an telescoping arms operation
-    public static final double maximumTelescopingArmsTimeOperationSeconds = 3.0;
+    // the values here are loosely based on 2x previous trials for yogiv1
+    // TODO - we likely should time these again to dial them in further
+    public static final double maximumTelescopingArmsExtendTimeOperationSeconds = 5.0;
+    public static final double maximumTelescopingArmsRetractTimeOperationSeconds = 6.0;
 
     // button board input port
     public static final int highLevelButtonBoardPort = 2;
