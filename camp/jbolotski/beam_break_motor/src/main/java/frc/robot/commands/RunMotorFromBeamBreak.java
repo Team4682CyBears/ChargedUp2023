@@ -35,10 +35,8 @@ public class RunMotorFromBeamBreak extends CommandBase {
   @Override
   public void execute() {
     if(manualInputInterfaces.getBeamBreakState()==BeamBreakState.unbroken){
-      System.out.println("bb command: beam unbroken, running motor");
       motorSubsystem.runMotor();
     } else {
-      System.out.println("bb command: beam broken, stopping motor");
       motorSubsystem.stopMotor();
     }
   }

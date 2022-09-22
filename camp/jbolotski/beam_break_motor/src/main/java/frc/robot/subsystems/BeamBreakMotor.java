@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 //import edu.wpi.first.util.sendable.Sendable;
@@ -58,6 +59,7 @@ public class BeamBreakMotor extends SubsystemBase
      * A mehtod exposed to callers to cause the motor to run at a constant speed.  
      */
     public void runMotor(){
+        System.out.println("Setting motor speed: " + motorSpeed);
         beamBreakMotor.set(ControlMode.PercentOutput, motorSpeed);
     }
 
@@ -66,7 +68,17 @@ public class BeamBreakMotor extends SubsystemBase
     */
     public void stopMotor()
     {
+        System.out.println("Stopping Motor");
         beamBreakMotor.stopMotor();
+    }
+
+    /**
+     * returns the beamBreakMotor TalonSRX 
+     * needed for simulation.
+     * @return WPI_TalonSRX 
+     */
+    public TalonSRX getController() {
+        return beamBreakMotor;
     }
 
 } 

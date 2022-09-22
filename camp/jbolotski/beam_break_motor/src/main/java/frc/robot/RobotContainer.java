@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.RunMotorFromBeamBreak;
+import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.BeamBreakMotor;
 
 /**
@@ -50,4 +51,12 @@ public class RobotContainer {
   public void teleopInit(){
     CommandScheduler.getInstance().schedule(bbAutoCommand);
   }
+
+  public void simulationInit(){
+    PhysicsSim.getInstance().addTalonSRX(m_beamBreakMotor.getController(), 0.75, 5100, false);
+  }
+
+  public void simulationPeriodic() {
+		PhysicsSim.getInstance().run();
+	}
 }
