@@ -59,7 +59,6 @@ public class BeamBreakMotor extends SubsystemBase
      * A mehtod exposed to callers to cause the motor to run at a constant speed.  
      */
     public void runMotor(){
-        System.out.println("Setting motor speed: " + motorSpeed);
         beamBreakMotor.set(ControlMode.PercentOutput, motorSpeed);
     }
 
@@ -68,7 +67,6 @@ public class BeamBreakMotor extends SubsystemBase
     */
     public void stopMotor()
     {
-        System.out.println("Stopping Motor");
         beamBreakMotor.stopMotor();
     }
 
