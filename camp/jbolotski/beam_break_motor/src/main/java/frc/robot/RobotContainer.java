@@ -5,10 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.common.Types.BeamBreakState;
+import frc.robot.commands.MotorGo;
+import frc.robot.commands.MotorStop;
 import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.BeamBreakMotor;
-import frc.robot.subsystems.BeamBreakSensor;
+import frc.robot.events.BeamBreakTrigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,8 +19,8 @@ import frc.robot.subsystems.BeamBreakSensor;
  */
 public class RobotContainer {
   // The robot's subsystems are defined here...
-  private final BeamBreakMotor m_beamBreakMotor = new BeamBreakMotor(Constants.beamBreakMotorSpeed);
-  private BeamBreakSensor m_beamBreakSensor = new BeamBreakSensor(Constants.beamBreakSensorPort);
+  private final BeamBreakMotor beamBreakMotor = new BeamBreakMotor(Constants.beamBreakMotorSpeed);
+  private BeamBreakTrigger beamBreakTrigger = new BeamBreakTrigger();
 
   // The robot's commands are defined here...
 
@@ -36,8 +37,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_beamBreakSensor.whenUnbroken(() -> m_beamBreakMotor.runMotor(), m_beamBreakMotor);
-    m_beamBreakSensor.whenBroken(() -> m_beamBreakMotor.stopMotor(), m_beamBreakMotor);
+    // so triggers supposedly do all the magic necessary to get the command to the scheduler
+    // when the beam can be seen lets stop the motor
+    beamBreakTrigger.whenActive(new MotorStop(beamBreakMotor));
+    // when the beam is broken lets run the motor
+    beamBreakTrigger.whenInactive(new MotorGo(beamBreakMotor));
   }
 
   /**
@@ -47,18 +51,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return new MotorStop(beamBreakMotor);
   }
 
   public void teleopInit(){
-    // Only start the motor if the beam is unbroken
-    if(m_beamBreakSensor.getState()==BeamBreakState.unbroken){
-      m_beamBreakMotor.runMotor(); 
-    } 
   }
 
   public void simulationInit(){
-    PhysicsSim.getInstance().addTalonSRX(m_beamBreakMotor.getController(), 0.75, 5100, false);
+    PhysicsSim.getInstance().addTalonSRX(beamBreakMotor.getController(), 0.75, 5100, false);
   }
 
   public void simulationPeriodic() {
