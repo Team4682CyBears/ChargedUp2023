@@ -5,10 +5,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-//import edu.wpi.first.util.sendable.Sendable;
-//import edu.wpi.first.util.sendable.SendableBuilder;
-//import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.common.MotorUtils;
@@ -33,17 +29,8 @@ public class BeamBreakMotor extends SubsystemBase
         beamBreakMotor.setInverted(false); 
         motorSpeed = speed; 
 
-        //TODO no need to register the subsystem here. 
-        //TODO the SubsystemBase class does this automatically, while the Subsystem class does not. 
-        // https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/Subsystem.html
-        CommandScheduler.getInstance().registerSubsystem(this);
+        //Note! the SubsystemBase class automatically registers the subsystem
     }
-
-    // do not need to define periodic if you aren't using it.  
-    /* @Override
-    public void periodic()
-    {
-    }*/
 
     /**
     * A method exposed to callers to set motor speed.  This method does not run the motor. 
@@ -51,12 +38,11 @@ public class BeamBreakMotor extends SubsystemBase
     */
     public void setMotorSpeed(double speed)
     { 
-        //TODO verify percent output range is [-1..1.0]
         motorSpeed = MotorUtils.truncateValue(speed, -1.0, 1.0); 
     }
 
     /**
-     * A mehtod exposed to callers to cause the motor to run at a constant speed.  
+     * A method exposed to callers to cause the motor to run at a constant speed.  
      */
     public void runMotor(){
         beamBreakMotor.set(ControlMode.PercentOutput, motorSpeed);

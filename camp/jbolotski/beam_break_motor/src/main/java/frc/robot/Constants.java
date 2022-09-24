@@ -25,8 +25,14 @@ public final class Constants
     public static final int beamBreakSensorPort = 1;
 
     // *********************************************
-    // DIGITAL SPEEDS \\
+    // MOTOR SPEEDS \\
     // *********************************************
     public static final double beamBreakMotorSpeed = 0.75;
+
+
+    // *********************************************
+    // TIME CONSTANTS \\
+    // *********************************************
+    public static final double beamBreakDebounceTimeSeconds = 0.02;
 
 }

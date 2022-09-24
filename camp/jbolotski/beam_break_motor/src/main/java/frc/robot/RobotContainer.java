@@ -5,10 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.RunMotorFromBeamBreak;
+import frc.robot.common.Types.BeamBreakState;
 import frc.robot.sim.PhysicsSim;
 import frc.robot.subsystems.BeamBreakMotor;
+import frc.robot.subsystems.BeamBreakSensor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,10 +19,9 @@ import frc.robot.subsystems.BeamBreakMotor;
 public class RobotContainer {
   // The robot's subsystems are defined here...
   private final BeamBreakMotor m_beamBreakMotor = new BeamBreakMotor(Constants.beamBreakMotorSpeed);
-  private final ManualInputInterfaces m_manualInputs = new ManualInputInterfaces();
+  private BeamBreakSensor m_beamBreakSensor = new BeamBreakSensor(Constants.beamBreakSensorPort);
 
   // The robot's commands are defined here...
-  private final RunMotorFromBeamBreak bbAutoCommand = new RunMotorFromBeamBreak(m_beamBreakMotor, m_manualInputs);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -36,7 +35,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    m_beamBreakSensor.whenUnbroken(() -> m_beamBreakMotor.runMotor(), m_beamBreakMotor);
+    m_beamBreakSensor.whenBroken(() -> m_beamBreakMotor.stopMotor(), m_beamBreakMotor);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -49,7 +51,10 @@ public class RobotContainer {
   }
 
   public void teleopInit(){
-    CommandScheduler.getInstance().schedule(bbAutoCommand);
+    // Only start the motor if the beam is unbroken
+    if(m_beamBreakSensor.getState()==BeamBreakState.unbroken){
+      m_beamBreakMotor.runMotor(); 
+    } 
   }
 
   public void simulationInit(){
