@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.MotorGo;
 import frc.robot.commands.MotorStop;
@@ -20,7 +22,7 @@ import frc.robot.events.BeamBreakTrigger;
 public class RobotContainer {
   // The robot's subsystems are defined here...
   private final BeamBreakMotor beamBreakMotor = new BeamBreakMotor(Constants.beamBreakMotorSpeed);
-  private BeamBreakTrigger beamBreakTrigger = new BeamBreakTrigger();
+  private Trigger beamBreakTrigger = (new BeamBreakTrigger()).debounce(Constants.beamBreakDebounceTimeSeconds, DebounceType.kBoth);
 
   // The robot's commands are defined here...
 

@@ -12,11 +12,9 @@ public class BeamBreakTrigger extends Trigger{
     private DigitalInput beamBreakInput = new DigitalInput(Constants.beamBreakSensorPort); 
 
     /**
-     * Constructor
-     * @param channel Digital IO channel
+     * default ctor
      */
     public BeamBreakTrigger(){
-        this.debounce(Constants.beamBreakDebounceTimeSeconds);
     }
 
     /**
