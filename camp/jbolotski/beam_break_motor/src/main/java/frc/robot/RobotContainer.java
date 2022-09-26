@@ -22,7 +22,7 @@ import frc.robot.events.BeamBreakTrigger;
 public class RobotContainer {
   // The robot's subsystems are defined here...
   private final BeamBreakMotor beamBreakMotor = new BeamBreakMotor(Constants.beamBreakMotorSpeed);
-  private Trigger beamBreakTrigger = (new BeamBreakTrigger()).debounce(Constants.beamBreakDebounceTimeSeconds, DebounceType.kBoth);
+  private Trigger beamBreakTrigger = BeamBreakTrigger.getInstance();
 
   // The robot's commands are defined here...
 

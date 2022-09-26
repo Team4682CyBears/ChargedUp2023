@@ -1,5 +1,6 @@
 package frc.robot.events;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -9,12 +10,19 @@ import frc.robot.Constants;
  * returns true when the beam is unbroken
  */
 public class BeamBreakTrigger extends Trigger{
+
+    private static Trigger localInstance = (new BeamBreakTrigger()).debounce(Constants.beamBreakDebounceTimeSeconds, DebounceType.kBoth);
     private DigitalInput beamBreakInput = new DigitalInput(Constants.beamBreakSensorPort); 
 
+    public static Trigger getInstance()
+    {
+        return localInstance;
+    }
+
     /**
-     * default ctor
+     * default ctor - private to ensure singelton pattern
      */
-    public BeamBreakTrigger(){
+    private BeamBreakTrigger(){
     }
 
     /**
