@@ -166,11 +166,13 @@ public class ManualInputInterfaces
               this.getGtaInputArcadeDriveX(),
               PowerFactorIncrementDirection.Up),
             new ButtonPress("driverController.kRightBumper", "bumperRight.whenPressed")));
+            /*
         buttonA.whenPressed(
           new ParallelCommandGroup(
             new DriveSystemToggleDirection(
               subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPress("driverController.buttonA", "buttonA.whenPressed")));
+            */
       }
     }
   }

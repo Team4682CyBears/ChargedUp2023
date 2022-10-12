@@ -128,10 +128,10 @@ public final class Constants
   // MOTOR SETTINGS \\
 
   // Drive motor magic numbers
-  public static boolean driveMotorLeftFrontDefaultDirection = true;
-  public static boolean driveMotorLeftRearDefaultDirection = true;
-  public static boolean driveMotorRightFrontDefaultDirection = false;
-  public static boolean driveMotorRightRearDefaultDirection = false;
+  public static boolean driveMotorLeftFrontDefaultDirection = false;
+  public static boolean driveMotorLeftRearDefaultDirection = false;
+  public static boolean driveMotorRightFrontDefaultDirection = true;
+  public static boolean driveMotorRightRearDefaultDirection = true;
 
   // jaws arm motors clockwise is elevate
   public static TalonFXInvertType jawsRightMotorDefaultDirection = TalonFXInvertType.Clockwise;
