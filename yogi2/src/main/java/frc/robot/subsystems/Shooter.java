@@ -53,13 +53,13 @@ public class Shooter extends SubsystemBase implements Sendable
       // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Velocity%20Closed%20Loop%20Control/src/main/java/frc/robot/Robot.java 
       // PID coefficients
       kP = 6e-5; 
-      kI = 0;
-      kD = 0; 
+      kI = 0.000001;
+      kD = 0.00000001; 
       kIz = 0; 
       kFF = 0.000015; 
       kMaxOutput = 1.0; 
       kMinOutput = -1.0;
-  
+      
       // update the motor
       topMotor.restoreFactoryDefaults();
       topMotor.setIdleMode(IdleMode.kCoast);
