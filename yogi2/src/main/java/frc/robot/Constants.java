@@ -58,10 +58,10 @@ public final class Constants
 
   // Motor magic numbers
   public static final double defaultMotorSpeedToleranceRpm = 50.0;
-  public static final double bottomMotorForwardLowGoalSpeedRpm = -1700.0;
-  public static final double topMotorForwardLowGoalSpeedRpm = -1400.0;
-  public static final double bottomMotorForwardHighGoalSpeedRpm = -2600.0;
-  public static final double topMotorForwardHighGoalSpeedRpm = -2200.0;
+  public static final double bottomMotorForwardLowGoalSpeedRpm = -1300.0;
+  public static final double topMotorForwardLowGoalSpeedRpm = -1100.0;
+  public static final double bottomMotorForwardHighGoalSpeedRpm = -2650.0;
+  public static final double topMotorForwardHighGoalSpeedRpm = -2250.0;
   public static final double bottomMotorReverseHighGoalSpeedRpm = -2600.0;
   public static final double topMotorReverseHighGoalSpeedRpm = -2200.0;
   public static final double bottomMotorReverseLowGoalSpeedRpm = -1700.0;
@@ -78,8 +78,8 @@ public final class Constants
   public static final double jawsPositionAngleTolerance = 1.2;
   public static final double jawsAngleArmsEngagePositionAngle = 125.0;
   public static final double jawsAngleArmsEngagePositionTolerance = 0.9;
-  public static final double jawsDefaultPositiveSpeed = 0.8;
-  public static final double jawsDefaultNegativeSpeed = -0.8;
+  public static final double jawsDefaultPositiveSpeed = 0.7;
+  public static final double jawsDefaultNegativeSpeed = -0.7;
   public static final double jawsReferencePositionMotorEncoderUnits = 141000; // 151972 and 152037
 
   // telescoping arms reach points \\
