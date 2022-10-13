@@ -69,6 +69,10 @@ public class BallStorage extends SubsystemBase implements Sendable
   */
   public void store()
   {
+    //TODO: check the ballStoreSpeed and ballRetrieveSpeeds are the right polarity.
+    // Owen suspects they may be reveresed.  
+
+    // TODO - not sure comment below makes sense?
     // since motors are followers ok to just set one
     bottomMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
     topMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
@@ -86,6 +90,7 @@ public class BallStorage extends SubsystemBase implements Sendable
   */
   public void storeBallManual()
   {
+      // TODO - not sure comment below makes sense?
       // since motors are followers ok to just set one
       bottomMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
       topMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);

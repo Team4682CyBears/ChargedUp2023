@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase implements Sendable
   private SparkMaxPIDController topPidController = topMotor.getPIDController();
   private SparkMaxPIDController bottomPidController = bottomMotor.getPIDController();
   private RelativeEncoder topEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
-  private RelativeEncoder bottomEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
+  private RelativeEncoder bottomEncoder = bottomMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   /**

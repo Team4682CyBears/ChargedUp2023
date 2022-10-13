@@ -39,8 +39,8 @@ public final class Constants
   public static final double RevNeoEncoderTicksPerRevolution = 42; 
 
   // shooter 
-  public static boolean shooterBottomMotorDefaultDirection = true;
-  public static boolean shooterTopMotorDefaultDirection = false;
+  public static boolean shooterBottomMotorDefaultDirection = false;
+  public static boolean shooterTopMotorDefaultDirection = true;
 
   // Angle arms magic numbers
   public static final double angleArmsManualMotorStopSpeed = 0.0;
