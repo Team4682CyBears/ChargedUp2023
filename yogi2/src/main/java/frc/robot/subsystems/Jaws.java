@@ -35,9 +35,10 @@ public class Jaws extends SubsystemBase implements Sendable
     private static final double jawsMotorToArmEffectiveGearRatio = 212; // according to nathan on 02/08/2022
     private static final double minmumTargetAngle = 0.0;
     private static final double maximumTargetAngle = 150.1;
+    private static final double smartMotionAccelerationMultiplier = 0.4;
 
     // update this when folks are ready for it
-    private static final double talonFxMotorSpeedReductionFactor = 0.35;
+    private static final double talonFxMotorSpeedReductionFactor = 0.25;
 
     /* *********************************************************************
     MEMBERS
@@ -199,6 +200,7 @@ public class Jaws extends SubsystemBase implements Sendable
       if(motorsNeedInit)
       {
         double maxVelocity = Constants.talonMaximumRevolutionsPerMinute * Constants.CtreTalonFx500EncoderTicksPerRevolution / 10.0 * Jaws.talonFxMotorSpeedReductionFactor;
+        double maxAcceleration = maxVelocity * smartMotionAccelerationMultiplier;
 
         // RIGHT MOTOR
         rightMotor.configFactoryDefault();
@@ -222,7 +224,7 @@ public class Jaws extends SubsystemBase implements Sendable
         rightMotor.config_kI(Constants.kSlotIdx, Constants.kGains.kI, Constants.kTimeoutMs);
         rightMotor.config_kD(Constants.kSlotIdx, Constants.kGains.kD, Constants.kTimeoutMs);
         rightMotor.configMotionCruiseVelocity(maxVelocity, Constants.kTimeoutMs);
-        rightMotor.configMotionAcceleration(maxVelocity, Constants.kTimeoutMs);
+        rightMotor.configMotionAcceleration(maxAcceleration, Constants.kTimeoutMs);
   
         // current limit enabled | Limit(amp) | Trigger Threshold(amp) | Trigger
         rightMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 20, 25, 1.0));
@@ -249,7 +251,7 @@ public class Jaws extends SubsystemBase implements Sendable
         leftMotor.config_kI(Constants.kSlotIdx, Constants.kGains.kI, Constants.kTimeoutMs);
         leftMotor.config_kD(Constants.kSlotIdx, Constants.kGains.kD, Constants.kTimeoutMs);
         leftMotor.configMotionCruiseVelocity(maxVelocity, Constants.kTimeoutMs);
-        leftMotor.configMotionAcceleration(maxVelocity, Constants.kTimeoutMs);
+        leftMotor.configMotionAcceleration(maxAcceleration, Constants.kTimeoutMs);
   
         // current limit enabled | Limit(amp) | Trigger Threshold(amp) | Trigger
         leftMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 20, 25, 1.0));

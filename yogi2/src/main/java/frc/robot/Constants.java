@@ -60,8 +60,8 @@ public final class Constants
   public static final double defaultMotorSpeedToleranceRpm = 50.0;
   public static final double bottomMotorForwardLowGoalSpeedRpm = -1300.0;
   public static final double topMotorForwardLowGoalSpeedRpm = -1100.0;
-  public static final double bottomMotorForwardHighGoalSpeedRpm = -2650.0;
-  public static final double topMotorForwardHighGoalSpeedRpm = -2250.0;
+  public static final double bottomMotorForwardHighGoalSpeedRpm = -2600.0;
+  public static final double topMotorForwardHighGoalSpeedRpm = -2200.0;
   public static final double bottomMotorReverseHighGoalSpeedRpm = -2600.0;
   public static final double topMotorReverseHighGoalSpeedRpm = -2200.0;
   public static final double bottomMotorReverseLowGoalSpeedRpm = -1700.0;
@@ -71,16 +71,16 @@ public final class Constants
   
   // Jaws reach points \\
   public static final double jawsIntakePositionAngle = 1.0;
-  public static final double jawsLowGoalPositionAngle = 90.0;
-  public static final double jawsHighGoalPositionAngle = 117.5; // based on match on 03/19/2022 @ ~3:30pm pacific
-  public static final double jawsReverseHighGoalPositionAngle = 145.0;
+  public static final double jawsLowGoalPositionAngle = 110.0;
+  public static final double jawsHighGoalPositionAngle = 129.0; 
+  public static final double jawsReverseHighGoalPositionAngle = 147.0;
   public static final double jawsReverseLowGoalPositionAngle = 150.0;
   public static final double jawsPositionAngleTolerance = 1.2;
   public static final double jawsAngleArmsEngagePositionAngle = 125.0;
   public static final double jawsAngleArmsEngagePositionTolerance = 0.9;
-  public static final double jawsDefaultPositiveSpeed = 0.7;
-  public static final double jawsDefaultNegativeSpeed = -0.7;
-  public static final double jawsReferencePositionMotorEncoderUnits = 141000; // 151972 and 152037
+  public static final double jawsDefaultPositiveSpeed = 0.6;
+  public static final double jawsDefaultNegativeSpeed = -0.6;
+  public static final double jawsReferencePositionMotorEncoderUnits = 148200; // 141000, 151972 and 152037
 
   // telescoping arms reach points \\
   public static final double telescopingArmsRetractHeightInches = 0.50;
