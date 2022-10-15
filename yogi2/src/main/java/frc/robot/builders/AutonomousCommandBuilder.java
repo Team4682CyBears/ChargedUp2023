@@ -209,14 +209,14 @@ public class AutonomousCommandBuilder
                 collection.getDriveTrainSubsystem(),
                 -1.0,
                 0.0,
-                1.75);
+                2.5);
 
             ButtonPress endButton = new ButtonPress("autonomous", "end");
 
             // 3. build the command group
             commandGroup.addCommands(
                 startButton.withTimeout(0.5),
-                new WaitCommand(0.5),
+                new WaitCommand(0.6),
                 jawsToForwardHighGoal.withTimeout(Constants.maximumJawsTimeOperationSeconds),
                 shootForwardHighGoal.withTimeout(5.0),
                 driveTimeCommand.withTimeout(5.0),
