@@ -58,6 +58,8 @@ public final class Constants
 
   // Motor magic numbers
   public static final double defaultMotorSpeedToleranceRpm = 50.0;
+  public static final double largeMotorSpeedToleranceRpm = 100.0;
+  public static final double smallMotorSpeedToleranceRpm = 20.0;
   public static final double bottomMotorForwardLowGoalSpeedRpm = -1300.0;
   public static final double topMotorForwardLowGoalSpeedRpm = -1100.0;
   public static final double bottomMotorForwardHighGoalSpeedRpm = -2600.0;
