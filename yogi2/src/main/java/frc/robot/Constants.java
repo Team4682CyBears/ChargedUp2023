@@ -94,7 +94,7 @@ public final class Constants
   public static final double telescopingArmsStopSpeed = 0.0;
 
   // Ball storage \\
-  public static final double ballStoreSpeed = -0.25;
+  public static final double ballStoreSpeed = -0.22;
   public static final double ballRetrieveSpeed = 0.3;
   public static final int maximumStoredBallCount = 2;
 
