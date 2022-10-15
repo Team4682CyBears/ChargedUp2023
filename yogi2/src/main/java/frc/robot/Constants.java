@@ -74,7 +74,7 @@ public final class Constants
   // Jaws reach points \\
   public static final double jawsIntakePositionAngle = 1.0;
   public static final double jawsLowGoalPositionAngle = 110.0;
-  public static final double jawsHighGoalPositionAngle = 129.0; 
+  public static final double jawsHighGoalPositionAngle = 131.0; 
   public static final double jawsReverseHighGoalPositionAngle = 147.0;
   public static final double jawsReverseLowGoalPositionAngle = 150.0;
   public static final double jawsPositionAngleTolerance = 1.2;
