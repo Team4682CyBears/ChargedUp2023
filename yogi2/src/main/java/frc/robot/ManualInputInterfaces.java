@@ -146,7 +146,8 @@ public class ManualInputInterfaces
     {
       JoystickButton bumperLeft = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
       JoystickButton bumperRight = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-      JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
+      // Commented out the drive toggle code
+//      JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
 
       if(subsystemCollection.getDriveTrainSubsystem() != null)
       {
@@ -166,11 +167,14 @@ public class ManualInputInterfaces
               this.getGtaInputArcadeDriveX(),
               PowerFactorIncrementDirection.Up),
             new ButtonPress("driverController.kRightBumper", "bumperRight.whenPressed")));
+        // Commented out the drive toggle code
+        /*
         buttonA.whenPressed(
           new ParallelCommandGroup(
             new DriveSystemToggleDirection(
               subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPress("driverController.buttonA", "buttonA.whenPressed")));
+        */
       }
     }
   }

@@ -121,8 +121,8 @@
               "_type": "Simple Dial",
               "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorOutput",
               "_title": "Jaws Motors",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
               "Visuals/Show value": true
             }
           },
@@ -166,10 +166,10 @@
             ],
             "content": {
               "_type": "Simple Dial",
-              "_source0": "network_table:///LiveWindow/BallStorage/BottomMotorSpeedSetting",
-              "_title": "Ball Botom Motor",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomRevolutionsPerMinute",
+              "_title": "Shooter Botom Motor",
+              "Range/Min": -5700.0,
+              "Range/Max": 5700.0,
               "Visuals/Show value": true
             }
           },
@@ -180,10 +180,10 @@
             ],
             "content": {
               "_type": "Simple Dial",
-              "_source0": "network_table:///LiveWindow/BallStorage/TopMotorSpeedSetting",
-              "_title": "Ball Top Motor",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterTopRevolutionsPerMinute",
+              "_title": "Shooter Top Motor",
+              "Range/Min": -5700.0,
+              "Range/Max": 5700.0,
               "Visuals/Show value": true
             }
           },

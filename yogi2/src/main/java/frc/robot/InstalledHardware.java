@@ -66,6 +66,6 @@ public class InstalledHardware
     public static final boolean bottomBallStorageMotorInstalled = true;
 
     // Angle Arms Related Hardware
-    public static final boolean angleArmsMotorInstalled = true;
+    public static final boolean angleArmsMotorInstalled = false;
    
 }
