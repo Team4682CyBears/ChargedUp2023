@@ -53,6 +53,7 @@ public class DriveTrain extends SubsystemBase implements Sendable
   private MotorControllerGroup left = new MotorControllerGroup(leftFront, leftRear);
   private MotorControllerGroup right = new MotorControllerGroup(rightFront, rightRear);
   private DifferentialDrive forwardDrive = new DifferentialDrive(left, right);
+  // Commented out the drive toggle code
 //  private DifferentialDrive reverseDrive = new DifferentialDrive(right, left);
   
   private DifferentialDrive currentDrive = forwardDrive;
@@ -123,6 +124,7 @@ public class DriveTrain extends SubsystemBase implements Sendable
   {
     if(this.isCurrentDriveForward == true)
     {
+        // Commented out the drive toggle code
 //      this.currentDrive = this.reverseDrive;
       this.isCurrentDriveForward = false;
     }
