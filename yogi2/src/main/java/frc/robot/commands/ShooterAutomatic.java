@@ -20,8 +20,8 @@ import frc.robot.subsystems.Jaws;
 
 public class ShooterAutomatic extends CommandBase
 {
-  private static final double defaultVelocityBottomRpm = Constants.bottomMotorForwardHighGoalSpeedRpm;
-  private static final double defaultVelocityTopRpm = Constants.topMotorForwardHighGoalSpeedRpm;
+  private static final double defaultVelocityBottomRpm = Constants.bottomMotorForwardHighGoalSpeedRpm * 1.15;
+  private static final double defaultVelocityTopRpm = Constants.topMotorForwardHighGoalSpeedRpm * 1.15;
   private static final double defaultVelocityTolerance = 20.0;
 
   // target the shooter 

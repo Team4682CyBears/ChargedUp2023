@@ -52,11 +52,11 @@ public class Shooter extends SubsystemBase implements Sendable
       // the magic numbers here come from
       // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Velocity%20Closed%20Loop%20Control/src/main/java/frc/robot/Robot.java 
       // PID coefficients
-      kP = 6e-5; 
+      kP = 0.0002;
       kI = 0.000001;
       kD = 0.00000001; 
       kIz = 0; 
-      kFF = 0.000015; 
+      kFF = 0.0002; 
       kMaxOutput = 1.0; 
       kMinOutput = -1.0;
       
