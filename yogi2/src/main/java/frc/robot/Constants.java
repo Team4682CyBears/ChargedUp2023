@@ -64,6 +64,8 @@ public final class Constants
   public static final double topMotorForwardLowGoalSpeedRpm = -1100.0;
   public static final double bottomMotorForwardHighGoalSpeedRpm = -2650.0;
   public static final double topMotorForwardHighGoalSpeedRpm = -2250.0;
+  public static final double bottomMotorForwardMidGoalSpeedRpm = -3048.0;
+  public static final double topMotorForwardMidGoalSpeedRpm = -2588.0;
   public static final double bottomMotorReverseHighGoalSpeedRpm = -2600.0;
   public static final double topMotorReverseHighGoalSpeedRpm = -2200.0;
   public static final double bottomMotorReverseLowGoalSpeedRpm = -1700.0;
@@ -75,6 +77,7 @@ public final class Constants
   public static final double jawsIntakePositionAngle = 1.0;
   public static final double jawsLowGoalPositionAngle = 110.0;
   public static final double jawsHighGoalPositionAngle = 130.0; 
+  public static final double jawsMidGoalPositionAngle = 120.0; //TODO insert angle found in Sat testing here.  
   public static final double jawsReverseHighGoalPositionAngle = 147.0;
   public static final double jawsReverseLowGoalPositionAngle = 150.0;
   public static final double jawsPositionAngleTolerance = 1.2;
