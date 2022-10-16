@@ -179,6 +179,18 @@ public class Shooter extends SubsystemBase implements Sendable
   }
 
   /**
+   * A non-blocking call to spin up the shooter motors to a preset value for the shoot mid
+   * @return True when the motor is sufficiently up to speed, else false
+   */
+  public boolean shootMid()
+  {
+    this.setShooterVelocityTop(Constants.topMotorForwardMidGoalSpeedRpm);
+    this.setShooterVelocityBottom(Constants.bottomMotorForwardMidGoalSpeedRpm);
+    return this.isShooterVelocityUpToSpeedTop(Constants.topMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm) &&
+     this.isShooterVelocityUpToSpeedBottom(Constants.bottomMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm);
+  }
+
+  /**
    * A non-blocking call to spin up the shooter motors to a preset value for the shoot high reverse
    * @return True when the motor is sufficiently up to speed, else false
    */
