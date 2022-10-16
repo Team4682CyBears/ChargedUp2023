@@ -377,7 +377,7 @@ public class ManualInputInterfaces
         jawsForwardMid.whenPressed(
           new ParallelCommandGroup(
             new JawsForwardMidGoal(subsystemCollection.getJawsSubsystem()),
-            new ButtonPress("buttonBoardHigh.11", "jawsForwardMid.whenPressed")).withTimeout(Constants.maximumJawsTimeOperationSeconds));
+            new ButtonPress("buttonBoardMid.11", "jawsForwardMid.whenPressed")).withTimeout(Constants.maximumJawsTimeOperationSeconds));
         jawsReverseLow.whenPressed(
           new ParallelCommandGroup(
             new JawsReverseLowGoal(subsystemCollection.getJawsSubsystem()),
