@@ -261,7 +261,8 @@ public class ManualInputInterfaces
       JoystickButton jawsForwardIntake = new JoystickButton(highLevelButtonBoard, 8);
       JoystickButton jawsForwardLow = new JoystickButton(highLevelButtonBoard, 9);
       JoystickButton jawsForwardHigh = new JoystickButton(highLevelButtonBoard, 10);
-      JoystickButton jawsReverseHigh = new JoystickButton(highLevelButtonBoard, 11);
+      JoystickButton jawsForwardMid = new JoystickButton(highLevelButtonBoard, 11);
+      //JoystickButton jawsReverseHigh = new JoystickButton(highLevelButtonBoard, 11);
       JoystickButton jawsReverseLow = new JoystickButton(highLevelButtonBoard, 12);
 
       if(subsystemCollection.getTelescopingArmsSubsystem() != null)
@@ -373,10 +374,10 @@ public class ManualInputInterfaces
           new ParallelCommandGroup(
             new JawsForwardHighGoal(subsystemCollection.getJawsSubsystem()),
             new ButtonPress("buttonBoardHigh.10", "jawsForwardHigh.whenPressed")).withTimeout(Constants.maximumJawsTimeOperationSeconds));
-        jawsReverseHigh.whenPressed(
+        jawsForwardMid.whenPressed(
           new ParallelCommandGroup(
-            new JawsReverseHighGoal(subsystemCollection.getJawsSubsystem()),
-            new ButtonPress("buttonBoardHigh.11", "jawsReverseHigh.whenPressed")).withTimeout(Constants.maximumJawsTimeOperationSeconds));
+            new JawsForwardMidGoal(subsystemCollection.getJawsSubsystem()),
+            new ButtonPress("buttonBoardMid.11", "jawsForwardMid.whenPressed")).withTimeout(Constants.maximumJawsTimeOperationSeconds));
         jawsReverseLow.whenPressed(
           new ParallelCommandGroup(
             new JawsReverseLowGoal(subsystemCollection.getJawsSubsystem()),
