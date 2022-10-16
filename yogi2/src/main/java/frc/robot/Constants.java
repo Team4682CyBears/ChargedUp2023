@@ -77,7 +77,7 @@ public final class Constants
   public static final double jawsIntakePositionAngle = 1.0;
   public static final double jawsLowGoalPositionAngle = 110.0;
   public static final double jawsHighGoalPositionAngle = 130.0; 
-  public static final double jawsMidGoalPositionAngle = 120.0; //TODO insert angle found in Sat testing here.  
+  public static final double jawsMidGoalPositionAngle = 117.0;  
   public static final double jawsReverseHighGoalPositionAngle = 147.0;
   public static final double jawsReverseLowGoalPositionAngle = 150.0;
   public static final double jawsPositionAngleTolerance = 1.2;
