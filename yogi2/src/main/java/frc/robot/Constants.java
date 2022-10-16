@@ -163,7 +163,7 @@ public final class Constants
   public static final int kSlotIdx = 0;
 
   // gains \\
-  public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+  public static final Gains kGains = new Gains(0.02, 0.0, 0.0, 0.02, 0, 1.0);
   public static final int countPerRevHallSensor = 42;
 
   // orentation
