@@ -33,33 +33,34 @@ public class BallHandler extends SubsystemBase implements Sendable {
      * No argument constructor for the BallHandler subsystem.
     */
     public BallHandler() {
+        // TODO - Naher do stuff here
     }
 
     /**
      * 
      */
     public void deployPosition(){
-
+        // TODO - Naher do stuff here
     }
 
     public void retractPosition(){
-
+        // TODO - Naher do stuff here
     }
 
     public void togglePosition(){
-
+        // TODO - Naher do stuff here
     }
 
     public void storeBall(){
-
+        // TODO - Naher do stuff here
     }
 
     public void retrieveBall(){
-
+        // TODO - Naher do stuff here
     }
 
     public void stopStoringBall(){
-
+        // TODO - Naher do stuff here
     }
 
     @Override
@@ -81,7 +82,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
 
     private void intitalizeBallArmState()
     {
-
+        // TODO - Naher do stuff here
     }
 
 }
