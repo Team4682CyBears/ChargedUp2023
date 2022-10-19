@@ -61,6 +61,10 @@ public final class Constants {
     public static final int BallHandlerMotorCanId = 10;
     public static final double BallHandlerMotorDefaultSpeed = 1.0;
     public static final boolean BallHandlerMotorInvertedDirection = false;
+    public static final double BallHandlerPneumaticsDeployCycleTimeSeconds = 0.5;
+    public static final double BallHandlerPneumaticsRetractCycleTimeSeconds = 0.5;
+    public static final double BallHandlerIntakeBallTimeSeconds = 2.0;
+    public static final double BallHandlerLayupBallTimeSeconds = 1.0;
 
     public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.CTREPCM;
     public static final int PneumaticsControlModuleNumber = 0;

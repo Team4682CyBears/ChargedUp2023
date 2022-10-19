@@ -46,6 +46,24 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
+     * Method to obtain if the ball arm is in the retracted position.
+     * @return boolean true if ball arm is retracted, otherwise false.
+     */
+    public boolean isDeployed()
+    {
+        return currentBallArmDeployed;
+    }
+
+    /**
+     * Method to obtain if the ball arm is in the retracted position.
+     * @return boolean true if ball arm is retracted, otherwise false.
+     */
+    public boolean isRetracted()
+    {
+        return !currentBallArmDeployed;
+    }
+
+    /**
      * TODO - Naher - put comments in here correctly
      */
     public void deployPosition(){
