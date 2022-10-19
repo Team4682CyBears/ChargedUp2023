@@ -71,4 +71,7 @@ public final class Constants {
     public static final int PneumaticsControlModuleForwardChannel = 0;
     public static final int PneumaticsControlModuleReverseChannel = 0;
 
+    public static final int portDriverController = 1;
+    public static final int portCoDriverController = 2;
+
 }
