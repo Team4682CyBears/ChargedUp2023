@@ -19,6 +19,9 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants;
 import frc.robot.common.*;
 
@@ -28,6 +31,12 @@ public class BallHandler extends SubsystemBase implements Sendable {
 
     private WPI_TalonSRX ballMotor = new WPI_TalonSRX(Constants.BallHandlerMotorCanId);
     private boolean currentBallArmDeployed = false;
+    Compressor compressor = new Compressor(1, Constants.BallHandlerPneumaticsControlModuleType);
+    DoubleSolenoid solenoid = new DoubleSolenoid(
+        Constants.PneumaticsControlModuleNumber,
+        Constants.BallHandlerPneumaticsControlModuleType,
+        Constants.PneumaticsControlModuleForwardChannel,
+        Constants.PneumaticsControlModuleReverseChannel);
 
     /**
      * No argument constructor for the BallHandler subsystem.

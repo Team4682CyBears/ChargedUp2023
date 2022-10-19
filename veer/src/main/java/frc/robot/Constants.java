@@ -1,8 +1,16 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Rapid React - 2022
+// File: BallHandler.java
+// Intent: Wrapper class standard stub for robot in FRC challange.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
+
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -53,5 +61,10 @@ public final class Constants {
     public static final int BallHandlerMotorCanId = 10;
     public static final double BallHandlerMotorDefaultSpeed = 1.0;
     public static final boolean BallHandlerMotorInvertedDirection = false;
+
+    public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.CTREPCM;
+    public static final int PneumaticsControlModuleNumber = 0;
+    public static final int PneumaticsControlModuleForwardChannel = 0;
+    public static final int PneumaticsControlModuleReverseChannel = 0;
 
 }
