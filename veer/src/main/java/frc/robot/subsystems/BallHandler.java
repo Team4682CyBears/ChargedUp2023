@@ -42,32 +42,56 @@ public class BallHandler extends SubsystemBase implements Sendable {
      * No argument constructor for the BallHandler subsystem.
     */
     public BallHandler() {
-        // TODO - Naher do stuff here
+        this.intitalizeBallHandlingState();
     }
 
     /**
-     * 
+     * TODO - Naher - put comments in here correctly
      */
     public void deployPosition(){
-        // TODO - Naher do stuff here
+        this.solenoid.set(DoubleSolenoid.Value.kForward);
+        currentBallArmDeployed = true;
     }
 
+    /**
+     * TODO - Naher - put comments in here correctly
+     */
     public void retractPosition(){
-        // TODO - Naher do stuff here
+        this.solenoid.set(DoubleSolenoid.Value.kReverse);
+        currentBallArmDeployed = false;
     }
 
+    /**
+     * TODO - Naher - put comments in here correctly
+     */
     public void togglePosition(){
-        // TODO - Naher do stuff here
+        if(currentBallArmDeployed)
+        {
+            this.retractPosition();
+        }
+        else
+        {
+            this.deployPosition();
+        }
     }
 
+    /**
+     * TODO - Naher - put comments in here correctly
+     */
     public void storeBall(){
         // TODO - Naher do stuff here
     }
 
+    /**
+     * TODO - Naher - put comments in here correctly
+     */
     public void retrieveBall(){
         // TODO - Naher do stuff here
     }
 
+    /**
+     * TODO - Naher - put comments in here correctly
+     */
     public void stopStoringBall(){
         // TODO - Naher do stuff here
     }
@@ -89,9 +113,14 @@ public class BallHandler extends SubsystemBase implements Sendable {
         return this.ballMotor.get();
     }
 
-    private void intitalizeBallArmState()
+    private void intitalizeBallHandlingState()
     {
-        // TODO - Naher do stuff here
+        ballMotor.configFactoryDefault();
+        ballMotor.setNeutralMode(NeutralMode.Coast);
+        ballMotor.setInverted(Constants.BallHandlerMotorInvertedDirection);
+
+        // confirm that the double solenoid has retracted the arm
+        this.retractPosition();
     }
 
 }
