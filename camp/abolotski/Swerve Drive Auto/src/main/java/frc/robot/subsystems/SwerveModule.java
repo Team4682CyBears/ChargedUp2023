@@ -14,14 +14,18 @@ import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
 
+    //TODO change two motors to WPI_TalonSRX
     private final CANSparkMax driveMotor;
     private final CANSparkMax turningMotor;
 
+    //TODO what encoder?
     private final CANEncoder driveEncoder;
     private final CANEncoder turningEncoder;
 
+    //TODO what PID equivalent in Talon?
     private final PIDController turningPidController;
 
+    //TODO do we have absolute encoders coming in to AnalogInputs?
     private final AnalogInput absoluteEncoder;
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
@@ -33,20 +37,25 @@ public class SwerveModule {
         this.absoluteEncoderReversed = absoluteEncoderReversed;
         absoluteEncoder = new AnalogInput(absoluteEncoderId);
 
+        //TODO change two motors to WPI_TalonSRX
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
 
+        //TODO what are the equivalent Talon methods?
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
 
+        //TODO what are the equivalent Talon methods?
         driveEncoder = driveMotor.getEncoder();
         turningEncoder = turningMotor.getEncoder();
 
+        //TODO what are the equivalent Talon methods?
         driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
         turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
         turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
 
+        //TODO what are the equivalent Talong methods?
         turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -70,6 +79,7 @@ public class SwerveModule {
     }
 
     public double getAbsoluteEncoderRad() {
+        //TODO what does this line do?
         double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
         angle *= 2.0 * Math.PI;
         angle -= absoluteEncoderOffsetRad;
@@ -77,6 +87,7 @@ public class SwerveModule {
     }
 
     public void resetEncoders() {
+        //TODO what are the equivalent Talon commands?
         driveEncoder.setPosition(0);
         turningEncoder.setPosition(getAbsoluteEncoderRad());
     }
@@ -91,12 +102,14 @@ public class SwerveModule {
             return;
         }
         state = SwerveModuleState.optimize(state, getState().angle);
+        //TODO what are the equivalent Talon commands?
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
     }
 
     public void stop() {
+        //TODO what are the equialent Talon commands?
         driveMotor.set(0);
         turningMotor.set(0);
     }
