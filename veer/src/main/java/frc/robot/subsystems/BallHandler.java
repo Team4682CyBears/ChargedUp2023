@@ -16,8 +16,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
@@ -27,6 +25,9 @@ import frc.robot.common.*;
 
 import static frc.robot.Constants.*;
 
+/**
+ * TODO - Naher - put comments in here correctly
+ */
 public class BallHandler extends SubsystemBase implements Sendable {
 
     private WPI_TalonSRX ballMotor = new WPI_TalonSRX(Constants.BallHandlerMotorCanId);
