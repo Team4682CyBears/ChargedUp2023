@@ -13,17 +13,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.common.*;
-
-import static frc.robot.Constants.*;
 
 /**
  * TODO - Naher - put comments in here correctly
@@ -66,6 +61,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
 
     /**
      * TODO - Naher - put comments in here correctly
+     * This deploys the arm into a deployed (downward) position
      */
     public void deployPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kForward);
@@ -73,7 +69,8 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * // TODO - Naher - put comments in here correctly
+     * This lifts the arm into a retracted (upward) position
      */
     public void retractPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kReverse);
@@ -81,7 +78,8 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * // TODO - Naher - put comments in here correctly
+     * This toggles the arm position
      */
     public void togglePosition(){
         if(currentBallArmDeployed)
@@ -95,24 +93,31 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * // TODO - Naher - put comments in here correctly
+     * This stores balls
      */
     public void storeBall(){
         // TODO - Naher do stuff here
+        this.ballMotor.set(ControlMode.PercentOutput, Constants.BallHandlerMotorDefaultSpeed);
+    
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * // TODO - Naher - put comments in here correctly
+     * This sucks in a ball
      */
     public void retrieveBall(){
         // TODO - Naher do stuff here
+        this.ballMotor.set(ControlMode.PercentOutput, Constants.BallHandlerMotorDefaultSpeed * -1.0);
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * // TODO - Naher - put comments in here correctly
+     * This stops the motor after storing balls
      */
     public void stopStoringBall(){
         // TODO - Naher do stuff here
+        this.ballMotor.set(0.0);
     }
 
     @Override
