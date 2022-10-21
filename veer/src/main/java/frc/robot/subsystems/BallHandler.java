@@ -13,14 +13,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
 import frc.robot.Constants;
 import frc.robot.common.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * A class intended to model the BallHandler infrastructure on Veer.
@@ -62,7 +61,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * Method to deploy the arm.  Likely upward toward the low shot position.
+     * Method to move the arm into a deployed (upward) position
      */
     public void deployPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kForward);
@@ -70,7 +69,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * Method to retract the arm.  Likely downward toward the ball pickup position.
+     * Method to move the arm into a retracted (downward) position
      */
     public void retractPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kReverse);
