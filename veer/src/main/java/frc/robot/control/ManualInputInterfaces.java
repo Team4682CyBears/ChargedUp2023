@@ -72,6 +72,24 @@ public class ManualInputInterfaces
   }
 
   /**
+   * A method to get the co-driver 'intake speed' input from humans
+   * @return - a double value associated with the magnitude of left trigger 
+   */
+  public double getIntakeSpeed()
+  {
+    return coDriverController.getLeftTriggerAxis() * Constants.BallHandlerMotorStorageDirectionMultiplier;
+  }
+
+  /**
+   * A method to get the co-driver 'layup speed' input from humans
+   * @return - a double value associated with the magnitude of right trigger 
+   */
+  public double getLayupSpeed()
+  {
+    return coDriverController.getRightTriggerAxis() * Constants.BallHandlerMotorRetrievalDirectionMultiplier;
+  }
+
+  /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
    */
@@ -108,24 +126,39 @@ public class ManualInputInterfaces
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      JoystickButton bumperLeft = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-      JoystickButton bumperRight = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+      JoystickButton bumperLeft = new JoystickButton(coDriverController, XboxController.Button.kLeftBumper.value);
+      JoystickButton bumperRight = new JoystickButton(coDriverController, XboxController.Button.kRightBumper.value);
+      JoystickButton buttonY = new JoystickButton(coDriverController, XboxController.Button.kY.value);
+      JoystickButton buttonA = new JoystickButton(coDriverController, XboxController.Button.kA.value);
       JoystickButton buttonB = new JoystickButton(coDriverController, XboxController.Button.kB.value);
 
       if(subsystemCollection.getBallHandlerSubsystem() != null)
       {
-        bumperLeft.whenPressed(
-          new ParallelCommandGroup(
-            new BallHandlerIntake(subsystemCollection.getBallHandlerSubsystem()),
-            new ButtonPress("coDriverController", "kLeftBumper.whenHeld - intake ball")));
-        bumperLeft.whenPressed(
+        // do fully automated layup 
+        buttonY.whenPressed(
           new ParallelCommandGroup(
             new BallHandlerLayup(subsystemCollection.getBallHandlerSubsystem()),
-            new ButtonPress("coDriverController", "kRightBumper.whenHeld - layup ball")));
+            new ButtonPress("coDriverController", "buttonY.whenPressed - layup ball")));
+        // do fully automated intake
+        buttonA.whenPressed(
+          new ParallelCommandGroup(
+            new BallHandlerIntake(subsystemCollection.getBallHandlerSubsystem()),
+            new ButtonPress("coDriverController", "buttonA.whenPressed - intake ball")));
+        // do a-la-carte operation of moving to intake position
+        bumperLeft.whenPressed(
+          new ParallelCommandGroup(
+            new BallHandlerPositionIntake(subsystemCollection.getBallHandlerSubsystem()),
+            new ButtonPress("coDriverController", "kLeftBumper.whenPressed - intake ball")));
+        // do a-la-carte operation of moving to layup position
+        bumperRight.whenPressed(
+          new ParallelCommandGroup(
+            new BallHandlerPositionLayup(subsystemCollection.getBallHandlerSubsystem()),
+            new ButtonPress("coDriverController", "kRightBumper.whenPressed - layup ball")));
+        // stop the handler
         buttonB.whenPressed(
           new ParallelCommandGroup(
             new BallHandlerAllStop(subsystemCollection.getBallHandlerSubsystem()),
-            new ButtonPress("coDriverController", "kRightBumper.whenHeld - layup ball")));
+            new ButtonPress("coDriverController", "buttonB.whenPressed - STOP")));
       }
     }
   }

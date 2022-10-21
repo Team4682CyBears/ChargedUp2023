@@ -19,14 +19,11 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.Constants;
 import frc.robot.common.*;
 
-import static frc.robot.Constants.*;
-
 /**
- * TODO - Naher - put comments in here correctly
+ * A class intended to model the BallHandler infrastructure on Veer.
  */
 public class BallHandler extends SubsystemBase implements Sendable {
 
@@ -65,7 +62,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to deploy the arm.  Likely upward toward the low shot position.
      */
     public void deployPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kForward);
@@ -73,7 +70,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to retract the arm.  Likely downward toward the ball pickup position.
      */
     public void retractPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kReverse);
@@ -81,9 +78,9 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to toggle the arm position from its current location.
      */
-    public void togglePosition(){
+    public void togglePosition(){        
         if(currentBallArmDeployed)
         {
             this.retractPosition();
@@ -95,26 +92,45 @@ public class BallHandler extends SubsystemBase implements Sendable {
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to store a ball.
      */
     public void storeBall(){
-        // TODO - Naher do stuff here
+        this.ballMotor.set(
+            ControlMode.PercentOutput,
+            Constants.BallHandlerMotorDefaultSpeed * Constants.BallHandlerMotorStorageDirectionMultiplier);
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to retrieve the ball.
      */
     public void retrieveBall(){
-        // TODO - Naher do stuff here
+        this.ballMotor.set(
+            ControlMode.PercentOutput,
+            Constants.BallHandlerMotorDefaultSpeed * Constants.BallHandlerMotorRetrievalDirectionMultiplier);
     }
 
     /**
-     * TODO - Naher - put comments in here correctly
+     * Method to stop the ball handling motor.
      */
     public void stopStoringBall(){
-        // TODO - Naher do stuff here
+        this.ballMotor.set(0.0);
     }
 
+    /**
+     * Method to set the ball motor speed to a certain value.
+     * @param speed - Values between -1.0 and 1.0, all others will be truncated to be within these bounds. 
+     */
+    public void setBallMotor(double speed){
+        double trimmedSpeed = MotorUtils.truncateValue(speed, -1.0, 1.0);
+        this.ballMotor.set(
+            ControlMode.PercentOutput,
+            trimmedSpeed);
+    }
+
+    /**
+     * Used to send telemetry to shuffleboard or similar
+     * @param builder - the sendable builder to insert telemetry content into
+     */
     @Override
     public void initSendable(SendableBuilder builder)
     {
@@ -137,6 +153,7 @@ public class BallHandler extends SubsystemBase implements Sendable {
         ballMotor.configFactoryDefault();
         ballMotor.setNeutralMode(NeutralMode.Coast);
         ballMotor.setInverted(Constants.BallHandlerMotorInvertedDirection);
+        this.stopStoringBall();
 
         // confirm that the double solenoid has retracted the arm
         this.retractPosition();

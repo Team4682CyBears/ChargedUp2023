@@ -60,6 +60,9 @@ public final class Constants {
 
     public static final int BallHandlerMotorCanId = 10;
     public static final double BallHandlerMotorDefaultSpeed = 1.0;
+    public static final double BallHandlerMotorStorageDirectionMultiplier = 1.0;
+    public static final double BallHandlerMotorRetrievalDirectionMultiplier = -1.0;
+    public static final double BallHandlerMotorMinimumAbsoluteInputValue = 0.1;
     public static final boolean BallHandlerMotorInvertedDirection = false;
     public static final double BallHandlerPneumaticsDeployCycleTimeSeconds = 0.5;
     public static final double BallHandlerPneumaticsRetractCycleTimeSeconds = 0.5;
