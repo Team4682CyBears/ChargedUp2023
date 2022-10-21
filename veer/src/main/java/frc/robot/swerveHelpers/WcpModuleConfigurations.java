@@ -1,3 +1,8 @@
+/*
+ * This file is modified from SwerveDriveSpecialties/swerve-lib/SdsModuleConfigurations.java
+ * License https://www.swervedrivespecialties.com/pages/creative-commons-attribution-noncommercial-4-0-international-public-license
+ */
+
 package frc.robot.swerveHelpers;
 
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;

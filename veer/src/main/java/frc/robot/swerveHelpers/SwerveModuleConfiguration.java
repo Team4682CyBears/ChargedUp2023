@@ -1,14 +1,19 @@
+/*
+ * This file is modified from SwerveDriveSpecialties/swerve-lib/Mk3ModuleConfiguration.java
+ * License https://www.swervedrivespecialties.com/pages/creative-commons-attribution-noncommercial-4-0-international-public-license
+ */
+
 package frc.robot.swerveHelpers;
 
 import java.util.Objects;
 
 /**
- * Additional SwerveX module configuration parameters.
+ * Additional Swerve module configuration parameters.
  * <p>
- * The configuration parameters here are used to customize the behavior of the SwerveX swerve module.
+ * The configuration parameters here are used to customize the behavior of the Swerve swerve module.
  * Each setting is initialized to a default that should be adequate for most use cases.
  */
-public class SwerveXModuleConfiguration {
+public class SwerveModuleConfiguration {
     private double nominalVoltage = 12.0;
     private double driveCurrentLimit = 80.0;
     private double steerCurrentLimit = 20.0;
@@ -41,7 +46,7 @@ public class SwerveXModuleConfiguration {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SwerveXModuleConfiguration that = (SwerveXModuleConfiguration) o;
+        SwerveModuleConfiguration that = (SwerveModuleConfiguration) o;
         return Double.compare(that.getNominalVoltage(), getNominalVoltage()) == 0 && Double.compare(that.getDriveCurrentLimit(), getDriveCurrentLimit()) == 0 && Double.compare(that.getSteerCurrentLimit(), getSteerCurrentLimit()) == 0;
     }
 
@@ -52,7 +57,7 @@ public class SwerveXModuleConfiguration {
 
     @Override
     public String toString() {
-        return "SwerveXModuleConfiguration{" +
+        return "SwerveModuleConfiguration{" +
                 "nominalVoltage=" + nominalVoltage +
                 ", driveCurrentLimit=" + driveCurrentLimit +
                 ", steerCurrentLimit=" + steerCurrentLimit +

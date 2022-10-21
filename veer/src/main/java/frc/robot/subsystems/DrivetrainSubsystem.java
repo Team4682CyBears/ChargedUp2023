@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.swerveHelpers.WcpSwerveModuleHelper;
+import frc.robot.swerveHelpers.SwerveModuleHelper;
+import frc.robot.swerveHelpers.WcpModuleConfigurations;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
@@ -72,13 +73,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-    m_frontLeftModule = WcpSwerveModuleHelper.createFalcon500(
+    m_frontLeftModule = SwerveModuleHelper.createFalcon500(
             // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
             tab.getLayout("Front Left Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(0, 0),
             // This can either be STANDARD or FAST depending on your gear configuration 
-            WcpSwerveModuleHelper.GearRatio.SWERVEX,
+            WcpModuleConfigurations.SWERVEX,
             // This is the ID of the drive motor
             FRONT_LEFT_MODULE_DRIVE_MOTOR,
             // This is the ID of the steer motor
@@ -90,33 +91,33 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
 
     // We will do the same for the other modules
-    m_frontRightModule = WcpSwerveModuleHelper.createFalcon500(
+    m_frontRightModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Front Right Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(2, 0),
-            WcpSwerveModuleHelper.GearRatio.SWERVEX,
+            WcpModuleConfigurations.SWERVEX,
             FRONT_RIGHT_MODULE_DRIVE_MOTOR,
             FRONT_RIGHT_MODULE_STEER_MOTOR,
             FRONT_RIGHT_MODULE_STEER_ENCODER,
             FRONT_RIGHT_MODULE_STEER_OFFSET
     );
 
-    m_backLeftModule = WcpSwerveModuleHelper.createFalcon500(
+    m_backLeftModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Back Left Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(4, 0),
-            WcpSwerveModuleHelper.GearRatio.SWERVEX,
+            WcpModuleConfigurations.SWERVEX,
             BACK_LEFT_MODULE_DRIVE_MOTOR,
             BACK_LEFT_MODULE_STEER_MOTOR,
             BACK_LEFT_MODULE_STEER_ENCODER,
             BACK_LEFT_MODULE_STEER_OFFSET
     );
 
-    m_backRightModule = WcpSwerveModuleHelper.createFalcon500(
+    m_backRightModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Back Right Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(6, 0),
-            WcpSwerveModuleHelper.GearRatio.SWERVEX,
+            WcpModuleConfigurations.SWERVEX,
             BACK_RIGHT_MODULE_DRIVE_MOTOR,
             BACK_RIGHT_MODULE_STEER_MOTOR,
             BACK_RIGHT_MODULE_STEER_ENCODER,

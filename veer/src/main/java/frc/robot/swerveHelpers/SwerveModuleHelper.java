@@ -1,25 +1,35 @@
-package frc.robot.swerveHelpers;
+/*
+ * This file is modified from SwerveDriveSpecialties/swerve-lib/Mk3SwerveModuleHelper.java
+ * License https://www.swervedrivespecialties.com/pages/creative-commons-attribution-noncommercial-4-0-international-public-license
+ */
+
+ package frc.robot.swerveHelpers;
 
 import com.swervedrivespecialties.swervelib.DriveControllerFactory;
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.SteerControllerFactory;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import com.swervedrivespecialties.swervelib.SwerveModuleFactory;
-import com.swervedrivespecialties.swervelib.ctre.*;
+import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
+import com.swervedrivespecialties.swervelib.ctre.CanCoderFactoryBuilder;
+import com.swervedrivespecialties.swervelib.ctre.Falcon500DriveControllerFactoryBuilder;
+import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
+import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerControllerFactoryBuilder;
+
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
-public final class WcpSwerveModuleHelper {
-    private WcpSwerveModuleHelper() {
+public final class SwerveModuleHelper {
+    private SwerveModuleHelper() {
     }
 
-    private static DriveControllerFactory<?, Integer> getFalcon500DriveFactory(SwerveXModuleConfiguration configuration) {
+    private static DriveControllerFactory<?, Integer> getFalcon500DriveFactory(SwerveModuleConfiguration configuration) {
         return new Falcon500DriveControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withCurrentLimit(configuration.getDriveCurrentLimit())
                 .build();
     }
 
-    private static SteerControllerFactory<?, Falcon500SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(SwerveXModuleConfiguration configuration) {
+    private static SteerControllerFactory<?, Falcon500SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(SwerveModuleConfiguration configuration) {
         return new Falcon500SteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withPidConstants(0.2, 0.0, 0.1)
@@ -44,15 +54,15 @@ public final class WcpSwerveModuleHelper {
      */
     public static SwerveModule createFalcon500(
             ShuffleboardLayout container,
-            SwerveXModuleConfiguration configuration,
-            GearRatio gearRatio,
+            SwerveModuleConfiguration configuration,
+            ModuleConfiguration gearRatio,
             int driveMotorPort,
             int steerMotorPort,
             int steerEncoderPort,
             double steerOffset
     ) {
         return new SwerveModuleFactory<>(
-                gearRatio.getConfiguration(),
+                gearRatio,
                 getFalcon500DriveFactory(configuration),
                 getFalcon500SteerFactory(configuration)
         ).create(
@@ -79,13 +89,13 @@ public final class WcpSwerveModuleHelper {
      */
     public static SwerveModule createFalcon500(
             ShuffleboardLayout container,
-            GearRatio gearRatio,
+            ModuleConfiguration gearRatio,
             int driveMotorPort,
             int steerMotorPort,
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(container, new SwerveXModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500(container, new SwerveModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -100,15 +110,15 @@ public final class WcpSwerveModuleHelper {
      * @return The configured swerve module.
      */
     public static SwerveModule createFalcon500(
-            SwerveXModuleConfiguration configuration,
-            GearRatio gearRatio,
+            SwerveModuleConfiguration configuration,
+            ModuleConfiguration gearRatio,
             int driveMotorPort,
             int steerMotorPort,
             int steerEncoderPort,
             double steerOffset
     ) {
         return new SwerveModuleFactory<>(
-                gearRatio.getConfiguration(),
+                gearRatio,
                 getFalcon500DriveFactory(configuration),
                 getFalcon500SteerFactory(configuration)
         ).create(
@@ -131,32 +141,15 @@ public final class WcpSwerveModuleHelper {
      * @return The configured swerve module.
      */
     public static SwerveModule createFalcon500(
-            GearRatio gearRatio,
+            ModuleConfiguration gearRatio,
             int driveMotorPort,
             int steerMotorPort,
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(new SwerveXModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500(new SwerveModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
-
-    public enum GearRatio {
-        /**
-         * Swervex swerve in the standard gear configuration.
-         */
-        SWERVEX(WcpModuleConfigurations.SWERVEX);
-
-        private final ModuleConfiguration configuration;
-
-        GearRatio(ModuleConfiguration configuration) {
-            this.configuration = configuration;
-        }
-
-        public ModuleConfiguration getConfiguration() {
-            return configuration;
-        }
-    }
 }
     
 
