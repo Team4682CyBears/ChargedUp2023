@@ -1,8 +1,16 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Rapid React - 2022
+// File: BallHandler.java
+// Intent: Wrapper class standard stub for robot in FRC challange.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
+
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -49,5 +57,24 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0; // FIXME Set back right steer motor ID
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0; // FIXME Set back right steer encoder ID
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0.0); // FIXME Measure and set back right steer offset
+
+    public static final int BallHandlerMotorCanId = 13;
+    public static final double BallHandlerMotorDefaultSpeed = 1.0;
+    public static final double BallHandlerMotorStorageDirectionMultiplier = 1.0;
+    public static final double BallHandlerMotorRetrievalDirectionMultiplier = -1.0;
+    public static final double BallHandlerMotorMinimumAbsoluteInputValue = 0.1;
+    public static final boolean BallHandlerMotorInvertedDirection = false;
+    public static final double BallHandlerPneumaticsDeployCycleTimeSeconds = 0.5;
+    public static final double BallHandlerPneumaticsRetractCycleTimeSeconds = 0.5;
+    public static final double BallHandlerIntakeBallTimeSeconds = 2.0;
+    public static final double BallHandlerLayupBallTimeSeconds = 1.0;
+
+    public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.CTREPCM;
+    public static final int PneumaticsControlModuleNumber = 0;
+    public static final int PneumaticsControlModuleForwardChannel = 0;
+    public static final int PneumaticsControlModuleReverseChannel = 1;
+
+    public static final int portDriverController = 1;
+    public static final int portCoDriverController = 2;
 
 }
