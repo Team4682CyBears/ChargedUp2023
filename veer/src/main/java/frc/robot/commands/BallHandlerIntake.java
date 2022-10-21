@@ -40,13 +40,13 @@ public class BallHandlerIntake extends CommandBase
   @Override
   public void initialize()
   {
-    positionMovementTimer.stop();
-    positionMovementTimer.reset();
-    ballHandlingTimer.stop();
-    ballHandlingTimer.reset();
-    ballHandlingStarted = false;
-    positionAtIntake = false;
-    completed = false;
+    this.positionMovementTimer.stop();
+    this.positionMovementTimer.reset();
+    this.ballHandlingTimer.stop();
+    this.ballHandlingTimer.reset();
+    this.ballHandlingStarted = false;
+    this.positionAtIntake = false;
+    this.completed = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,28 +55,26 @@ public class BallHandlerIntake extends CommandBase
   {
     if(this.ballHandlerSubsystem.isDeployed())
     {
+      this.positionMovementTimer.start();
       this.ballHandlerSubsystem.retractPosition();
-      positionMovementTimer.stop();
-      positionMovementTimer.reset();
     }
     else
     {
-      positionAtIntake = true;
+      this.positionAtIntake = true;
     }
    
 
     if(ballHandlingStarted == false &&
       (positionAtIntake || positionMovementTimer.hasElapsed(Constants.BallHandlerPneumaticsRetractCycleTimeSeconds)) )
     {
-      ballHandlingTimer.stop();
-      ballHandlingTimer.reset();
+      this.ballHandlingTimer.start();
       this.ballHandlerSubsystem.storeBall();
-      ballHandlingStarted = true;
+      this.ballHandlingStarted = true;
     }
 
     if(ballHandlingStarted && ballHandlingTimer.hasElapsed(Constants.BallHandlerIntakeBallTimeSeconds))
     {
-      completed = true;
+      this.completed = true;
     }
   }
 
@@ -84,14 +82,14 @@ public class BallHandlerIntake extends CommandBase
   @Override
   public void end(boolean interrupted)
   {
-    ballHandlerSubsystem.stopStoringBall();
-    completed = true;
+    this.ballHandlerSubsystem.stopStoringBall();
+    this.completed = true;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return completed;
+    return this.completed;
   }
 }

@@ -55,28 +55,26 @@ public class BallHandlerLayup extends CommandBase
   {
     if(this.ballHandlerSubsystem.isRetracted())
     {
+      this.positionMovementTimer.start();
       this.ballHandlerSubsystem.deployPosition();
-      positionMovementTimer.stop();
-      positionMovementTimer.reset();
     }
     else
     {
-      positionAtDeploy = true;
+      this.positionAtDeploy = true;
     }
    
 
     if(ballHandlingStarted == false &&
       (positionAtDeploy || positionMovementTimer.hasElapsed(Constants.BallHandlerPneumaticsDeployCycleTimeSeconds)) )
     {
-      ballHandlingTimer.stop();
-      ballHandlingTimer.reset();
+      this.ballHandlingTimer.start();
       this.ballHandlerSubsystem.storeBall();
-      ballHandlingStarted = true;
+      this.ballHandlingStarted = true;
     }
 
     if(ballHandlingStarted && ballHandlingTimer.hasElapsed(Constants.BallHandlerLayupBallTimeSeconds))
     {
-      completed = true;
+      this.completed = true;
     }
   }
 
@@ -84,14 +82,14 @@ public class BallHandlerLayup extends CommandBase
   @Override
   public void end(boolean interrupted)
   {
-    ballHandlerSubsystem.stopStoringBall();
-    completed = true;
+    this.ballHandlerSubsystem.stopStoringBall();
+    this.completed = true;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return completed;
+    return this.completed;
   }
 }
