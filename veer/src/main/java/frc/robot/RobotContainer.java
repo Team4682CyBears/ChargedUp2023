@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.control.InstalledHardware;
@@ -24,8 +24,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
   private SubsystemCollection subsystems = new SubsystemCollection();
 
@@ -39,20 +37,9 @@ public class RobotContainer {
     this.initializeBallHandler();
     this.initializeDrivetrainSubsystem();
 
-    // Set up the default command for the drivetrain.
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> forward and backwards movement
-    // Left stick X axis -> left and right movement
-    // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
-
     // Configure the button bindings
-    configureButtonBindings();
+    this.configureButtonBindings();
+    this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
   }
 
   private void initializeManualInputInterfaces()
@@ -77,6 +64,14 @@ public class RobotContainer {
     {
       subsystems.setBallHandlerSubsystem(new BallHandler());
       System.out.println("SUCCESS: initializeBallHandler");
+
+      subsystems.getBallHandlerSubsystem().setDefaultCommand(
+        new RunCommand(
+          () ->
+          subsystems.getBallHandlerSubsystem().setBallMotor(
+            subsystems.getManualInputInterfaces().getBallMotorSpeed()
+            ),
+            subsystems.getBallHandlerSubsystem()));
     }
     else
     {
@@ -91,12 +86,26 @@ public class RobotContainer {
       InstalledHardware.rightFrontDriveInstalled &&
       InstalledHardware.rightRearDriveInstalled)
     {
-      // TODO
-      System.out.println("SUCCESS: initializeBallHandler");
+      // The robot's subsystems and commands are defined here...
+      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+
+        // Set up the default command for the drivetrain.
+      // The controls are for field-oriented driving:
+      // Left stick Y axis -> forward and backwards movement
+      // Left stick X axis -> left and right movement
+      // Right stick X axis -> rotation
+      subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
+        subsystems.getDriveTrainSubsystem(),
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      ));
+
+      System.out.println("SUCCESS: initializeDrivetrain");
     }
     else
     {
-      System.out.println("FAIL: initializeBallHandler");
+      System.out.println("FAIL: initializeDrivetrain");
     }
   }
 
@@ -107,10 +116,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Back button zeros the gyroscope
-    new Button(subsystems.getManualInputInterfaces().getDriverController()::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    if(subsystems.getDriveTrainSubsystem() != null)
+    {
+      // Back button zeros the gyroscope
+      new Button(subsystems.getManualInputInterfaces().getDriverController()::getBackButton)
+              // No requirements because we don't need to interrupt anything
+              .whenPressed(subsystems.getDriveTrainSubsystem()::zeroGyroscope);
+    }
   }
 
   /**
