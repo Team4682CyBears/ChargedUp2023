@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.*;
 import frc.robot.*;
 import frc.robot.subsystems.*;
@@ -33,14 +34,6 @@ public class ManualInputInterfaces
   public ManualInputInterfaces(SubsystemCollection currentCollection)
   {
     subsystemCollection = currentCollection;
-  }
-
-  /**
-   * A method to access the driver controller
-   * @return XboxController for the driver.
-   */
-  public XboxController getDriverController(){
-    return driverController;
   }
 
   /**
@@ -115,7 +108,15 @@ public class ManualInputInterfaces
   {
     if(InstalledHardware.driverXboxControllerInstalled)
     {
-      // TODO - do we need anything here?
+      // TODO - do we need anything else needed here?
+      
+      if(subsystemCollection.getDriveTrainSubsystem() != null)
+      {
+        // Back button zeros the gyroscope
+        new Button(driverController::getBackButton)
+                // No requirements because we don't need to interrupt anything
+                .whenPressed(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope);
+      }
     }
   }
 

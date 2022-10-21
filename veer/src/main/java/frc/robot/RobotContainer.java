@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
@@ -32,13 +29,14 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    // init stuff
+    // init the input system 
     this.initializeManualInputInterfaces();
+
+    // init the various subsystems
     this.initializeBallHandler();
     this.initializeDrivetrainSubsystem();
 
     // Configure the button bindings
-    this.configureButtonBindings();
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
   }
 
@@ -88,40 +86,23 @@ public class RobotContainer {
     {
       // The robot's subsystems and commands are defined here...
       subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      System.out.println("SUCCESS: initializeDrivetrain");
 
-        // Set up the default command for the drivetrain.
+      // Set up the default command for the drivetrain.
       // The controls are for field-oriented driving:
       // Left stick Y axis -> forward and backwards movement
       // Left stick X axis -> left and right movement
       // Right stick X axis -> rotation
       subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
         subsystems.getDriveTrainSubsystem(),
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getDriverController().getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ));
-
-      System.out.println("SUCCESS: initializeDrivetrain");
     }
     else
     {
       System.out.println("FAIL: initializeDrivetrain");
-    }
-  }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    if(subsystems.getDriveTrainSubsystem() != null)
-    {
-      // Back button zeros the gyroscope
-      new Button(subsystems.getManualInputInterfaces().getDriverController()::getBackButton)
-              // No requirements because we don't need to interrupt anything
-              .whenPressed(subsystems.getDriveTrainSubsystem()::zeroGyroscope);
     }
   }
 
