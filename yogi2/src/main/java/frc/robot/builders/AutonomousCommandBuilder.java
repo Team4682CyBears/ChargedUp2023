@@ -12,6 +12,7 @@ package frc.robot.builders;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -196,7 +197,7 @@ public class AutonomousCommandBuilder
         {
             // 1. shoot first ball
             ButtonPress startButton = new ButtonPress("autonomous", "start");
-//            JawsForwardHighGoal jawsToForwardHighGoal = new JawsForwardHighGoal(collection.getJawsSubsystem());
+            JawsForwardHighGoal jawsToForwardHighGoal = new JawsForwardHighGoal(collection.getJawsSubsystem());
             ShooterAutomatic shootForwardHighGoal = new ShooterAutomatic(
                 collection.getShooterSubsystem(),
                 collection.getBallStorageSubsystem(),
@@ -208,14 +209,15 @@ public class AutonomousCommandBuilder
                 collection.getDriveTrainSubsystem(),
                 -1.0,
                 0.0,
-                1.0);
+                2.5);
 
             ButtonPress endButton = new ButtonPress("autonomous", "end");
 
             // 3. build the command group
             commandGroup.addCommands(
                 startButton.withTimeout(0.5),
-//                jawsToForwardHighGoal.withTimeout(2.0),
+                new WaitCommand(0.6),
+                jawsToForwardHighGoal.withTimeout(Constants.maximumJawsTimeOperationSeconds),
                 shootForwardHighGoal.withTimeout(5.0),
                 driveTimeCommand.withTimeout(5.0),
                 endButton.withTimeout(0.5));
