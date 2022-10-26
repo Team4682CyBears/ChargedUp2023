@@ -11,7 +11,6 @@ import com.swervedrivespecialties.swervelib.SteerControllerFactory;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import com.swervedrivespecialties.swervelib.SwerveModuleFactory;
 import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
-import com.swervedrivespecialties.swervelib.ctre.CanCoderFactoryBuilder;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500DriveControllerFactoryBuilder;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerControllerFactoryBuilder;
