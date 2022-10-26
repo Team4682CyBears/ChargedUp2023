@@ -47,6 +47,8 @@ public class CtreSettings {
         SensorInitializationStrategy strat = SensorInitializationStrategy.BootToAbsolutePosition;
         config.initializationStrategy = strat;
         ErrorCode returnVal = cancoder.configAllSettings(config);
+        System.out.println("attemtpted set value == " + strat.toString()))
         System.out.println("Set side, getDeviceID == " + cancoder.getDeviceID() + " Error Code: " + returnVal);
+        CtreSettings.PrintAllCanEncoderCurrentSettings();
     }
 }
