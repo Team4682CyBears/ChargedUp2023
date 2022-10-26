@@ -13,7 +13,6 @@ import com.swervedrivespecialties.swervelib.SwerveModuleFactory;
 import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500DriveControllerFactoryBuilder;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
-import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerControllerFactoryBuilder;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 

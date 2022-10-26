@@ -1,5 +1,6 @@
 package frc.robot.swerveHelpers;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
@@ -51,6 +52,14 @@ public class CanCoderFactoryBuilder {
         @Override
         public double getAbsoluteAngle() {
             double angle = Math.toRadians(encoder.getAbsolutePosition());
+            // check error condition in case getAbsolutePosition failed
+            // This will be non-zero (zero is ErrorCode.OK) if the frame was not received.
+            // https://www.chiefdelphi.com/t/official-sds-mk3-mk4-code/397109/99
+            ErrorCode returnVal = encoder.getLastError();
+            if(returnVal != ErrorCode.OK){
+                //FIXME - should we be throwing, rather than returning NaN?
+                return Double.NaN;
+            };
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
