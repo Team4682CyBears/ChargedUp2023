@@ -10,13 +10,13 @@ import frc.robot.Constants;
 
 public class CtreSettings {
 
+    private static CANCoder backLeftCoder = new CANCoder(Constants.BACK_LEFT_MODULE_STEER_ENCODER);
+    private static CANCoder backRightCoder = new CANCoder(Constants.BACK_RIGHT_MODULE_STEER_ENCODER);
+    private static CANCoder frontLeftCoder = new CANCoder(Constants.FRONT_LEFT_MODULE_STEER_ENCODER);
+    private static CANCoder frontRightCoder = new CANCoder(Constants.FRONT_RIGHT_MODULE_STEER_ENCODER);
+
     public static void PrintAllCanEncoderCurrentSettings()
     {
-        CANCoder backLeftCoder = new CANCoder(Constants.BACK_LEFT_MODULE_STEER_ENCODER);
-        CANCoder backRightCoder = new CANCoder(Constants.BACK_RIGHT_MODULE_STEER_ENCODER);
-        CANCoder frontLeftCoder = new CANCoder(Constants.FRONT_LEFT_MODULE_STEER_ENCODER);
-        CANCoder frontRightCoder = new CANCoder(Constants.FRONT_RIGHT_MODULE_STEER_ENCODER);
-
         CtreSettings.PrintCanEncoderCurrentSettings(backLeftCoder);
         CtreSettings.PrintCanEncoderCurrentSettings(backRightCoder);
         CtreSettings.PrintCanEncoderCurrentSettings(frontLeftCoder);
@@ -25,15 +25,12 @@ public class CtreSettings {
 
     public static void UpdateCanEncoderDefaultSettings()
     {
-        CANCoder backLeftCoder = new CANCoder(Constants.BACK_LEFT_MODULE_STEER_ENCODER);
-        CANCoder backRightCoder = new CANCoder(Constants.BACK_RIGHT_MODULE_STEER_ENCODER);
-        CANCoder frontLeftCoder = new CANCoder(Constants.FRONT_LEFT_MODULE_STEER_ENCODER);
-        CANCoder frontRightCoder = new CANCoder(Constants.FRONT_RIGHT_MODULE_STEER_ENCODER);
-
         CtreSettings.UpdateSingleCanEncoderDefaultSettings(backLeftCoder);
         CtreSettings.UpdateSingleCanEncoderDefaultSettings(backRightCoder);
         CtreSettings.UpdateSingleCanEncoderDefaultSettings(frontLeftCoder);
         CtreSettings.UpdateSingleCanEncoderDefaultSettings(frontRightCoder);
+
+        PrintAllCanEncoderCurrentSettings();
     }
 
     private static void PrintCanEncoderCurrentSettings(CANCoder cancoder)
@@ -47,8 +44,8 @@ public class CtreSettings {
         SensorInitializationStrategy strat = SensorInitializationStrategy.BootToAbsolutePosition;
         config.initializationStrategy = strat;
         ErrorCode returnVal = cancoder.configAllSettings(config);
-        System.out.println("attemtpted set value == " + strat.toString()))
+        System.out.println("attemtpted set value == " + strat.toString());
         System.out.println("Set side, getDeviceID == " + cancoder.getDeviceID() + " Error Code: " + returnVal);
-        CtreSettings.PrintAllCanEncoderCurrentSettings();
+        CtreSettings.PrintCanEncoderCurrentSettings(cancoder);
     }
 }
