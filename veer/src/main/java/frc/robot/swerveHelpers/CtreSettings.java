@@ -25,7 +25,7 @@ public class CtreSettings {
     private static void UpdateSingleCanEncoderDefaultSettings(CANCoder cancoder)
     {
         CANCoderConfiguration config = new CANCoderConfiguration();
-        SensorInitializationStrategy strat = SensorInitializationStrategy.BootToZero;
+        SensorInitializationStrategy strat = SensorInitializationStrategy.BootToAbsolutePosition;
         config.initializationStrategy = strat;
         cancoder.configAllSettings(config);
     }
