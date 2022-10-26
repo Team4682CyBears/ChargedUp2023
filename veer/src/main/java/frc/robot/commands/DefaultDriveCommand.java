@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -18,7 +19,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final DoubleSupplier m_rotationSupplier;
 
     // true if field oriented drive, false for robot oriented drive
-    private final Boolean fieldOrientedDrive = true;
+    private final Boolean fieldOrientedDrive = false;
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -45,12 +46,14 @@ public class DefaultDriveCommand extends CommandBase {
                     )
             );
         } else {
+            // supply 0.0 heading for gyro
             m_drivetrainSubsystem.drive(
-                    new ChassisSpeeds(
-                            m_translationXSupplier.getAsDouble(),
-                            m_translationYSupplier.getAsDouble(),
-                            m_rotationSupplier.getAsDouble()
-                    )
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                        m_translationXSupplier.getAsDouble(),
+                        m_translationYSupplier.getAsDouble(),
+                        m_rotationSupplier.getAsDouble(),
+                        Rotation2d.fromDegrees(0.0)
+                )
             );
         }
     }
