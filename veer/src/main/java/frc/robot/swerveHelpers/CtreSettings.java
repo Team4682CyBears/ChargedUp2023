@@ -35,7 +35,8 @@ public class CtreSettings {
 
     private static void PrintCanEncoderCurrentSettings(CANCoder cancoder)
     {
-        System.out.println("Get side, has initializationStrategy == " + cancoder.configGetSensorInitializationStrategy(0).toString());
+        System.out.println("Get side, has angle: " + cancoder.getAbsolutePosition() + " and "
+        + "initializationStrategy == " + cancoder.configGetSensorInitializationStrategy(0).toString());
     }
     
     private static void UpdateSingleCanEncoderDefaultSettings(CANCoder cancoder)
