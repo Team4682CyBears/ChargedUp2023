@@ -62,8 +62,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "Output",
-              "Visible data/LiveWindow/DriveTrain/DriveTrainAverageLeftMotorOutput": true
+              "Y-axis/Unit": "Output"
             }
           },
           "0,4": {
@@ -80,8 +79,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/DriveTrain/DriveTrainAverageRightMotorOutput": true
+              "Y-axis/Unit": "output"
             }
           },
           "3,0": {
@@ -265,8 +263,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/DriveTrain/DriveTrainAverageLeftMotorOutput": true
+              "Y-axis/Unit": "output"
             }
           },
           "3,1": {
@@ -305,8 +302,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/DriveTrain/DriveTrainAverageRightMotorOutput": true
+              "Y-axis/Unit": "output"
             }
           },
           "3,2": {
@@ -373,8 +369,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/Jaws/JawsAverageMotorOutput": true
+              "Y-axis/Unit": "output"
             }
           }
         }
@@ -416,8 +411,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "motor speed",
-              "Visible data/LiveWindow/BallStorage/BottomMotorSpeedSetting": true
+              "Y-axis/Unit": "motor speed"
             }
           },
           "3,0": {
@@ -434,8 +428,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "motor speed",
-              "Visible data/LiveWindow/BallStorage/TopMotorSpeedSetting": true
+              "Y-axis/Unit": "motor speed"
             }
           }
         }
@@ -477,8 +470,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed": true
+              "Y-axis/Unit": "output"
             }
           },
           "3,3": {
@@ -506,8 +498,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed": true
+              "Y-axis/Unit": "output"
             }
           },
           "4,0": {
@@ -629,8 +620,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "output",
-              "Visible data/LiveWindow/AngleArms/AngleArmsAverageMotorOutput": true
+              "Y-axis/Unit": "output"
             }
           }
         }
@@ -1103,9 +1093,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": -7.0,
-    "width": 1519.0,
+    "x": 44.0,
+    "y": 5.0,
+    "width": 1293.0,
     "height": 978.0
   }
 }

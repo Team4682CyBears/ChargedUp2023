@@ -52,6 +52,7 @@ public class DriveTimeCommand extends CommandBase
   @Override
   public void initialize()
   {
+    drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     timer.reset();
     timer.start();
     done = false;
