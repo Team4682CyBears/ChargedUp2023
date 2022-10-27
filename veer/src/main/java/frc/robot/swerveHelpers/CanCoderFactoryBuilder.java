@@ -57,8 +57,7 @@ public class CanCoderFactoryBuilder {
             // https://www.chiefdelphi.com/t/official-sds-mk3-mk4-code/397109/99
             ErrorCode returnVal = encoder.getLastError();
             if(returnVal != ErrorCode.OK){
-                //FIXME - should we be throwing, rather than returning NaN?
-                return Double.NaN;
+                System.out.println("WARNING: Reading absolute encoder position failed, returning NaN.");
             };
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
