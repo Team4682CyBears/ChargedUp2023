@@ -31,12 +31,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // TODO - hack to update CTRE can coder settings    
+    // hack to update CTRE can coder settings
     //CtreSettings.UpdateCanEncoderDefaultSettings();
-
-    // TODO - hack to update CTRE talon motor encoder setting
-    CtreSettings.ZeroAllSwerveSteerMotorEncoders();
-
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
