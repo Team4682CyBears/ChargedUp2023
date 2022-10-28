@@ -33,7 +33,7 @@ public class CanCoderFactoryBuilder {
             config.sensorDirection = direction == Direction.CLOCKWISE;
             config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
             // fix wheel jump issues caused by CANcoder turning opposite direction of motor
-            config.sensorDirection = true; 
+            config.sensorDirection = false; 
 
             CANCoder encoder = new CANCoder(configuration.getId());
             CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
