@@ -84,8 +84,8 @@ public final class Constants {
 
     // *****************************************************************
     // input device constants
-    public static final int portDriverController = 1;
-    public static final int portCoDriverController = 2;
+    public static final int portDriverController = 0;
+    public static final int portCoDriverController = 1;
 
     // *****************************************************************
     // telescoping arm system constants
