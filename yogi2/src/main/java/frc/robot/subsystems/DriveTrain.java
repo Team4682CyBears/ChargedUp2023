@@ -76,7 +76,7 @@ public class DriveTrain extends SubsystemBase implements Sendable
   private double leftTargetEncoderTicksError = 0;
   private double rightTargetEncoderTicksError = 0;
 
-  private double arcadeMotorPowerReductionFactor = 0.7;
+  private double arcadeMotorPowerReductionFactor = 0.5;
 
   /**
   * No argument constructor for the DriveTrain subsystem.

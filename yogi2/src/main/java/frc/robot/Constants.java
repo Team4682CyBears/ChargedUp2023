@@ -57,11 +57,15 @@ public final class Constants
   public static final double angleArmsReferencePositionMotorEncoderUnits = 0.0;
 
   // Motor magic numbers
-  public static final double defaultMotorSpeedToleranceRpm = 50.0;
+  public static final double defaultMotorSpeedToleranceRpm = 20.0;
+  public static final double largeMotorSpeedToleranceRpm = 100.0;
+  public static final double smallMotorSpeedToleranceRpm = 20.0;
   public static final double bottomMotorForwardLowGoalSpeedRpm = -1300.0;
   public static final double topMotorForwardLowGoalSpeedRpm = -1100.0;
-  public static final double bottomMotorForwardHighGoalSpeedRpm = -2600.0;
-  public static final double topMotorForwardHighGoalSpeedRpm = -2200.0;
+  public static final double bottomMotorForwardHighGoalSpeedRpm = -2650.0;
+  public static final double topMotorForwardHighGoalSpeedRpm = -2250.0;
+  public static final double bottomMotorForwardMidGoalSpeedRpm = -3048.0;
+  public static final double topMotorForwardMidGoalSpeedRpm = -2588.0;
   public static final double bottomMotorReverseHighGoalSpeedRpm = -2600.0;
   public static final double topMotorReverseHighGoalSpeedRpm = -2200.0;
   public static final double bottomMotorReverseLowGoalSpeedRpm = -1700.0;
@@ -72,7 +76,8 @@ public final class Constants
   // Jaws reach points \\
   public static final double jawsIntakePositionAngle = 1.0;
   public static final double jawsLowGoalPositionAngle = 110.0;
-  public static final double jawsHighGoalPositionAngle = 129.0; 
+  public static final double jawsHighGoalPositionAngle = 130.0; 
+  public static final double jawsMidGoalPositionAngle = 117.0;  
   public static final double jawsReverseHighGoalPositionAngle = 147.0;
   public static final double jawsReverseLowGoalPositionAngle = 150.0;
   public static final double jawsPositionAngleTolerance = 1.2;
@@ -92,8 +97,8 @@ public final class Constants
   public static final double telescopingArmsStopSpeed = 0.0;
 
   // Ball storage \\
-  public static final double ballStoreSpeed = -0.5;
-  public static final double ballRetrieveSpeed = 0.5;
+  public static final double ballStoreSpeed = -0.22;
+  public static final double ballRetrieveSpeed = 0.2;
   public static final int maximumStoredBallCount = 2;
 
   // *********************************************
@@ -146,7 +151,7 @@ public final class Constants
 
   // BallStorage timing \\
   public static final double ballStorageStoreTimingSeconds = 1.0;
-  public static final double ballStorageRetrieveTimingSeconds = 1.5;
+  public static final double ballStorageRetrieveTimingSeconds = 2.0;
 
   // HIDS \\
   // hid ports \\ 
@@ -161,7 +166,7 @@ public final class Constants
   public static final int kSlotIdx = 0;
 
   // gains \\
-  public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+  public static final Gains kGains = new Gains(0.02, 0.0, 0.0, 0.02, 0, 1.0);
   public static final int countPerRevHallSensor = 42;
 
   // orentation

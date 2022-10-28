@@ -4,14 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
+import frc.robot.control.InstalledHardware;
+import frc.robot.control.ManualInputInterfaces;
+import frc.robot.control.SubsystemCollection;
+import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.TelescopingArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,42 +23,103 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
-  private final XboxController m_controller = new XboxController(Constants.XboxDriverPort);
+  private SubsystemCollection subsystems = new SubsystemCollection();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Set up the default command for the drivetrain.
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> forward and backwards movement
-    // Left stick X axis -> left and right movement
-    // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+
+    // init the input system 
+    this.initializeManualInputInterfaces();
+
+    // init the various subsystems
+    this.initializeBallHandler();
+    this.initializeDrivetrainSubsystem();
+    this.initializeTelescopingArm();
 
     // Configure the button bindings
-    configureButtonBindings();
+    this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+  private void initializeManualInputInterfaces()
+  {
+    if(InstalledHardware.coDriverXboxControllerInstalled &&
+      InstalledHardware.driverXboxControllerInstalled)
+    {
+      subsystems.setManualInputInterfaces(new ManualInputInterfaces(subsystems));
+      System.out.println("SUCCESS: initializeManualInputInterfaces");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeManualInputInterfaces");
+    }
+  }
+
+  private void initializeBallHandler()
+  {
+    if(InstalledHardware.ballHandlingMotorInstalled && 
+      InstalledHardware.ballHandlingPneumaticsInstalled && 
+      InstalledHardware.compressorInstalled)
+    {
+      subsystems.setBallHandlerSubsystem(new BallHandler());
+      System.out.println("SUCCESS: initializeBallHandler");
+
+      subsystems.getBallHandlerSubsystem().setDefaultCommand(
+        new RunCommand(
+          () ->
+          subsystems.getBallHandlerSubsystem().setBallMotor(
+            subsystems.getManualInputInterfaces().getBallMotorSpeed()
+            ),
+            subsystems.getBallHandlerSubsystem()));
+    }
+    else
+    {
+      System.out.println("FAIL: initializeBallHandler");
+    }
+  }
+
+  private void initializeDrivetrainSubsystem()
+  {
+    if(InstalledHardware.leftFrontDriveInstalled && 
+      InstalledHardware.leftRearDriveInstalled && 
+      InstalledHardware.rightFrontDriveInstalled &&
+      InstalledHardware.rightRearDriveInstalled)
+    {
+      // The robot's subsystems and commands are defined here...
+      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      System.out.println("SUCCESS: initializeDrivetrain");
+
+      // Set up the default command for the drivetrain.
+      // The controls are for field-oriented driving:
+      // Left stick Y axis -> forward and backwards movement
+      // Left stick X axis -> left and right movement
+      // Right stick X axis -> rotation
+      subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
+        subsystems.getDriveTrainSubsystem(),
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      ));
+    }
+    else
+    {
+      System.out.println("FAIL: initializeDrivetrain");
+    }
+  }
+
+  private void initializeTelescopingArm()
+  {
+    if(InstalledHardware.telescopingArmsDriveMotorInstalled)
+    {
+      subsystems.setTelescopingArmSubsystem(new TelescopingArm());
+      System.out.println("SUCCESS: initializeTelescopingArm");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeTelescopingArm");
+    }
   }
 
   /**

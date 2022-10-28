@@ -8,10 +8,7 @@
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
-package frc.robot;
-
-import frc.robot.*;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+package frc.robot.control;
 
 /**
  * A class devoted to installed hardware constants.  Use this to decide if hardware is enabled on the robot or not.
@@ -38,34 +35,20 @@ public class InstalledHardware
     public static final boolean limelightInstalled = false;
 
     // External Input Hardware
-    public static final boolean highLevelButtonBoardInstalled = true;
-    public static final boolean lowLevelButtonBoardInstalled = true;
     public static final boolean driverXboxControllerInstalled = true;
-    public static final boolean coDriverXboxControllerInstalled = false;
+    public static final boolean coDriverXboxControllerInstalled = true;
 
     // DriveTrain Related Hardware
-    public static final boolean leftFrontDriveMotorInstalled = true;
-    public static final boolean leftRearDriveMotorInstalled = true;
-    public static final boolean rightFrontDriveMotorInstalled = true;
-    public static final boolean rightRearDriveMotorInstalled = true;
+    public static final boolean leftFrontDriveInstalled = true;
+    public static final boolean leftRearDriveInstalled = true;
+    public static final boolean rightFrontDriveInstalled = true;
+    public static final boolean rightRearDriveInstalled = true;
 
     // TelescopingArms Related Hardware
-    public static final boolean leftTelescopingArmsDriveMotorInstalled = true;
-    public static final boolean rightTelescopingArmsDriveMotorInstalled = true;
+    public static final boolean telescopingArmsDriveMotorInstalled = true;
 
-    // Jaws Related Hardware
-    public static final boolean topJawsDriveMotorInstalled = false;
-    public static final boolean bottomJawsDriveMotorInstalled = false;
-
-    // Shooter Related Hardware
-    public static final boolean topShooterDriveMotorInstalled = false;
-    public static final boolean bottomShooterDriveMotorInstalled = false;
-
-    // Ball Storage Related Hardware
-    public static final boolean topBallStorageMotorInstalled = false;
-    public static final boolean bottomBallStorageMotorInstalled = false;
-
-    // Angle Arms Related Hardware
-    public static final boolean angleArmsMotorInstalled = false;
-   
+    // Ball Handling Related Hardware
+    public static final boolean ballHandlingPneumaticsInstalled = true;
+    public static final boolean ballHandlingMotorInstalled = true;
+    public static final boolean compressorInstalled = true;
 }
