@@ -48,7 +48,7 @@ public class InstalledHardware
     public static final boolean telescopingArmsDriveMotorInstalled = true;
 
     // Ball Handling Related Hardware
-    public static final boolean ballHandlingPneumaticsInstalled = true;
-    public static final boolean ballHandlingMotorInstalled = true;
-    public static final boolean compressorInstalled = true;
+    public static final boolean ballHandlingPneumaticsInstalled = false;
+    public static final boolean ballHandlingMotorInstalled = false;
+    public static final boolean compressorInstalled = false;
 }
