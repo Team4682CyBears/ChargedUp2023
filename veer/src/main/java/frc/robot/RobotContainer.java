@@ -13,6 +13,7 @@ import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.BallHandler;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.TelescopingArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +36,7 @@ public class RobotContainer {
     // init the various subsystems
     this.initializeBallHandler();
     this.initializeDrivetrainSubsystem();
+    this.initializeTelescopingArm();
 
     // Configure the button bindings
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
@@ -103,6 +105,19 @@ public class RobotContainer {
     else
     {
       System.out.println("FAIL: initializeDrivetrain");
+    }
+  }
+
+  private void initializeTelescopingArm()
+  {
+    if(InstalledHardware.telescopingArmsDriveMotorInstalled)
+    {
+      subsystems.setTelescopingArmSubsystem(new TelescopingArm());
+      System.out.println("SUCCESS: initializeTelescopingArm");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeTelescopingArm");
     }
   }
 

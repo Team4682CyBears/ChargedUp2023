@@ -9,7 +9,6 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot.control;
-import frc.robot.*;
 import frc.robot.subsystems.*;
 
 public class SubsystemCollection
@@ -20,6 +19,7 @@ public class SubsystemCollection
     // declaring and init subsystems  
     private BallHandler ballHandler = null;
     private DrivetrainSubsystem driveTrainSubsystem = null;
+    private TelescopingArm telescopingArm = null;
 
     /**
      * Default constructor
@@ -34,4 +34,7 @@ public class SubsystemCollection
 
     public ManualInputInterfaces getManualInputInterfaces() { return manualInput; }
     public void setManualInputInterfaces(ManualInputInterfaces value) { manualInput = value; }
+
+    public TelescopingArm getTelescopingArmSubsystem() { return telescopingArm; }
+    public void setTelescopingArmSubsystem(TelescopingArm value) { telescopingArm = value; }
 }

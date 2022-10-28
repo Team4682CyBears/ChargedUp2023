@@ -132,19 +132,30 @@ public class ManualInputInterfaces
       JoystickButton buttonY = new JoystickButton(coDriverController, XboxController.Button.kY.value);
       JoystickButton buttonA = new JoystickButton(coDriverController, XboxController.Button.kA.value);
       JoystickButton buttonB = new JoystickButton(coDriverController, XboxController.Button.kB.value);
+      JoystickButton buttonStart = new JoystickButton(coDriverController, XboxController.Button.kStart.value);
+      JoystickButton buttonBack = new JoystickButton(coDriverController, XboxController.Button.kBack.value);
 
       if(subsystemCollection.getBallHandlerSubsystem() != null)
       {
-        // do fully automated layup 
-        buttonY.whenPressed(
+        // extend telescoping arm 
+        buttonY.whileHeld(
           new ParallelCommandGroup(
-            new BallHandlerLayup(subsystemCollection.getBallHandlerSubsystem()),
-            new ButtonPress("coDriverController", "buttonY.whenPressed - layup ball")));
-        // do fully automated intake
-        buttonA.whenPressed(
+            new TelescopingArmManual(subsystemCollection.getTelescopingArmSubsystem(), Constants.TelescopingArmDefaultExtendSpeed),
+            new ButtonPress("coDriverController", "buttonY.whileHeld - extend telescoping arm")));
+        buttonY.whenReleased(
           new ParallelCommandGroup(
-            new BallHandlerIntake(subsystemCollection.getBallHandlerSubsystem()),
-            new ButtonPress("coDriverController", "buttonA.whenPressed - intake ball")));
+            new TelescopingArmAllStop(subsystemCollection.getTelescopingArmSubsystem()),
+            new ButtonPress("coDriverController", "buttonY.whenReleased - stop telescoping arm")));            
+        // retract telescoping arm 
+        buttonA.whileHeld(
+          new ParallelCommandGroup(
+            new TelescopingArmManual(subsystemCollection.getTelescopingArmSubsystem(), Constants.TelescopingArmDefaultRetractSpeed),
+            new ButtonPress("coDriverController", "buttonA.whileHeld - retract telescoping arm")));
+        buttonA.whenReleased(
+          new ParallelCommandGroup(
+            new TelescopingArmAllStop(subsystemCollection.getTelescopingArmSubsystem()),
+            new ButtonPress("coDriverController", "buttonA.whenReleased - stop telescoping arm")));            
+
         // do a-la-carte operation of moving to intake position
         bumperLeft.whenPressed(
           new ParallelCommandGroup(
@@ -160,6 +171,18 @@ public class ManualInputInterfaces
           new ParallelCommandGroup(
             new BallHandlerAllStop(subsystemCollection.getBallHandlerSubsystem()),
             new ButtonPress("coDriverController", "buttonB.whenPressed - STOP")));
+
+        // do fully automated intake
+        buttonStart.whenPressed(
+          new ParallelCommandGroup(
+            new BallHandlerIntake(subsystemCollection.getBallHandlerSubsystem()),
+            new ButtonPress("coDriverController", "buttonStart.whenPressed - intake ball")));
+        // do fully automated layup 
+        buttonBack.whenPressed(
+          new ParallelCommandGroup(
+            new BallHandlerLayup(subsystemCollection.getBallHandlerSubsystem()),
+            new ButtonPress("coDriverController", "buttonBack.whenPressed - layup ball")));
+
       }
     }
   }
