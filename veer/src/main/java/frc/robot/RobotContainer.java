@@ -131,7 +131,7 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     // return new InstantCommand();
     // TODO robot-centric drive command.  
-    return new DriveTimeCommand(m_drivetrainSubsystem, 0.2, 0.0, 0.0, 10.0);
+    return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), 0.2, 0.0, 0.0, 10.0);
   }
 
   private static double deadband(double value, double deadband) {

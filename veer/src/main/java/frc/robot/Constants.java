@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  */
 public final class Constants {
 
-    public static final int XboxDriverPort = 0;
     /**
      * The left-to-right distance between the drivetrain wheels
      *
