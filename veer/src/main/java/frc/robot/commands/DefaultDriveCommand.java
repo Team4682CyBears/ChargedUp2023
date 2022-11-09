@@ -19,7 +19,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final DoubleSupplier m_rotationSupplier;
 
     // true if field oriented drive, false for robot oriented drive
-    private final Boolean fieldOrientedDrive = false;
+    private final Boolean fieldOrientedDrive = true;
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
