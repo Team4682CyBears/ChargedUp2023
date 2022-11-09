@@ -191,8 +191,10 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                     resetIteration = 0;
                     double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
-                    System.out.println("Syncing absolute encoder at " + absoluteAngle + "to motor encoder at " + 
-                    currentAngleRadians + ".");
+                    System.out.println(
+                        "Syncing absolute encoder at " + absoluteAngle + "to motor encoder at " +
+                        currentAngleRadians + " for encoder " + (motor.getDeviceID() + 1) + 
+                        " (motor.getDeviceID() + 1).");
                     motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
                     currentAngleRadians = absoluteAngle;    
                 }
