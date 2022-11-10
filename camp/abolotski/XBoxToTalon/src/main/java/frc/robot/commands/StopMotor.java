@@ -9,20 +9,25 @@ public class StopMotor extends CommandBase{
 
     public StopMotor(EpicTalonMotor epicTalonMotorSubsystem) {
         this.epicTalonMotorSubsytem = epicTalonMotorSubsystem;
-        addRequirements(epicTalonMotorSubsystem);}
+        addRequirements(epicTalonMotorSubsystem);
+    }
 
     public void initialize(){
-        done = false;}
+        done = false;
+    }
 
     public void execute(){
         epicTalonMotorSubsytem.StopMotor();
-        done = true;}
+        done = true;
+    }
     
     public void end(){
-    done = true;}
+        done = true;
+    }
 
     public boolean isFinished(){
-    return done;}
+        return done;
+    }
     
 
 

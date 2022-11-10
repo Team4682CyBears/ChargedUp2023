@@ -1,6 +1,12 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Rapid React - 2022
+// File: RobotContainer.java
+// Intent: Forms the key command initiation logic of the robot.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
 
@@ -39,9 +45,7 @@ public class RobotContainer {
 
     /** This function is called periodically during operator control. */
     public void teleopPeriodic() {
-      //if(mainController.getLeftY() * -1.0 >= Constants.XBoxStickTolerence * -1 && mainController.getLeftY() * -1.0 <= Constants.XBoxStickTolerence){
-        //new ScheduleCommand(new StopMotor(talonMotorSub));
-      //}
+      // *-1.0 because controller input is inverted
       CommandScheduler.getInstance().schedule(new SetMotorSpeed(talonMotorSub, mainController.getLeftY() * -1.0));
     }
   
@@ -52,7 +56,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //talonMotorSub.setDefaultCommand(new SetMotorSpeed(talonMotorSub, mainController.getLeftY() * -1.0));
   }
 
   /**
