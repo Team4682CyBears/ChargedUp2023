@@ -128,9 +128,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    // return new InstantCommand();
-    // TODO robot-centric drive command.  
+    // robot-centric drive command.  
     return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), 0.4, 0.0, 0.0, 10.0);
   }
 

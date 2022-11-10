@@ -47,14 +47,11 @@ public class DefaultDriveCommand extends CommandBase {
             );
         } else {
             // supply 0.0 heading for gyro
-            m_drivetrainSubsystem.drive(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
+            m_drivetrainSubsystem.drive(new ChassisSpeeds(
                         m_translationXSupplier.getAsDouble(),
                         m_translationYSupplier.getAsDouble(),
-                        m_rotationSupplier.getAsDouble(),
-                        Rotation2d.fromDegrees(0.0)
-                )
-            );
+                        m_rotationSupplier.getAsDouble())
+                        );
         }
     }
 
