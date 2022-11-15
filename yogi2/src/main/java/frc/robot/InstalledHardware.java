@@ -34,7 +34,7 @@ public class InstalledHardware
     
     // Onboard Hardware - Orentation/Navigation Hardware
     public static final boolean wifiRadioInstalled = true;
-    public static final boolean navxInstalled = true;
+    public static final boolean navxInstalled = false;
     public static final boolean limelightInstalled = false;
 
     // External Input Hardware
@@ -54,16 +54,16 @@ public class InstalledHardware
     public static final boolean rightTelescopingArmsDriveMotorInstalled = true;
 
     // Jaws Related Hardware
-    public static final boolean topJawsDriveMotorInstalled = false;
-    public static final boolean bottomJawsDriveMotorInstalled = false;
+    public static final boolean topJawsDriveMotorInstalled = true;
+    public static final boolean bottomJawsDriveMotorInstalled = true;
 
     // Shooter Related Hardware
-    public static final boolean topShooterDriveMotorInstalled = false;
-    public static final boolean bottomShooterDriveMotorInstalled = false;
+    public static final boolean topShooterDriveMotorInstalled = true;
+    public static final boolean bottomShooterDriveMotorInstalled = true;
 
     // Ball Storage Related Hardware
-    public static final boolean topBallStorageMotorInstalled = false;
-    public static final boolean bottomBallStorageMotorInstalled = false;
+    public static final boolean topBallStorageMotorInstalled = true;
+    public static final boolean bottomBallStorageMotorInstalled = true;
 
     // Angle Arms Related Hardware
     public static final boolean angleArmsMotorInstalled = false;
