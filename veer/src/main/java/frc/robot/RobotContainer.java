@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DriveTimeCommand;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
@@ -127,8 +128,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    // robot-centric drive command.  
+    return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), 0.4, 0.0, 0.0, 10.0);
   }
 
   private static double deadband(double value, double deadband) {
