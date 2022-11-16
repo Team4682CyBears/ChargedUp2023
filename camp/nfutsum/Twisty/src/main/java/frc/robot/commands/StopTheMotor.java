@@ -7,33 +7,32 @@ package frc.robot.commands;
 import frc.robot.subsystems.NaherNeoMotor;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** This command will stop the motor */
 public class StopTheMotor extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final NaherNeoMotor m_subsystem;
 
   /**
-   * Creates a new ExampleCommand.
+   * This stores NaherNeoMotor into subsystem and makes the command to stop it
    *
-   * @param subsystem The subsystem used by this command.
+   * @param subsystem This subsystem is used by the command.
    */
   public StopTheMotor(NaherNeoMotor subsystem) {
     m_subsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
+  // This will call the StopTheMotor command when it's initialized 
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
+  // Calls StopTheMotor command while command is scheduled
   @Override
   public void execute() {
     this.m_subsystem.stopMotor();
   }
 
-  // Called once the command ends or is interrupted.
+  // This will stop the command
   @Override
   public void end(boolean interrupted) {}
 

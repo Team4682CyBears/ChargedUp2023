@@ -9,17 +9,16 @@ import frc.robot.subsystems.NaherNeoMotor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** Uses motor substyem and  */
 public class MotorGo extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final NaherNeoMotor m_subsystem;
   private final Joystick m_joystick;
 
   /**
-   * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
+  //Joystick command
   public MotorGo(NaherNeoMotor subsystem, Joystick joystick) {
     m_subsystem = subsystem;
     m_joystick = joystick;
@@ -34,10 +33,7 @@ public class MotorGo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double s = m_joystick.getTwist();
-    //.out.println("speed: " + s);
-    // this.m_subsystem.setSpeed(m_joystick.getTwist());
-    this.m_subsystem.setSpeed(s);
+    this.m_subsystem.setSpeed(m_joystick.getTwist());
   }
 
   // Called once the command ends or is interrupted.

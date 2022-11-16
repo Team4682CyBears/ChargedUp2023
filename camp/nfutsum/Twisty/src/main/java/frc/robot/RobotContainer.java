@@ -26,7 +26,9 @@ public class RobotContainer {
   private final NaherNeoMotor myMotor = new NaherNeoMotor();
 
   private final StopTheMotor m_autoCommand = new StopTheMotor(myMotor);
-  private final Joystick myJoystick = new Joystick(0);
+
+  
+  private final Joystick myJoystick = new Joystick(Constants.joystickPortNumber);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,11 +55,11 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
   }
-
+//This is called when the robot gets turned on in simulation
   public void simulationInit(){
     REVPhysicsSim.getInstance().addSparkMax(myMotor.getInstance(), DCMotor.getNEO(1));
   }
-
+//called periodically while in simulation
   public void simulationPeriodic(){
     REVPhysicsSim.getInstance().run();
   }
