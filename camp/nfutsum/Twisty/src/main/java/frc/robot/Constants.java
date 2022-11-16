@@ -10,7 +10,7 @@ package frc.robot;
 
 public final class Constants {
 
-    public static final int myNeoMotorCanBusNumber = 1;
+    public static final int myNeoMotorCanBusNumber = 5;
     public static final int joystickPortNumber = 0;
     
 }
