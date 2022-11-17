@@ -66,7 +66,7 @@ public final class Constants {
 
     // *****************************************************************
     // ball handler system constants
-    public static final int BallHandlerMotorCanId = 13;
+    public static final int BallHandlerMotorCanId = 15;
     public static final double BallHandlerMotorDefaultSpeed = 1.0;
     public static final double BallHandlerMotorStorageDirectionMultiplier = 1.0;
     public static final double BallHandlerMotorRetrievalDirectionMultiplier = -1.0;
@@ -77,10 +77,10 @@ public final class Constants {
     public static final double BallHandlerIntakeBallTimeSeconds = 2.0;
     public static final double BallHandlerLayupBallTimeSeconds = 1.0;
 
-    public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.CTREPCM;
-    public static final int PneumaticsControlModuleNumber = 0;
+    public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.REVPH;
+    public static final int PneumaticsControlModuleNumber = 1;
     public static final int PneumaticsControlModuleForwardChannel = 0;
-    public static final int PneumaticsControlModuleReverseChannel = 1;
+    public static final int PneumaticsControlModuleReverseChannel = 7;
 
     // *****************************************************************
     // input device constants
