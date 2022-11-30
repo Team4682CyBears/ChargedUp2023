@@ -1,6 +1,12 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: Constants.java
+// Intent: Wrapper class standard stub for robot in FRC challange.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
 
@@ -19,5 +25,6 @@ public final class Constants {
     public static final int PneumaticsControlModuleNumber = 1;
     public static final int PneumaticsControlModuleForwardChannel = 0;
     public static final int PneumaticsControlModuleReverseChannel = 7;
+    public static final int TestControllerPort = 1;
 
 }

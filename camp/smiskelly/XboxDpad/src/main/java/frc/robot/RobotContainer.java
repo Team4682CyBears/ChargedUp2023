@@ -1,13 +1,22 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: RobotContainer.java
+// Intent: Wrapper class standard stub for robot in FRC challange.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.SolonoidSub;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DeployArmCommand;
+import frc.robot.commands.RetractArmCommand;
+import frc.robot.subsystems.SolonoidSub;
+import frc.robot.DPadButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -16,10 +25,11 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+
+  // sets joystick variables to joysticks
+  private XboxController testController = new XboxController(Constants.TestControllerPort); 
+    // The robot's subsystems and commands are defined here...
   private final SolonoidSub m_exampleSubsystem = new SolonoidSub();
-
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -33,7 +43,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    DPadButton dpadUp = new DPadButton(testController, DPadButton.Direction.Up);
+    DPadButton dpadDown = new DPadButton(testController, DPadButton.Direction.Down);
+
+    // deploy command
+    dpadUp.whenPressed(new DeployArmCommand(this.m_exampleSubsystem));
+    // retract command
+    dpadDown.whenPressed(new RetractArmCommand(this.m_exampleSubsystem));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -42,6 +60,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new DeployArmCommand(this.m_exampleSubsystem);
   }
 }
