@@ -51,8 +51,7 @@ public class ManualInputInterfaces
    */
   public double getInputArcadeDriveY()
   {
-    // need to invert the y for all xbox controllers due to xbox controler having up as negative y axis
-    return driverController.getLeftY() * -1.0;
+    return driverController.getLeftY();
   }
 
   /**
@@ -135,7 +134,7 @@ public class ManualInputInterfaces
       JoystickButton buttonStart = new JoystickButton(coDriverController, XboxController.Button.kStart.value);
       JoystickButton buttonBack = new JoystickButton(coDriverController, XboxController.Button.kBack.value);
 
-      if(subsystemCollection.getBallHandlerSubsystem() != null)
+      if(subsystemCollection.getTelescopingArmSubsystem() != null)
       {
         // extend telescoping arm 
         buttonY.whileHeld(
@@ -154,9 +153,12 @@ public class ManualInputInterfaces
         buttonA.whenReleased(
           new ParallelCommandGroup(
             new TelescopingArmAllStop(subsystemCollection.getTelescopingArmSubsystem()),
-            new ButtonPress("coDriverController", "buttonA.whenReleased - stop telescoping arm")));            
+            new ButtonPress("coDriverController", "buttonA.whenReleased - stop telescoping arm")));
+      }
 
-        // do a-la-carte operation of moving to intake position
+      if(subsystemCollection.getBallHandlerSubsystem() != null)
+      {
+              // do a-la-carte operation of moving to intake position
         bumperLeft.whenPressed(
           new ParallelCommandGroup(
             new BallHandlerPositionIntake(subsystemCollection.getBallHandlerSubsystem()),
