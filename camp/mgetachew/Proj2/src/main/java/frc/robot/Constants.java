@@ -16,4 +16,6 @@ public final class Constants {
 
     public static final int myMotorCanId = 1;
     public static final int highLevelButtonBoardPort = 2;
+    public static final int lowLevelButtonBoardPort = 1;
+    public static final double motorSpeed = 1.0;
 }

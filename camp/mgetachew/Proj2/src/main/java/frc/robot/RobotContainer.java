@@ -42,8 +42,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    JoystickButton motorForward = new JoystickButton(highLevelButtonBoard, 1);
-    JoystickButton motorBackward = new JoystickButton(highLevelButtonBoard, 2);
+    JoystickButton motorForward = new JoystickButton(highLevelButtonBoard, Constants.lowLevelButtonBoardPort);
+    JoystickButton motorBackward = new JoystickButton(highLevelButtonBoard, Constants.highLevelButtonBoardPort);
 
     motorForward.whileHeld(forwardCmd);
     motorForward.whenReleased(stopCmd);
@@ -57,7 +57,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
+    // will run in autonomous
     return null;
   }
 }

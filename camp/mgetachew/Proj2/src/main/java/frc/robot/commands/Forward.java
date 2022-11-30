@@ -7,15 +7,14 @@ package frc.robot.commands;
 import frc.robot.subsystems.MatthewsCoolMotor;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/**
+ * A command to make the motor go forward
+ */
 public class Forward extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final MatthewsCoolMotor m_subsystem;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * @param subsystem - The subsystem used by this command.
    */
   public Forward(MatthewsCoolMotor subsystem) {
     m_subsystem = subsystem;

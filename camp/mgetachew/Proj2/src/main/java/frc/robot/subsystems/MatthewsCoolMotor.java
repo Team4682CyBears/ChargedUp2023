@@ -17,16 +17,14 @@ public class MatthewsCoolMotor extends SubsystemBase {
   public MatthewsCoolMotor() {
   }
 
-  /**
-  * A method exposed to callers to store one ball into storage
-  */
+
   public void footToTheFloorForward()
   {
-    myMotor.set(1.0);
+    myMotor.set(Constants.motorSpeed);
   }
   public void footToTheFloorBackward()
   {
-    myMotor.set(-1.0);
+    myMotor.set(-1*Constants.motorSpeed);
   }
   public void stopDoingThis()
   {
