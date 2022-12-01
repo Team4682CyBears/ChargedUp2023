@@ -47,4 +47,12 @@ public class SolonoidSub extends SubsystemBase {
   public void retractPosition(){
       this.solenoid.set(DoubleSolenoid.Value.kReverse);
   }
+
+  /**
+   * Method to turn off the solenoid (neutral mode)
+   */
+  public void turnOff(){
+    this.solenoid.set(DoubleSolenoid.Value.kOff);
+  }
+
 }
