@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase implements Sendable
   private SparkMaxPIDController topPidController = topMotor.getPIDController();
   private SparkMaxPIDController bottomPidController = bottomMotor.getPIDController();
   private RelativeEncoder topEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
-  private RelativeEncoder bottomEncoder = topMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
+  private RelativeEncoder bottomEncoder = bottomMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.countPerRevHallSensor);
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   /**
@@ -52,14 +52,14 @@ public class Shooter extends SubsystemBase implements Sendable
       // the magic numbers here come from
       // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Velocity%20Closed%20Loop%20Control/src/main/java/frc/robot/Robot.java 
       // PID coefficients
-      kP = 6e-5; 
-      kI = 0;
-      kD = 0; 
+      kP = 0.0002;
+      kI = 0.000001;
+      kD = 0.00000001; 
       kIz = 0; 
-      kFF = 0.000015; 
+      kFF = 0.0002; 
       kMaxOutput = 1.0; 
       kMinOutput = -1.0;
-  
+      
       // update the motor
       topMotor.restoreFactoryDefaults();
       topMotor.setIdleMode(IdleMode.kCoast);
@@ -176,6 +176,18 @@ public class Shooter extends SubsystemBase implements Sendable
     this.setShooterVelocityBottom(Constants.bottomMotorForwardHighGoalSpeedRpm);
     return this.isShooterVelocityUpToSpeedTop(Constants.topMotorForwardHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm) &&
      this.isShooterVelocityUpToSpeedBottom(Constants.bottomMotorForwardHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm);
+  }
+
+  /**
+   * A non-blocking call to spin up the shooter motors to a preset value for the shoot mid
+   * @return True when the motor is sufficiently up to speed, else false
+   */
+  public boolean shootMid()
+  {
+    this.setShooterVelocityTop(Constants.topMotorForwardMidGoalSpeedRpm);
+    this.setShooterVelocityBottom(Constants.bottomMotorForwardMidGoalSpeedRpm);
+    return this.isShooterVelocityUpToSpeedTop(Constants.topMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm) &&
+     this.isShooterVelocityUpToSpeedBottom(Constants.bottomMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm);
   }
 
   /**

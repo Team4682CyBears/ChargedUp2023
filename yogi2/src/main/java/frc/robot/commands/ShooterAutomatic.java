@@ -20,8 +20,8 @@ import frc.robot.subsystems.Jaws;
 
 public class ShooterAutomatic extends CommandBase
 {
-  private static final double defaultVelocityBottomRpm = Constants.bottomMotorForwardHighGoalSpeedRpm;
-  private static final double defaultVelocityTopRpm = Constants.topMotorForwardHighGoalSpeedRpm;
+  private static final double defaultVelocityBottomRpm = Constants.bottomMotorForwardHighGoalSpeedRpm * 1.15;
+  private static final double defaultVelocityTopRpm = Constants.topMotorForwardHighGoalSpeedRpm * 1.15;
   private static final double defaultVelocityTolerance = 20.0;
 
   // target the shooter 
@@ -36,11 +36,12 @@ public class ShooterAutomatic extends CommandBase
   {
     // format:
     // jaws position minimum, jaws position maximum, bottom wheel RPM target, bottom wheel RPM tolerance, top wheel RPM target, top wheel RPM tolerance
-    {Constants.jawsIntakePositionAngle - 5.0, Constants.jawsIntakePositionAngle + 5.0, Constants.bottomMotorIntakeSpeedRpm, 20.0, Constants.topMotorIntakeSpeedRpm, 20.0}, // intake targets
-    {Constants.jawsLowGoalPositionAngle - 5.0, Constants.jawsLowGoalPositionAngle + 5.0, Constants.bottomMotorForwardLowGoalSpeedRpm, 20.0, Constants.topMotorForwardLowGoalSpeedRpm, 20.0}, // low ball shooter targets
-    {Constants.jawsHighGoalPositionAngle - 5.0, Constants.jawsHighGoalPositionAngle + 5.0, Constants.bottomMotorForwardHighGoalSpeedRpm, 20.0, Constants.topMotorForwardHighGoalSpeedRpm, 20.0}, // forward high ball shooter targets
-    {Constants.jawsReverseHighGoalPositionAngle - 5.0, Constants.jawsReverseHighGoalPositionAngle + 5.0, Constants.bottomMotorReverseHighGoalSpeedRpm, 20.0, Constants.topMotorReverseHighGoalSpeedRpm, 20.0}, // reverse high ball shooter targets
-    {Constants.jawsReverseLowGoalPositionAngle - 5.0, Constants.jawsReverseLowGoalPositionAngle + 5.0, Constants.bottomMotorReverseLowGoalSpeedRpm, 20.0, Constants.topMotorReverseLowGoalSpeedRpm, 20.0}, // reverse high ball shooter targets
+    {Constants.jawsIntakePositionAngle - 5.0, Constants.jawsIntakePositionAngle + 5.0, Constants.bottomMotorIntakeSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorIntakeSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // intake targets
+    {Constants.jawsLowGoalPositionAngle - 5.0, Constants.jawsLowGoalPositionAngle + 5.0, Constants.bottomMotorForwardLowGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorForwardLowGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // low ball shooter targets
+    {Constants.jawsHighGoalPositionAngle - 5.0, Constants.jawsHighGoalPositionAngle + 5.0, Constants.bottomMotorForwardHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorForwardHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // forward high ball shooter targets
+    {Constants.jawsMidGoalPositionAngle - 5.0, Constants.jawsMidGoalPositionAngle + 5.0, Constants.bottomMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorForwardMidGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // forward mid ball shooter targets
+    //{Constants.jawsReverseHighGoalPositionAngle - 5.0, Constants.jawsReverseHighGoalPositionAngle + 5.0, Constants.bottomMotorReverseHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorReverseHighGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // reverse high ball shooter targets
+    {Constants.jawsReverseLowGoalPositionAngle - 5.0, Constants.jawsReverseLowGoalPositionAngle + 5.0, Constants.bottomMotorReverseLowGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm, Constants.topMotorReverseLowGoalSpeedRpm, Constants.defaultMotorSpeedToleranceRpm}, // reverse high ball shooter targets
   };
 
   private Shooter shooterSubsystem;

@@ -31,7 +31,7 @@ import frc.robot.common.MotorUtils;
 public class DriveTrain extends SubsystemBase implements Sendable
 {
   // update this when folks are ready for it
-  private static final double neoMotorSpeedReductionFactor = 0.70;
+  private static final double neoMotorSpeedReductionFactor = 0.80;
 
   // four matched motors - two for each tank drive side
   private CANSparkMax leftFront = new CANSparkMax(Constants.driveMotorLeftFrontCanId, MotorType.kBrushless);
@@ -53,8 +53,9 @@ public class DriveTrain extends SubsystemBase implements Sendable
   private MotorControllerGroup left = new MotorControllerGroup(leftFront, leftRear);
   private MotorControllerGroup right = new MotorControllerGroup(rightFront, rightRear);
   private DifferentialDrive forwardDrive = new DifferentialDrive(left, right);
-  private DifferentialDrive reverseDrive = new DifferentialDrive(right, left);
-
+  // Commented out the drive toggle code
+//  private DifferentialDrive reverseDrive = new DifferentialDrive(right, left);
+  
   private DifferentialDrive currentDrive = forwardDrive;
   private boolean isCurrentDriveForward = true;
 
@@ -75,7 +76,7 @@ public class DriveTrain extends SubsystemBase implements Sendable
   private double leftTargetEncoderTicksError = 0;
   private double rightTargetEncoderTicksError = 0;
 
-  private double arcadeMotorPowerReductionFactor = 0.7;
+  private double arcadeMotorPowerReductionFactor = 0.5;
 
   /**
   * No argument constructor for the DriveTrain subsystem.
@@ -123,7 +124,8 @@ public class DriveTrain extends SubsystemBase implements Sendable
   {
     if(this.isCurrentDriveForward == true)
     {
-      this.currentDrive = this.reverseDrive;
+        // Commented out the drive toggle code
+//      this.currentDrive = this.reverseDrive;
       this.isCurrentDriveForward = false;
     }
     else
@@ -443,6 +445,11 @@ public class DriveTrain extends SubsystemBase implements Sendable
       this.initializeSinglePidEncoder(rightFrontPidController, rightFrontEncoder);
       this.initializeSinglePidEncoder(rightRearPidController, rightRearEncoder);
     }
+
+    leftFront.setInverted(Constants.driveMotorLeftFrontDefaultDirection);
+    leftRear.setInverted(Constants.driveMotorLeftRearDefaultDirection);
+    rightFront.setInverted(Constants.driveMotorRightFrontDefaultDirection);
+    rightRear.setInverted(Constants.driveMotorRightRearDefaultDirection);
 
     leftRear.follow(leftFront);
     rightRear.follow(rightFront);

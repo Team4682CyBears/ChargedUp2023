@@ -69,7 +69,6 @@ public class BallStorage extends SubsystemBase implements Sendable
   */
   public void store()
   {
-    // since motors are followers ok to just set one
     bottomMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
     topMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
   }
@@ -86,7 +85,6 @@ public class BallStorage extends SubsystemBase implements Sendable
   */
   public void storeBallManual()
   {
-      // since motors are followers ok to just set one
       bottomMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
       topMotor.set(ControlMode.PercentOutput, Constants.ballStoreSpeed);
   }
