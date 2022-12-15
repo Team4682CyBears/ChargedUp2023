@@ -28,7 +28,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * This adds a tab into shuffleboard, used for setting the NavX when the robot starts at an offset
    */
-  private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+  private ShuffleboardTab tab = Shuffleboard.getTab("NavX");
   private NetworkTableEntry NavXOffset = tab.add("NavX Offset", 0).withWidget(BuiltInWidgets.kDial).getEntry();
   /**
    * The maximum voltage that will be delivered to the drive motors.
@@ -144,12 +144,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public Rotation2d getGyroscopeRotation() {
     if (m_navx.isMagnetometerCalibrated()) {
       // We will only get valid fused headings if the magnetometer is calibrated
-      return Rotation2d.fromDegrees(m_navx.getFusedHeading()+NavXOffset.getDouble(0
-      ));
+      return Rotation2d.fromDegrees(m_navx.getFusedHeading());
     }
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw()+NavXOffset.getDouble(0));
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
