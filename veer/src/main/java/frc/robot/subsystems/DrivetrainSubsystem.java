@@ -15,13 +15,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+
+  /**
+   * This adds a tab into shuffleboard, used for setting the NavX when the robot starts at an offset
+   */
+  private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+  private NetworkTableEntry NavXOffset = tab.add("NavX Offset", 0).withWidget(BuiltInWidgets.kDial).getEntry();
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -136,7 +144,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public Rotation2d getGyroscopeRotation() {
     if (m_navx.isMagnetometerCalibrated()) {
       // We will only get valid fused headings if the magnetometer is calibrated
-      return Rotation2d.fromDegrees(m_navx.getFusedHeading());
+      return Rotation2d.fromDegrees(m_navx.getFusedHeading()+NavXOffset.getDouble(0
+      ));
     }
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
