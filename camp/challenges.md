@@ -19,7 +19,8 @@ The table below highlights various challanges that coder members will be assigne
 | Distance sensor | Small neo motor? | As something comes into view of the sensor closer and closer motor speed increases.  When nothing is in view the motor is off | ?? |
 | NavX various movements | Musical notes functionality on a Talon motor | Every time an axis movement on the navx occurs one of 6 notes is played on the Talon. | ?? |
 | Various Buttons on Button Board  | Control both climber arms | Control Yogi style climber arms for demo in BB programming classes. | mmcadams |
-| XBox Controller left/right triggers | Talon motor | Use of the input of BOTH the left and right triggers as double/floating point value to control the speed of the motor (where left is negative and right is positive). | ?? |
+| XBox Controller left/right triggers | Talon motor | Use the input of BOTH the left and right triggers as double/floating point value to control the speed of the motor (where left is negative and right is positive). | ?? |
+| Button board three+ buttons | Neo Motor | Use of the input of three or more buttons on the button board control motor.  Idea is to use buttons to both hold speed of a motor constant as well as gradually increase the speed of a motor in both forward and reverse directions. | ?? |
 
 
 # Expected Activity Breakdown
