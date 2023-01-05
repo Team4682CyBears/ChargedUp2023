@@ -89,7 +89,7 @@ public final class Constants {
 
     // *****************************************************************
     // telescoping arm system constants
-    public static final int TelescopingArmMotorCanId = 14;
+    public static final int TelescopingArmMotorCanId = 10;
     public static final double TelescopingArmDefaultExtendSpeed = 1.0;
     public static final double TelescopingArmDefaultRetractSpeed = -1.0;
     public static final double TelescopingArmStopSpeed = 0.0;    
