@@ -1,9 +1,14 @@
-/*
- * This file is modified from SwerveDriveSpecialties/swerve-lib/Mk3SwerveModuleHelper.java
- * License https://www.swervedrivespecialties.com/pages/creative-commons-attribution-noncommercial-4-0-international-public-license
- */
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: SwerveModuleHelper.java
+// Intent: Swerve module helper.
+// ************************************************************
 
- package frc.robot.swerveHelpers;
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
+
+package frc.robot.swerveHelpers;
 
 import com.swervedrivespecialties.swervelib.DriveControllerFactory;
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
