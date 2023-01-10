@@ -61,24 +61,6 @@ public class ManualInputInterfaces
   }
 
   /**
-   * A method to get the co-driver 'intake speed' input from humans
-   * @return - a double value associated with the magnitude of left trigger 
-   */
-  public double getBallMotorSpeed()
-  {
-    double targetMotorSpeed = 0.0;
-    double intakeValue = coDriverController.getLeftTriggerAxis();
-    double layupValue = coDriverController.getRightTriggerAxis();
-    if(intakeValue > layupValue && intakeValue > Constants.BallHandlerMotorMinimumAbsoluteInputValue){
-      targetMotorSpeed = intakeValue * Constants.BallHandlerMotorStorageDirectionMultiplier;
-    }
-    else if(layupValue > Constants.BallHandlerMotorMinimumAbsoluteInputValue){
-      targetMotorSpeed = layupValue * Constants.BallHandlerMotorRetrievalDirectionMultiplier;
-    }
-    return targetMotorSpeed;
-  }
-
-  /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
    */

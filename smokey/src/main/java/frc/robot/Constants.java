@@ -10,8 +10,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
 public final class Constants {
 
     public static final int XboxDriverPort = 0;
@@ -60,32 +58,7 @@ public final class Constants {
     public static final double RevNeoEncoderTicksPerRevolution = 42;
 
     // *****************************************************************
-    // ball handler system constants
-    public static final int BallHandlerMotorCanId = 13;
-    public static final double BallHandlerMotorDefaultSpeed = 1.0;
-    public static final double BallHandlerMotorStorageDirectionMultiplier = 1.0;
-    public static final double BallHandlerMotorRetrievalDirectionMultiplier = -1.0;
-    public static final double BallHandlerMotorMinimumAbsoluteInputValue = 0.1;
-    public static final boolean BallHandlerMotorInvertedDirection = false;
-    public static final double BallHandlerPneumaticsDeployCycleTimeSeconds = 0.5;
-    public static final double BallHandlerPneumaticsRetractCycleTimeSeconds = 0.5;
-    public static final double BallHandlerIntakeBallTimeSeconds = 2.0;
-    public static final double BallHandlerLayupBallTimeSeconds = 1.0;
-
-    public static final PneumaticsModuleType BallHandlerPneumaticsControlModuleType = PneumaticsModuleType.CTREPCM;
-    public static final int PneumaticsControlModuleNumber = 0;
-    public static final int PneumaticsControlModuleForwardChannel = 0;
-    public static final int PneumaticsControlModuleReverseChannel = 1;
-
-    // *****************************************************************
     // input device constants
     public static final int portDriverController = 1;
     public static final int portCoDriverController = 2;
-
-    // *****************************************************************
-    // telescoping arm system constants
-    public static final int TelescopingArmMotorCanId = 14;
-    public static final double TelescopingArmDefaultExtendSpeed = 0.7;
-    public static final double TelescopingArmDefaultRetractSpeed = -0.7;
-    public static final double TelescopingArmStopSpeed = 0.0;    
 }
