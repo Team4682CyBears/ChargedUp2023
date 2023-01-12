@@ -13,10 +13,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.Shu.ffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
@@ -143,20 +145,23 @@ public class DrivetrainSubsystem extends SubsystemBase implements Sendable {
         m_navx.zeroYaw();
   }
 
-  private double getY() {
-        return m_navx.getY()
-  }
   private double getX() {
-        return m_navx.getX()
+        return m_navx.getDisplacementX();
+  }
+  private double getY() {
+        return m_navx.getDisplacementY();
+  }
+  private double getZ() {
+        return m_navx.getDisplacementZ();
   }
   private double getYaw() {
-        return m_navx.getYaw()
+        return m_navx.getYaw();
   }
   private double getPitch() {
-        return m_navx.getPitch()
+        return m_navx.getPitch();
   }
   private double getRoll() {
-        return m_navx.getRoll()
+        return m_navx.getRoll();
   }
 
   public Rotation2d getGyroscopeRotation() {
