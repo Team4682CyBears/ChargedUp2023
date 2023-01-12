@@ -16,12 +16,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.Shu.ffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DrivetrainSubsystem extends SubsystemBase implements Sendable {
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -125,12 +125,38 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
   }
 
+  @Override
+  public void initSendable(SendableBuilder builder)
+  {
+    builder.addDoubleProperty("DriveTrainY", this::getY, null);
+    builder.addDoubleProperty("DriveTrainX", this::getX, null);
+    builder.addDoubleProperty("DriveTrainYaw", this::getYaw, null);
+    builder.addDoubleProperty("DriveTrainPich", this::getPitch, null);
+    builder.addDoubleProperty("DriveTrainRoll", this::getRoll, null);
+  }
+
   /**
    * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
         m_navx.zeroYaw();
+  }
+
+  private double getY() {
+        return m_navx.getY()
+  }
+  private double getX() {
+        return m_navx.getX()
+  }
+  private double getYaw() {
+        return m_navx.getYaw()
+  }
+  private double getPitch() {
+        return m_navx.getPitch()
+  }
+  private double getRoll() {
+        return m_navx.getRoll()
   }
 
   public Rotation2d getGyroscopeRotation() {

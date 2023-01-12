@@ -117,7 +117,7 @@ public class OnboardInputInterfaces implements Sendable
                     break;
                 // navx - Y negative direction, implies pitch comes from negative pitch
                 case DioForward:
-                    rtnVal = navigationSensor.getPitch() * -1.0;
+                    rtnVal = navigationSensor.get() * -1.0;
                     break;
                 // navx - Y positive direction, implies pitch comes from positive pitch
                 case PwmForward:
