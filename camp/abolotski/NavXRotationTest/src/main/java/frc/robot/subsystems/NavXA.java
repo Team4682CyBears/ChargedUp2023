@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 //import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,7 +18,10 @@ public class NavXA extends SubsystemBase{
   private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
   /** Creates a new ExampleSubsystem. */
-  public NavXA() {}
+  public NavXA()
+  {
+    this.doShuffleboardPublish();
+  }
 
   /**
    * Example command factory method.
@@ -39,6 +43,15 @@ public class NavXA extends SubsystemBase{
     builder.addDoubleProperty("DriveTrainYaw", this::getYaw, null);
     builder.addDoubleProperty("DriveTrainPich", this::getPitch, null);
     builder.addDoubleProperty("DriveTrainRoll", this::getRoll, null);
+  }
+
+  public void doShuffleboardPublish() {
+    SmartDashboard.putNumber("DriveTrainY", this.getY());
+    SmartDashboard.putNumber("DriveTrainX", this.getX());
+    SmartDashboard.putNumber("DriveTrainZ", this.getZ());
+    SmartDashboard.putNumber("DriveTrainYaw", this.getYaw());
+    SmartDashboard.putNumber("DriveTrainPich", this.getPitch());
+    SmartDashboard.putNumber("DriveTrainRoll", this.getRoll());
   }
 
   /**
@@ -81,6 +94,7 @@ public class NavXA extends SubsystemBase{
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    this.doShuffleboardPublish();
   }
 
   @Override
