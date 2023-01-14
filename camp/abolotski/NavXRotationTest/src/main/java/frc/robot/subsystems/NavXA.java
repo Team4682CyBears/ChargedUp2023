@@ -32,7 +32,7 @@ public class NavXA extends SubsystemBase{
   }
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
-//    @Override
+    @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("DriveTrainY", this::getY, null);
     builder.addDoubleProperty("DriveTrainX", this::getX, null);

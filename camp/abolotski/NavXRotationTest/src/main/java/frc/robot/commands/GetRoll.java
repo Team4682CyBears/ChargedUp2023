@@ -8,7 +8,7 @@ import frc.robot.subsystems.NavXA;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class GetYaw extends CommandBase {
+public class GetRoll extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final NavXA m_navx;
 
@@ -17,7 +17,7 @@ public class GetYaw extends CommandBase {
    *
    * @param navx The subsystem used by this command.
    */
-  public GetYaw(NavXA navx) {
+  public GetRoll(NavXA navx) {
     m_navx = navx;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(navx);
