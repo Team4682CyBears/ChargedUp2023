@@ -42,6 +42,8 @@ public class CanCoderFactoryBuilder {
             config.magnetOffsetDegrees = Math.toDegrees(configuration.getOffset());
             config.sensorDirection = direction == Direction.CLOCKWISE;
             config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+            // fix wheel jump issues caused by CANcoder turning opposite direction of motor
+            config.sensorDirection = false;
 
             CANCoder encoder = new CANCoder(configuration.getId());
             CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
@@ -67,7 +69,7 @@ public class CanCoderFactoryBuilder {
             // https://www.chiefdelphi.com/t/official-sds-mk3-mk4-code/397109/99
             ErrorCode returnVal = encoder.getLastError();
             if(returnVal != ErrorCode.OK){
-                System.out.println("WARNING: Reading absolute encoder position failed, returning NaN.");
+                System.out.println("WARNING: Reading absolute encoder position failed.");
             };
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {

@@ -18,6 +18,6 @@ public class WcpModuleConfigurations {
             1/7.85, // 7.85:1 (10:34 -> 26:20 -> 15:45)
             true, //three reductions
             1/15.43, // 15.43:1 (8:24 -> 14:72)
-            true //two reductions
+            false //two reductions
     );
 }
