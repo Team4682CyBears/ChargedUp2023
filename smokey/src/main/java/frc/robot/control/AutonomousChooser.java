@@ -11,6 +11,7 @@
 package frc.robot.control;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 //import edu.wpi.first.math.geometry.Pose2d;
 //import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,6 +33,8 @@ public class AutonomousChooser {
 
         autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
+
+        SmartDashboard.putData(autonomousModeChooser);
     }
     
     /**

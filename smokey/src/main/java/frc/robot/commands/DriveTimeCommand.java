@@ -53,8 +53,6 @@ public class DriveTimeCommand extends CommandBase
   public void initialize()
   {
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    System.out.println("Driving (" + xVelocity + "," + yVelocity + ") rotation " + 
-    rotVelocity + " for " + durationSecondsValue + "s.");
     timer.reset();
     timer.start();
     done = false;
