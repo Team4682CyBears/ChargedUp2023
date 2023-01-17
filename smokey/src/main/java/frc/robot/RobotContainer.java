@@ -10,6 +10,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
@@ -17,6 +18,7 @@ import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.NavxSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,14 +39,30 @@ public class RobotContainer {
     this.initializeManualInputInterfaces();
 
     // init the various subsystems
+    this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
+
+    // calculate and update the current position of the robot
+    this.calculateAndUpdateRobotPosition();
 
     // Configure the button bindings
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
   }
+ 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    return new InstantCommand();
+  }
 
-  private void initializeManualInputInterfaces()
-  {
+  /**
+   * A method to init the input interfaces
+   */
+  private void initializeManualInputInterfaces() {
     if(InstalledHardware.coDriverXboxControllerInstalled &&
       InstalledHardware.driverXboxControllerInstalled)
     {
@@ -57,15 +75,33 @@ public class RobotContainer {
     }
   }
 
-  private void initializeDrivetrainSubsystem()
-  {
+  /**
+   * A method to init the navx
+   */
+  private void initializeNavxSubsystem() {
+    if(InstalledHardware.navxInstalled)
+    {
+      subsystems.setNavxSubsystem(new NavxSubsystem());
+      System.out.println("SUCCESS: initializeNavx");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeNavx");
+    }
+  }
+
+  /**
+   * A method to init the drive train
+   */
+  private void initializeDrivetrainSubsystem() {
     if(InstalledHardware.leftFrontDriveInstalled && 
       InstalledHardware.leftRearDriveInstalled && 
       InstalledHardware.rightFrontDriveInstalled &&
-      InstalledHardware.rightRearDriveInstalled)
+      InstalledHardware.rightRearDriveInstalled &&
+      subsystems.getNavxSubsystem() != null)
     {
       // The robot's subsystems and commands are defined here...
-      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem(subsystems));
       System.out.println("SUCCESS: initializeDrivetrain");
 
       // Set up the default command for the drivetrain.
@@ -75,6 +111,7 @@ public class RobotContainer {
       // Right stick X axis -> rotation
       subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
         subsystems.getDriveTrainSubsystem(),
+        subsystems.getNavxSubsystem(),
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
@@ -86,14 +123,18 @@ public class RobotContainer {
     }
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+  private void calculateAndUpdateRobotPosition() {
+    // TODO - do this right!
+    Pose2d initialRobotPosition = new Pose2d();
+    // TODO - need to implement this when we have vision
+    // 1. find the April tag that is closest
+    // 2. estimate the robot centroid location
+    // 3. find other April tags ...
+    // 4. apply some smoothing
+    if(subsystems.getDriveTrainSubsystem() != null)
+    {
+      subsystems.getDriveTrainSubsystem().setRobotPosition(initialRobotPosition);
+    }
   }
 
   private static double deadband(double value, double deadband) {

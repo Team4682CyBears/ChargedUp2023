@@ -10,22 +10,25 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
-import com.kauailabs.navx.frc.AHRS;
-import com.swervedrivespecialties.swervelib.SwerveModule;
+import java.io.Console;
 
+import frc.robot.control.SubsystemCollection;
+import frc.robot.swerveHelpers.SwerveModuleHelper;
+import frc.robot.swerveHelpers.SwerveModule;
+import frc.robot.swerveHelpers.WcpModuleConfigurations;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.swerveHelpers.SwerveModuleHelper;
-import frc.robot.swerveHelpers.WcpModuleConfigurations;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
@@ -50,36 +53,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-          Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+          Math.hypot(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
 
-  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+  private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
-          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Front right
-          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Back left
-          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(-frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Back right
-          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+          new Translation2d(-frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
 
-  // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
-  // cause the angle reading to increase until it wraps back over to zero.
-  private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
-
   // These are our modules. We initialize them in the constructor.
-  private final SwerveModule m_frontLeftModule;
-  private final SwerveModule m_frontRightModule;
-  private final SwerveModule m_backLeftModule;
-  private final SwerveModule m_backRightModule;
+  private final SwerveModule frontLeftModule;
+  private final SwerveModule frontRightModule;
+  private final SwerveModule backLeftModule;
+  private final SwerveModule backRightModule;
 
-  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+  private SwerveDriveOdometry swerveOdometry = null;
+  private SubsystemCollection currentCollection = null;
+  private Pose2d currentPosition = new Pose2d();
 
-  public DrivetrainSubsystem() {
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+  public DrivetrainSubsystem(SubsystemCollection collection) {
+    currentCollection = collection;
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-    m_frontLeftModule = SwerveModuleHelper.createFalcon500(
+    frontLeftModule = SwerveModuleHelper.createFalcon500(
             // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
             tab.getLayout("Front Left Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
@@ -87,80 +91,160 @@ public class DrivetrainSubsystem extends SubsystemBase {
             // This can either be STANDARD or FAST depending on your gear configuration 
             WcpModuleConfigurations.SWERVEX,
             // This is the ID of the drive motor
-            FRONT_LEFT_MODULE_DRIVE_MOTOR,
+            frc.robot.Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
             // This is the ID of the steer motor
-            FRONT_LEFT_MODULE_STEER_MOTOR,
+            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
             // This is the ID of the steer encoder
-            FRONT_LEFT_MODULE_STEER_ENCODER,
+            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
             // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
-            FRONT_LEFT_MODULE_STEER_OFFSET
+            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_OFFSET
     );
 
     // We will do the same for the other modules
-    m_frontRightModule = SwerveModuleHelper.createFalcon500(
+    frontRightModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Front Right Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(2, 0),
             WcpModuleConfigurations.SWERVEX,
-            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            FRONT_RIGHT_MODULE_STEER_MOTOR,
-            FRONT_RIGHT_MODULE_STEER_ENCODER,
-            FRONT_RIGHT_MODULE_STEER_OFFSET
+            frc.robot.Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET
     );
 
-    m_backLeftModule = SwerveModuleHelper.createFalcon500(
+    backLeftModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Back Left Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(4, 0),
             WcpModuleConfigurations.SWERVEX,
-            BACK_LEFT_MODULE_DRIVE_MOTOR,
-            BACK_LEFT_MODULE_STEER_MOTOR,
-            BACK_LEFT_MODULE_STEER_ENCODER,
-            BACK_LEFT_MODULE_STEER_OFFSET
+            frc.robot.Constants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+            frc.robot.Constants.BACK_LEFT_MODULE_STEER_MOTOR,
+            frc.robot.Constants.BACK_LEFT_MODULE_STEER_ENCODER,
+            frc.robot.Constants.BACK_LEFT_MODULE_STEER_OFFSET
     );
 
-    m_backRightModule = SwerveModuleHelper.createFalcon500(
+    backRightModule = SwerveModuleHelper.createFalcon500(
             tab.getLayout("Back Right Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(6, 0),
             WcpModuleConfigurations.SWERVEX,
-            BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            BACK_RIGHT_MODULE_STEER_MOTOR,
-            BACK_RIGHT_MODULE_STEER_ENCODER,
-            BACK_RIGHT_MODULE_STEER_OFFSET
+            frc.robot.Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
+            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
+            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
   }
 
   /**
-   * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
-   * 'forwards' direction.
+   * Method avaliable so that callers can update the chassis speeds to induce changes in robot movement
+   * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
-  public void zeroGyroscope() {
-        m_navx.zeroYaw();
+  public void drive(ChassisSpeeds updatedChassisSpeeds) {
+    chassisSpeeds = updatedChassisSpeeds;
   }
 
-  public Rotation2d getGyroscopeRotation() {
-    if (m_navx.isMagnetometerCalibrated()) {
-      // We will only get valid fused headings if the magnetometer is calibrated
-      return Rotation2d.fromDegrees(m_navx.getFusedHeading());
-    }
-
-    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-    return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+  /**
+   * A method to get the current position of the robot
+   * @return the current position of the current robot
+   */
+  public Pose2d getRobotPosition()
+  {
+    return currentPosition;
   }
 
-  public void drive(ChassisSpeeds chassisSpeeds) {
-    m_chassisSpeeds = chassisSpeeds;
+  /**
+   * A method to set the current position of the robot
+   * @param updatedPosition - the new position of the robot
+   */
+  public void setRobotPosition(Pose2d updatedPosition)
+  {
+    // initialize the odometry goo
+    currentPosition = updatedPosition;
+    this.initializeSwerveOdometry(currentPosition);
   }
 
   @Override
   public void periodic() {
-    SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+    // refresh the position of the robot
+    this.refreshRobotPosition();
+
+    // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
+    // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
+    SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-    m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-    m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+    // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
+    frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
+    frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
+    backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
+    backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+  }
+
+  /**
+   * Method used to initialize the Odometry for the robot 
+   * @param currentRobotPosition - the centroid of the robot using the proper game coordinate system, see:
+   * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
+   */
+  private void initializeSwerveOdometry(Pose2d currentRobotPosition) {
+    frontLeftModule.setDriveDistance(0.0);
+    frontRightModule.setDriveDistance(0.0);
+    backLeftModule.setDriveDistance(0.0);
+    backRightModule.setDriveDistance(0.0);
+    swerveOdometry = new SwerveDriveOdometry(
+        swerveKinematics,
+        this.getGyroAngle(),
+        this.getSwerveModulePositions(),
+        currentRobotPosition); 
+  }
+
+  /**
+   * A method to attempt to more safely obtain the navx subsystem based gyro rotation (yaw)
+   * @return the Rotation2d of the Gyroscope
+   */
+  private Rotation2d getGyroAngle() {
+    if(currentCollection != null && currentCollection.getNavxSubsystem() != null){
+        return currentCollection.getNavxSubsystem().getGyroscopeRotation();
+    }
+    else{
+        System.out.println("!!!!!!!!!!!!!!!!!!!! NAVX IS MISSING. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        return new Rotation2d();
+    }
+  }
+
+  /**
+   * Helper method to obtain the SwerveModulePostion array from an existing SwerveModules in this class
+   * @return - a SwerveModulePosition array for the modules
+   */
+  private SwerveModulePosition [] getSwerveModulePositions() {
+    return new SwerveModulePosition[] {
+      this.getSwerveModulePositionFromModule(frontLeftModule),
+      this.getSwerveModulePositionFromModule(frontRightModule),
+      this.getSwerveModulePositionFromModule(backLeftModule),
+      this.getSwerveModulePositionFromModule(backRightModule)
+    };
+  }
+
+  /**
+   * Helper method to obtain the SwerveModulePostion from an existing SwerveModule
+   * @param module - the module to extract info from
+   * @return - a SwerveModulePosition class that wraps the orentiation
+   */
+  private SwerveModulePosition getSwerveModulePositionFromModule(SwerveModule module) {
+    return new SwerveModulePosition(
+      module.getDriveDistance(),
+      new Rotation2d(module.getSteerAngle()));
+  }
+
+  /**
+   * A function intended to be called from perodic to update the robots centroid position on the field.
+   */
+  private void refreshRobotPosition() {
+    // Update the position of the robot
+    currentPosition = swerveOdometry.update(
+      this.getGyroAngle(),
+      this.getSwerveModulePositions());
   }
 }

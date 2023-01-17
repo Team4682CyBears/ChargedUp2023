@@ -94,7 +94,7 @@ public class ManualInputInterfaces
         // Back button zeros the gyroscope
         new Button(driverController::getBackButton)
                 // No requirements because we don't need to interrupt anything
-                .whenPressed(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope);
+                .whenPressed(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
 //              // No requirements because we don't need to interrupt anything
 //              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));

@@ -3,7 +3,7 @@
 // Home of the Cybears
 // FRC - Charged Up - 2023
 // File: WcpModuleConfigurations.java
-// Intent: WC configs.
+// Intent: WC configs ... a modified copy of SWS content.
 // ************************************************************
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 

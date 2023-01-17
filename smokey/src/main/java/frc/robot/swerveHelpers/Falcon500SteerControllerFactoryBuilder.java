@@ -3,7 +3,7 @@
 // Home of the Cybears
 // FRC - Charged Up - 2023
 // File: Falcon500SteerControllerFactoryBuilder.java
-// Intent: Factory class for steering using falcons.
+// Intent: Factory class for steering using falcons ... a modified copy of SWS content.
 // ************************************************************
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
