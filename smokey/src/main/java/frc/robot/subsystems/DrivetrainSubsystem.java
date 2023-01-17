@@ -28,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -243,8 +244,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   private void refreshRobotPosition() {
     // Update the position of the robot
+    Rotation2d angle = this.getGyroAngle();
+    SwerveModulePosition[] positions = this.getSwerveModulePositions();
     currentPosition = swerveOdometry.update(
-      this.getGyroAngle(),
-      this.getSwerveModulePositions());
+      angle,
+      positions);
+
+    SmartDashboard.putNumber("RobotFieldHeadingDegrees", currentPosition.getRotation().getDegrees());
+    SmartDashboard.putNumber("RobotFieldXCoordinateMeters", currentPosition.getX());
+    SmartDashboard.putNumber("RobotFieldYCoordinateMeters", currentPosition.getY());
+    SmartDashboard.putNumber("FrontLeftAngleDegrees", positions[0].angle.getDegrees());
+    SmartDashboard.putNumber("FrontLeftDistanceMeters", positions[0].distanceMeters);
+    SmartDashboard.putNumber("FrontRightAngleDegrees", positions[1].angle.getDegrees());
+    SmartDashboard.putNumber("FrontRightDistanceMeters", positions[1].distanceMeters);
+    SmartDashboard.putNumber("BackLeftAngleDegrees", positions[2].angle.getDegrees());
+    SmartDashboard.putNumber("BackLeftDistanceMeters", positions[2].distanceMeters);
+    SmartDashboard.putNumber("BackRightAngleDegrees", positions[3].angle.getDegrees());
+    SmartDashboard.putNumber("BackRightDistanceMeters", positions[3].distanceMeters);
   }
 }
