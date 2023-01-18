@@ -12,6 +12,7 @@ package frc.robot.subsystems;
 
 import java.io.Console;
 
+import static frc.robot.Constants.*;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -54,18 +55,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-          Math.hypot(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+          Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
-          new Translation2d(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Front right
-          new Translation2d(frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Back left
-          new Translation2d(-frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
           // Back right
-          new Translation2d(-frc.robot.Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -frc.robot.Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
 
   // These are our modules. We initialize them in the constructor.
@@ -92,13 +93,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
             // This can either be STANDARD or FAST depending on your gear configuration 
             WcpModuleConfigurations.SWERVEX,
             // This is the ID of the drive motor
-            frc.robot.Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+            FRONT_LEFT_MODULE_DRIVE_MOTOR,
             // This is the ID of the steer motor
-            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
+            FRONT_LEFT_MODULE_STEER_MOTOR,
             // This is the ID of the steer encoder
-            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
+            FRONT_LEFT_MODULE_STEER_ENCODER,
             // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
-            frc.robot.Constants.FRONT_LEFT_MODULE_STEER_OFFSET
+            FRONT_LEFT_MODULE_STEER_OFFSET
     );
 
     // We will do the same for the other modules
@@ -107,10 +108,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(2, 0),
             WcpModuleConfigurations.SWERVEX,
-            frc.robot.Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-            frc.robot.Constants.FRONT_RIGHT_MODULE_STEER_OFFSET
+            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+            FRONT_RIGHT_MODULE_STEER_MOTOR,
+            FRONT_RIGHT_MODULE_STEER_ENCODER,
+            FRONT_RIGHT_MODULE_STEER_OFFSET
     );
 
     backLeftModule = SwerveModuleHelper.createFalcon500(
@@ -118,10 +119,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(4, 0),
             WcpModuleConfigurations.SWERVEX,
-            frc.robot.Constants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-            frc.robot.Constants.BACK_LEFT_MODULE_STEER_MOTOR,
-            frc.robot.Constants.BACK_LEFT_MODULE_STEER_ENCODER,
-            frc.robot.Constants.BACK_LEFT_MODULE_STEER_OFFSET
+            BACK_LEFT_MODULE_DRIVE_MOTOR,
+            BACK_LEFT_MODULE_STEER_MOTOR,
+            BACK_LEFT_MODULE_STEER_ENCODER,
+            BACK_LEFT_MODULE_STEER_OFFSET
     );
 
     backRightModule = SwerveModuleHelper.createFalcon500(
@@ -129,10 +130,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     .withSize(2, 4)
                     .withPosition(6, 0),
             WcpModuleConfigurations.SWERVEX,
-            frc.robot.Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
-            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
-            frc.robot.Constants.BACK_RIGHT_MODULE_STEER_OFFSET
+            BACK_RIGHT_MODULE_DRIVE_MOTOR,
+            BACK_RIGHT_MODULE_STEER_MOTOR,
+            BACK_RIGHT_MODULE_STEER_ENCODER,
+            BACK_RIGHT_MODULE_STEER_OFFSET
     );
 
   }
@@ -143,6 +144,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
     chassisSpeeds = updatedChassisSpeeds;
+    String strToPrint = "UPDATED chassis speed: omega == " + chassisSpeeds.omegaRadiansPerSecond +
+    " x == " + chassisSpeeds.vxMetersPerSecond + 
+    " y == " + chassisSpeeds.vyMetersPerSecond;
+    System.out.println(strToPrint);
   }
 
   /**
