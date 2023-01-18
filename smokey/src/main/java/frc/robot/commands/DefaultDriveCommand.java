@@ -40,7 +40,9 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
 
-        addRequirements(drivetrainSubsystem, navxSubsystem);
+        // NOTE: For now we will NOT register the NavxSubsystem, this is safe to do here because
+        // all access to the class is read-only.
+        addRequirements(drivetrainSubsystem);
     }
 
     @Override

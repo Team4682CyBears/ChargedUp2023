@@ -63,9 +63,10 @@ public class RobotContainer {
    * A method to init the input interfaces
    */
   private void initializeManualInputInterfaces() {
-    // TODO - fix this at some point
-    if(//InstalledHardware.coDriverXboxControllerInstalled &&
-      InstalledHardware.driverXboxControllerInstalled)
+    // note: in this case it is safe to build the interfaces if only one of the controllers is present
+    // because button binding assignment code checks that each is installed later (see: initializeButtonCommandBindings)
+    if(InstalledHardware.driverXboxControllerInstalled ||
+      InstalledHardware.coDriverXboxControllerInstalled)
     {
       subsystems.setManualInputInterfaces(new ManualInputInterfaces(subsystems));
       System.out.println("SUCCESS: initializeManualInputInterfaces");
