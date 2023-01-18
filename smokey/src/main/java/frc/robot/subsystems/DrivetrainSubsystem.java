@@ -148,7 +148,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   /**
    * A method to get the current position of the robot
-   * @return the current position of the current robot
+   * @return the current Pose2d position of the robot
    */
   public Pose2d getRobotPosition()
   {
@@ -211,6 +211,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return currentCollection.getNavxSubsystem().getGyroscopeRotation();
     }
     else{
+        // TODO - we may want to throw in the future here as this is very important to our robot now
         System.out.println("!!!!!!!!!!!!!!!!!!!! NAVX IS MISSING. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return new Rotation2d();
     }

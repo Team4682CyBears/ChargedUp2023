@@ -34,8 +34,8 @@ public class NavxSubsystem extends SubsystemBase {
   }
 
   /**
-   * Obtains the current gyroscope's rotation about the Z axis when looking down at the robot where positive is measured in the couter-clockwise
-   * direction
+   * Obtains the current gyroscope's rotation about the Z axis when looking down at the robot where positive is measured in the 
+   * counter-clockwise direction.
    * 
    * Notes: 
    * According to https://pdocs.kauailabs.com/navx-mxp/wp-content/uploads/2020/09/navx2-mxp_robotics_navigation_sensor_user_guide-8.pdf
