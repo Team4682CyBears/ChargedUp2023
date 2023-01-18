@@ -55,8 +55,8 @@ public class AutonomousChooser {
         resetRobotPose(command);
 
         // drive forward and then turn clockwise
-        command.addCommands(driveSegment(1., 0, 0, 0.5));
-        command.addCommands(driveSegment(0, 0, 0.5, 0.25));
+        command.addCommands(driveSegment(1., 0, 0, 1.0));
+        command.addCommands(driveSegment(0, 0, 0.5, 2.0));
 
         return command;
     }
@@ -71,8 +71,8 @@ public class AutonomousChooser {
         resetRobotPose(command);
 
         // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(-1., 0, 0, 0.5));
-        command.addCommands(driveSegment(0, 0, -0.5, 0.25));
+        command.addCommands(driveSegment(-1., 0, 0, 1.0));
+        command.addCommands(driveSegment(0, 0, -0.5, 2.0));
 
         return command;
     }
