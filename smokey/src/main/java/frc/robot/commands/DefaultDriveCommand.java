@@ -45,6 +45,11 @@ public class DefaultDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
+        String strToPrint = "DEFAULT DRIVE COMMAND chassis speed: rotation/omega == " + m_rotationSupplier.getAsDouble() +
+        " x == " + m_translationXSupplier.getAsDouble() + 
+        " y == " + m_translationYSupplier.getAsDouble();
+        System.out.println(strToPrint);
+        
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         if(fieldOrientedDrive) {
             m_drivetrainSubsystem.drive(
