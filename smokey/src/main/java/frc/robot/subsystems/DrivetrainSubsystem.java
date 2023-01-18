@@ -144,17 +144,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
     chassisSpeeds = updatedChassisSpeeds;
-    double omega = Math.abs(chassisSpeeds.omegaRadiansPerSecond);
-    double theX = Math.abs(chassisSpeeds.vxMetersPerSecond);
-    double theY = Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(omega > 0.02 || theX > 0.02 || theY > 0.02 )
-    {
-      String strToPrint = "UPDATED chassis speed: omega == " + chassisSpeeds.omegaRadiansPerSecond +
-      " x == " + chassisSpeeds.vxMetersPerSecond + 
-      " y == " + chassisSpeeds.vyMetersPerSecond;
-      System.out.println(strToPrint);
-    }
-
   }
 
   /**
