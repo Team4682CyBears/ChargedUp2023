@@ -58,7 +58,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    return autonomousChooser.getCommand();
   }
 
   /**
@@ -125,16 +125,6 @@ public class RobotContainer {
     {
       System.out.println("FAIL: initializeDrivetrain");
     }
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return autonomousChooser.getCommand();
   }
   
   /**
