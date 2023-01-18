@@ -13,6 +13,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class RobotContainer {
 
   private SubsystemCollection subsystems = new SubsystemCollection();
+  private final AutonomousChooser autonomousChooser = new AutonomousChooser(subsystems);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -93,7 +95,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    return autonomousChooser.getCommand();
   }
 
   private static double deadband(double value, double deadband) {
