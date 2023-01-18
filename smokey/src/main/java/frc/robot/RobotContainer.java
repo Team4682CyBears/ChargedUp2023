@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.NavxSubsystem;
 public class RobotContainer {
 
   private SubsystemCollection subsystems = new SubsystemCollection();
+  private final AutonomousChooser autonomousChooser = new AutonomousChooser(subsystems);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -125,6 +127,19 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    return autonomousChooser.getCommand();
+  }
+  
+  /**
+   * A method to calculate the initial position of the robot
+   */
   private void calculateAndUpdateRobotPosition() {
     // TODO - do this right!
     Pose2d initialRobotPosition = new Pose2d();
