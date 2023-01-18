@@ -84,7 +84,7 @@ public class AutonomousChooser {
     private void resetRobotPose(SequentialCommandGroup command) {
         // TODO this is where we would set the starting robot position. 
         // just zeroing the gyro for now
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().zeroGyroscope()));
+        command.addCommands(new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope()));
     }
 
     /**

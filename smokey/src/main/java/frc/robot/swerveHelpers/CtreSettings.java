@@ -3,7 +3,7 @@
 // Home of the Cybears
 // FRC - Charged Up - 2023
 // File: CtreSettings.java
-// Intent: CtreSettings class.
+// Intent: CtreSettings class ... a modified copy of SWS content.
 // ************************************************************
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
