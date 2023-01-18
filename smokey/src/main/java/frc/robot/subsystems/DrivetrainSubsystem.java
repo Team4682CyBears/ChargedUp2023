@@ -10,8 +10,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.Console;
-
 import static frc.robot.Constants.*;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;

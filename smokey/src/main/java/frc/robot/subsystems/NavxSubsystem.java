@@ -46,10 +46,22 @@ public class NavxSubsystem extends SubsystemBase {
    * @return A Rotation2d that describes the current orentation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
+
+    // TODO - we need to have someone determine if our existing (NavX v1) setup will make use of the
+    // 'getFusedHeading' or if it uses the 'getYaw' method (e.g., if isMagnetometerCalibrated() or not)
+    // to run this test all we need is for someone to comment out the System.out.println lines of code below
+
     if (swerveNavx.isMagnetometerCalibrated()) {
+
+      // TODO - test this!!
+      // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
+
       // We will only get valid fused headings if the magnetometer is calibrated
       return Rotation2d.fromDegrees(swerveNavx.getFusedHeading());
     }
+
+    // TODO - test this!!
+    // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
     return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw());
