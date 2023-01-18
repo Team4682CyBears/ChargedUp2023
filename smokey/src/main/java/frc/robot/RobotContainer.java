@@ -63,7 +63,8 @@ public class RobotContainer {
    * A method to init the input interfaces
    */
   private void initializeManualInputInterfaces() {
-    if(InstalledHardware.coDriverXboxControllerInstalled &&
+    // TODO - fix this at some point
+    if(//InstalledHardware.coDriverXboxControllerInstalled &&
       InstalledHardware.driverXboxControllerInstalled)
     {
       subsystems.setManualInputInterfaces(new ManualInputInterfaces(subsystems));
