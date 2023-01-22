@@ -9,8 +9,10 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot.commands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -52,12 +54,15 @@ public class DriveToAprilTagCommand extends CommandBase
   @Override
   public void initialize()
   {
-    // TODO read april tag location from limelight
-    Pose2d startingPose = getRobotPositionFromAprilTag();
+    // read camera position realtive to april tag location from limelight
+    // NumberArray: Translation (x,y,z) Rotation(pitch,yaw,roll)
+    double[] cameraPosition = NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(new double[]{});
+    // unpack cameraPosition array into a Pose
+    Pose2d startingPose = new Pose2d(cameraPosition[0], cameraPosition[1], new Rotation2D(cameraPosition[4]));
     // TODO calculate final relative location for robot 
     Pose2D deltaPose = targetPose.relativeTo(startingPose);
     driveCommand = new DriveToRelativeLocationCommand(drivetrain, deltaPose);
-    driveCommand.initialize()
+    driveCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -72,7 +77,6 @@ public class DriveToAprilTagCommand extends CommandBase
   public void end(boolean interrupted)
   {
     driveCommand.end(interrupted);
-    if(interrupted)
   }
 
   // Returns true when the command should end.
