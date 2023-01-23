@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.commands.AutoBalanceCommand;
 
+
 public class ManualInputInterfaces
 {
   // sets joystick variables to joysticks
@@ -101,6 +102,8 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
               // No requirements because we don't need to interrupt anything
               .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
+        new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+        .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
       }
     }
   }
