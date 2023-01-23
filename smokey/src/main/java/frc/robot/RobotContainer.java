@@ -12,7 +12,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.geometry.Quaternion;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.common.QuaternionUtils;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
@@ -93,6 +95,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    System.out.println(">>>>>>>>>>THE ANSWER IS HERE!!");
+    final Quaternion q = new Quaternion(-0.0056934725397687356, 0.13040196020729425, 0.04324621745963609, 0.9905012255519768);
+    System.out.println(QuaternionUtils.getAngleOfSteepestAscent(q));
     return new InstantCommand();
   }
 

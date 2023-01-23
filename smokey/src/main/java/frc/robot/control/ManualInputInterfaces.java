@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.*;
+import frc.robot.commands.AutoBalanceCommand;
 
 public class ManualInputInterfaces
 {
@@ -60,6 +61,10 @@ public class ManualInputInterfaces
     return driverController.getRightX();
   }
 
+  public boolean getRightBumper(){
+    return driverController.getRightBumperPressed();
+  }
+
   /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
@@ -94,7 +99,10 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
               // No requirements because we don't need to interrupt anything
               .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
-      }
+        //new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+        //      .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
+
+            }
     }
   }
 
