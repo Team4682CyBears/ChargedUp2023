@@ -9,6 +9,7 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
+import java.lang.Math;
 
 public final class Constants {
 
@@ -58,4 +59,6 @@ public final class Constants {
     // input device constants
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
+
+    public static final double twoDegressInRadians = 2/180 * Math.PI;
 }
