@@ -11,6 +11,7 @@
 package frc.robot.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -99,7 +100,7 @@ public class ManualInputInterfaces
         // Back button zeros the gyroscope
         new JoystickButton(driverController, XboxController.Button.kBack.value)
               // No requirements because we don't need to interrupt anything
-              .onTrue(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
+              .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
       }
     }
   }

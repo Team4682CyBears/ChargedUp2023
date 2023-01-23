@@ -26,7 +26,7 @@ public class QuaternionUtils{
         final Translation3d w = cross(xyPlaneNormal, robotPoseNormal);
         final Translation3d steepestDescent = cross(w, robotPoseNormal);
         // TODO remove print statements once this is tested on robot
-        System.out.println("****Running Angle of Steepest Ascent****")
+        System.out.println("****Running Angle of Steepest Ascent****");
         System.out.println("robotPose: " + robotPose);
         System.out.println("robotPoseNormal: " + robotPoseNormal);
         System.out.println("w: " + w);
