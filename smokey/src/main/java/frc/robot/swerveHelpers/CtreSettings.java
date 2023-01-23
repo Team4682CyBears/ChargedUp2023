@@ -3,7 +3,7 @@
 // Home of the Cybears
 // FRC - Charged Up - 2023
 // File: CtreSettings.java
-// Intent: CtreSettings class.
+// Intent: CtreSettings class ... a modified copy of SWS content.
 // ************************************************************
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
@@ -11,7 +11,6 @@
 package frc.robot.swerveHelpers;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -42,19 +41,6 @@ public class CtreSettings {
         CtreSettings.UpdateSingleCanEncoderDefaultSettings(frontRightCoder);
 
         PrintAllCanEncoderCurrentSettings();
-    }
-
-    public static void ZeroAllSwerveSteerMotorEncoders()
-    {
-        WPI_TalonFX frontLeftSteerMotor = new WPI_TalonFX(Constants.FRONT_LEFT_MODULE_STEER_MOTOR);
-        WPI_TalonFX frontRightSteerMotor = new WPI_TalonFX(Constants.FRONT_RIGHT_MODULE_STEER_MOTOR);
-        WPI_TalonFX backLeftSteerMotor = new WPI_TalonFX(Constants.BACK_LEFT_MODULE_STEER_MOTOR);
-        WPI_TalonFX backRightSteerMotor = new WPI_TalonFX(Constants.BACK_RIGHT_MODULE_STEER_MOTOR);
-
-        frontLeftSteerMotor.setSelectedSensorPosition(0.0);
-        frontRightSteerMotor.setSelectedSensorPosition(0.0);
-        backLeftSteerMotor.setSelectedSensorPosition(0.0);
-        backRightSteerMotor.setSelectedSensorPosition(0.0);
     }
 
     private static void PrintCanEncoderCurrentSettings(CANCoder cancoder)

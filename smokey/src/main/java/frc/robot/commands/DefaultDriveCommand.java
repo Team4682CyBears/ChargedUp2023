@@ -14,11 +14,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.NavxSubsystem;
 
 import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommand extends CommandBase {
     private final DrivetrainSubsystem m_drivetrainSubsystem;
+    private final NavxSubsystem m_navxSubsystem;
 
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
@@ -28,19 +30,23 @@ public class DefaultDriveCommand extends CommandBase {
     private final Boolean fieldOrientedDrive = true;
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
+                               NavxSubsystem navxSubsystem,
                                DoubleSupplier translationXSupplier,
                                DoubleSupplier translationYSupplier,
                                DoubleSupplier rotationSupplier) {
         this.m_drivetrainSubsystem = drivetrainSubsystem;
+        this.m_navxSubsystem = navxSubsystem;
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
 
+        // NOTE: For now we will NOT register the NavxSubsystem, this is safe to do here because
+        // all access to the class is read-only.
         addRequirements(drivetrainSubsystem);
     }
 
     @Override
-    public void execute() {
+    public void execute() {       
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         if(fieldOrientedDrive) {
             m_drivetrainSubsystem.drive(
@@ -48,7 +54,7 @@ public class DefaultDriveCommand extends CommandBase {
                             m_translationXSupplier.getAsDouble(),
                             m_translationYSupplier.getAsDouble(),
                             m_rotationSupplier.getAsDouble(),
-                            m_drivetrainSubsystem.getGyroscopeRotation()
+                            m_navxSubsystem.getGyroscopeRotation()
                     )
             );
         } else {

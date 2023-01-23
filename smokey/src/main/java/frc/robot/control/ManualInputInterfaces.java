@@ -11,8 +11,10 @@
 package frc.robot.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.commands.AutoBalanceCommand;
 
@@ -48,8 +50,7 @@ public class ManualInputInterfaces
    */
   public double getInputArcadeDriveY()
   {
-    // need to invert the y for all xbox controllers due to xbox controler having up as negative y axis
-    return driverController.getLeftY() * -1.0;
+    return driverController.getLeftY();
   }
 
   /**
@@ -98,11 +99,8 @@ public class ManualInputInterfaces
         // Back button zeros the gyroscope
         new JoystickButton(driverController, XboxController.Button.kBack.value)
               // No requirements because we don't need to interrupt anything
-              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
-        //new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
-        //      .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
-
-            }
+              .onTrue(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 // Bishop Blanchet Robotics
 // Home of the Cybears
 // FRC - Charged Up - 2023
-// File: NavexSubsystem.java
+// File: NavxSubsystem.java
 // Intent: Forms a stub for the prelminary named subsystem above.
 // ************************************************************
 
@@ -10,35 +10,61 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import static frc.robot.Constants.*;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class NavxSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
+
+  // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
+  // cause the angle reading to increase until it wraps back over to zero.
+  private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+
+  /** Creates a new NavX. */
   public NavxSubsystem() {}
 
   /**
-   * Example command factory method.
-   *
-   * @return a command
+   * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
+   * 'forwards' direction.
    */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  public void zeroGyroscope() {
+        swerveNavx.zeroYaw();
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+   * Obtains the current gyroscope's rotation about the Z axis when looking down at the robot where positive is measured in the 
+   * counter-clockwise direction.
+   * 
+   * Notes: 
+   * According to https://pdocs.kauailabs.com/navx-mxp/wp-content/uploads/2020/09/navx2-mxp_robotics_navigation_sensor_user_guide-8.pdf
+   * NavX .getYaw() is -180 to 180 where positive is clockwise looking at the sensor from above
+   * According to https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
+   * positive rotations are measured in the counter-clockwise looking at the robot from above
+   * these two pieces of information imply the yaw should be inverted (or multiplied by -1.0)
+   * @return A Rotation2d that describes the current orentation of the robot.
    */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public Rotation2d getGyroscopeRotation() {
+
+    // TODO - we need to have someone determine if our existing (NavX v1) setup will make use of the
+    // 'getFusedHeading' or if it uses the 'getYaw' method (e.g., if isMagnetometerCalibrated() or not)
+    // to run this test all we need is for someone to comment out the System.out.println lines of code below
+
+    if (swerveNavx.isMagnetometerCalibrated()) {
+
+      // TODO - test this!!
+      // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
+
+      // We will only get valid fused headings if the magnetometer is calibrated
+      return Rotation2d.fromDegrees(swerveNavx.getFusedHeading());
+    }
+
+    // TODO - test this!!
+    // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
+
+    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+    return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw());
   }
 
   @Override

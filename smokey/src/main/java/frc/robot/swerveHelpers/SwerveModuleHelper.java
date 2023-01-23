@@ -3,20 +3,16 @@
 // Home of the Cybears
 // FRC - Charged Up - 2023
 // File: SwerveModuleHelper.java
-// Intent: Swerve module helper.
+// Intent: Swerve module helper ... a modified copy of SWS content.
 // ************************************************************
 
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot.swerveHelpers;
 
-import com.swervedrivespecialties.swervelib.DriveControllerFactory;
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.SteerControllerFactory;
-import com.swervedrivespecialties.swervelib.SwerveModule;
-import com.swervedrivespecialties.swervelib.SwerveModuleFactory;
 import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
-import com.swervedrivespecialties.swervelib.ctre.Falcon500DriveControllerFactoryBuilder;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
