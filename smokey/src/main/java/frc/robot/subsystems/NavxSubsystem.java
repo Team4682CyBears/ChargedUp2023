@@ -52,6 +52,14 @@ public class NavxSubsystem extends SubsystemBase {
     return result;
   }
 
+  public void printState(){
+    System.out.println("**** NavX State ****");
+    System.out.println("Quaternion ------>" + this.getQuaterion());
+    double[] r = this.getYawPitchRoll();
+    System.out.println("Yaw,Pitch,Roll ------>" + r[0] + " , " + r[1] + " , " + r[2]);
+    System.out.println("Is the robot level? -------->" + this.isLevel());
+  }
+
   /**
    * Obtains the current gyroscope's rotation about the Z axis when looking down at the robot where positive is measured in the 
    * counter-clockwise direction.

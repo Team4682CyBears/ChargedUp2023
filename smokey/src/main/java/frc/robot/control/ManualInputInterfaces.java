@@ -101,10 +101,12 @@ public class ManualInputInterfaces
       {
         // Back button zeros the gyroscope
         new JoystickButton(driverController, XboxController.Button.kBack.value)
-              // No requirements because we don't need to interrupt anything
-              .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
+          // No requirements because we don't need to interrupt anything
+          .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
         new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
-        .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+          .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+        new JoystickButton(driverController, XboxController.Button.kA.value)
+          .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::printState));
       }
     }
   }
