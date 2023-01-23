@@ -95,9 +95,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    System.out.println(">>>>>>>>>>THE ANSWER IS HERE!!");
-    final Quaternion q = new Quaternion(-0.0056934725397687356, 0.13040196020729425, 0.04324621745963609, 0.9905012255519768);
-    System.out.println(QuaternionUtils.getAngleOfSteepestAscent(q));
     return new InstantCommand();
   }
 
