@@ -60,5 +60,7 @@ public final class Constants {
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
 
-    public static final double twoDegressInRadians = 2/180 * Math.PI;
+    //  *****************************************************************
+    // navx isLevel tolerence in degrees
+    public static final double navxTolDegrees = 4;
 }

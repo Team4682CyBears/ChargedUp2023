@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.commands.AutoBalanceCommand;
+import frc.robot.subsystems.NavxSubsystem;
 
 
 public class ManualInputInterfaces
@@ -103,7 +104,7 @@ public class ManualInputInterfaces
               // No requirements because we don't need to interrupt anything
               .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
         new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
-        .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
+        .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
       }
     }
   }

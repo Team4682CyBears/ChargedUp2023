@@ -39,12 +39,17 @@ public class NavxSubsystem extends SubsystemBase {
   }
 
   public boolean isLevel() {
-    return (Math.abs(swerveNavx.getRoll())<Constants.twoDegressInRadians) && (Math.abs(swerveNavx.getPitch())<Constants.twoDegressInRadians);
+    return (Math.abs(swerveNavx.getRoll())<Constants.navxTolDegrees) && (Math.abs(swerveNavx.getPitch())<Constants.navxTolDegrees);
   }
 
   public Quaternion getQuaterion() {
     Quaternion q = new Quaternion(swerveNavx.getQuaternionW(), swerveNavx.getQuaternionX(), swerveNavx.getQuaternionY(),swerveNavx.getQuaternionZ());
     return (q);
+  }
+
+  public double[] getYawPitchRoll(){
+    double[] result = {swerveNavx.getYaw(), swerveNavx.getPitch(), swerveNavx.getRoll()};
+    return result;
   }
 
   /**

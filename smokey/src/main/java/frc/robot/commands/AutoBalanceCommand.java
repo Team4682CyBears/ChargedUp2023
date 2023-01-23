@@ -12,13 +12,15 @@ import java.lang.Math;
 
 
 public class AutoBalanceCommand extends CommandBase{
-  private Timer timer = new Timer();
+  private Timer driveTimer = new Timer();
+  private Timer waitTimer = new Timer();
   private boolean done = false;
   private double xVelocity = 0.0;
   private double yVelocity = 0.0;
   private double rotVelocity = 0.0;
+  private double waitDurationSecondsValue = .5;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
-  private double durationSecondsValue = 0.25;  
+  private double driveDurationSecondsValue = 0.25;  
   private double velocityValue = 0.4;
 
   NavxSubsystem navxsubsystem = null; 
@@ -44,9 +46,20 @@ public class AutoBalanceCommand extends CommandBase{
     yVelocity = (y/h) * velocityValue;
 
     drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    timer.reset();
-    timer.start();
+    driveTimer.reset();
+    waitTimer.reset();
+    driveTimer.start();
     done = false;
+
+    System.out.println("I AM PRINTING HERE ******************************");
+    System.out.println("This is the X velocity ------>" + xVelocity);
+    System.out.println("This is the Y velocity ------>" + yVelocity);
+    System.out.println("This is the Quaternion ------>" + navxsubsystem.getQuaterion());
+    System.out.println("Is the robot level??????? -------->" + navxsubsystem.isLevel());
+    double[] r = navxsubsystem.getYawPitchRoll();
+    System.out.println("Navx roll ------>" + r[0] + "," + r[1] + "," + r[2]);
+
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +68,12 @@ public class AutoBalanceCommand extends CommandBase{
   {
     drivetrainsubsystem.drive(
       new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
-    if (timer.hasElapsed(this.durationSecondsValue))
+    if (driveTimer.hasElapsed(this.driveDurationSecondsValue))
+    {
+      drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+      waitTimer.start();
+    }
+    if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       done = true;
     }
