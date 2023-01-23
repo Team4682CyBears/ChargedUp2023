@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
+import frc.robot.Constants.*;
+import frc.robot.commands.DriveToAprilTagCommand;
 
 public class ManualInputInterfaces
 {
@@ -92,9 +94,11 @@ public class ManualInputInterfaces
       if(subsystemCollection.getDriveTrainSubsystem() != null)
       {
         // Back button zeros the gyroscope
-        new Button(driverController::getBackButton)
+        new JoystickButton(driverController, XboxController.Button.kBack.value)
                 // No requirements because we don't need to interrupt anything
-                .whenPressed(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
+                .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
+        new JoystickButton(driverController, XboxController.Button.kA.value)
+                .onTrue(new InstantCommand(subsystemCollection.getCameraSubsystem()::getCameraPositionFromAprilTag));
 
         // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)

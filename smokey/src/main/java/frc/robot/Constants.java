@@ -10,6 +10,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 public final class Constants {
 
     /**
@@ -58,4 +61,14 @@ public final class Constants {
     // input device constants
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
+
+    // *****************************************************************
+    // vision constants
+    // Distance from wheel center to outside of bumper
+    private static double WHEEL_TO_OUTSIDE_BUMPER_METERS = 0.1778;
+    // Distances from camera to front bumper in meters. 
+    // TODO update once camera mount position is finalized. For now, assume camera is centered on robot.
+    public static final Translation2d cameraToFrontBumperCenter = new Translation2d(DRIVETRAIN_WHEELBASE_METERS/2.0 + WHEEL_TO_OUTSIDE_BUMPER_METERS, 0.0d);
+    public static final Translation2d frontBumperCenterToCamera = cameraToFrontBumperCenter.times(-1);
+
 }

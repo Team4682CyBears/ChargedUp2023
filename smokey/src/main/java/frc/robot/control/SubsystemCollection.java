@@ -19,6 +19,7 @@ public class SubsystemCollection
     // declaring and init subsystems  
     private DrivetrainSubsystem driveTrainSubsystem = null;
     private NavxSubsystem navxSubsystem = null;
+    private CameraSubsystem cameraSubsystem = null;
 
     /**
      * Default constructor
@@ -30,6 +31,9 @@ public class SubsystemCollection
 
     public NavxSubsystem getNavxSubsystem() { return navxSubsystem; }
     public void setNavxSubsystem(NavxSubsystem value) { navxSubsystem = value; }
+
+    public CameraSubsystem getCameraSubsystem() { return cameraSubsystem; }
+    public void setCameraSubsystem(CameraSubsystem value) {cameraSubsystem = value; }
 
     public ManualInputInterfaces getManualInputInterfaces() { return manualInput; }
     public void setManualInputInterfaces(ManualInputInterfaces value) { manualInput = value; }
