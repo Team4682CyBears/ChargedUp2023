@@ -35,7 +35,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
         autonomousModeChooser.addOption("Distance Test 1", AutonomousMode.DISTANCE_TEST_1);
         autonomousModeChooser.addOption("Distance Test 2", AutonomousMode.DISTANCE_TEST_2);
-        autonomousModeChooser.addOption("Distance Test 2", AutonomousMode.DISTANCE_TEST_3);
+        autonomousModeChooser.addOption("Distance Test 3", AutonomousMode.DISTANCE_TEST_3);
 
 
         SmartDashboard.putData(autonomousModeChooser);
@@ -98,7 +98,7 @@ public class AutonomousChooser {
         resetRobotPose(command);
 
         // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(0.1, 0, 0, 1.0));
+        command.addCommands(driveSegment(0.4, 0, 0, 0.25));
 
         return command;
     }
