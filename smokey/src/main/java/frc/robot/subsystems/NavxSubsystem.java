@@ -12,9 +12,14 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+import java.lang.Math;
 
 public class NavxSubsystem extends SubsystemBase {
 
@@ -31,6 +36,15 @@ public class NavxSubsystem extends SubsystemBase {
    */
   public void zeroGyroscope() {
         swerveNavx.zeroYaw();
+  }
+
+  public boolean isLevel() {
+    return (Math.abs(swerveNavx.getRoll())<Constants.twoDegressInRadians) && (Math.abs(swerveNavx.getPitch())<Constants.twoDegressInRadians);
+  }
+
+  public Quaternion getQuaterion() {
+    Quaternion q = new Quaternion(swerveNavx.getQuaternionW(), swerveNavx.getQuaternionX(), swerveNavx.getQuaternionY(),swerveNavx.getQuaternionZ());
+    return (q);
   }
 
   /**
