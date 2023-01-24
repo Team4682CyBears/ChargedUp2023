@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.commands.AutoBalanceCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.subsystems.NavxSubsystem;
 
 
@@ -103,9 +104,12 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
           // No requirements because we don't need to interrupt anything
           .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
-        // Right Bumper runs auto-balancing routine. 
+        // Right Bumper runs auto-balancing step-based routine. 
         new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
-          .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+          .onTrue(new AutoBalanceStepCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+        // Right Bumper runs auto-balancing smoothed routine. 
+        new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+          .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
         // A button prints NavX state.  TODO remove after debug
         new JoystickButton(driverController, XboxController.Button.kA.value)
           .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::printState));
