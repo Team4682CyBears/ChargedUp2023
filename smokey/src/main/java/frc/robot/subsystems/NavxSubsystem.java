@@ -15,6 +15,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,7 +36,11 @@ public class NavxSubsystem extends SubsystemBase {
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
-        swerveNavx.zeroYaw();
+    if(swerveNavx.isCalibrating()){
+      // From the NavX Docs: This method has no effect if the sensor is currently calibrating
+      System.out.println("WARNING: Gyro is calibrating. Zeroing gyro has no effect while it is calibrating.");
+    }
+    swerveNavx.zeroYaw();
   }
 
   public boolean isLevel() {
@@ -47,16 +52,18 @@ public class NavxSubsystem extends SubsystemBase {
     return (q);
   }
 
-  public double[] getYawPitchRoll(){
-    double[] result = {swerveNavx.getYaw(), swerveNavx.getPitch(), swerveNavx.getRoll()};
-    return result;
+  public Rotation3d getRollPitchYaw(){
+    double degreesToRadians = 1 / 180 * Math.PI;
+    return new Rotation3d(
+      swerveNavx.getRoll() * degreesToRadians, 
+      swerveNavx.getPitch() * degreesToRadians, 
+      swerveNavx.getYaw() * degreesToRadians);
   }
 
   public void printState(){
     System.out.println("**** NavX State ****");
     System.out.println("Quaternion ------>" + this.getQuaterion());
-    double[] r = this.getYawPitchRoll();
-    System.out.println("Yaw,Pitch,Roll ------>" + r[0] + " , " + r[1] + " , " + r[2]);
+    System.out.println("Roll, Pitch, Yaw ------>" + this.getRollPitchYaw());
     System.out.println("Is the robot level? -------->" + this.isLevel());
   }
 

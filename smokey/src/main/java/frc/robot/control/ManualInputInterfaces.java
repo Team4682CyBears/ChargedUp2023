@@ -103,8 +103,10 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
           // No requirements because we don't need to interrupt anything
           .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
+        // Right Bumper runs auto-balancing routine. 
         new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
           .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+        // A button prints NavX state.  TODO remove after debug
         new JoystickButton(driverController, XboxController.Button.kA.value)
           .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::printState));
       }
