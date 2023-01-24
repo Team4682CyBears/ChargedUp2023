@@ -10,6 +10,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.*;
+
 import static frc.robot.Constants.*;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
@@ -18,6 +20,7 @@ import frc.robot.swerveHelpers.WcpModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -55,6 +58,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
+  private static final int PositionHistoryWindowTimeMilliseconds = 5000;
+  private static final int CommandSchedulerPeriodMilliseconds = 20;
+  private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
+  private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
@@ -76,6 +83,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SwerveDriveOdometry swerveOdometry = null;
   private SubsystemCollection currentCollection = null;
   private Pose2d currentPosition = new Pose2d();
+  ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -154,6 +162,56 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * A method to obtain the distance along the segments recently traveled
+   * @param historicDurationMilliseconds - the total milliseconds to look back in time
+   * @return A double of the distance traveled by the robot in meters over the time window requested
+   */
+  public double getRecentTotalDistanceInMeters(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> distances = this.getRecentDistanceTraveled(historicDurationMilliseconds);
+    double resultDistance = 0.0;
+    for(int inx = 0; inx < distances.size(); ++inx)
+    {
+      resultDistance += distances.get(inx);
+    }
+    return resultDistance;
+  }
+
+  /**
+   * A method to obtain the average velocity of the robot recently traveled
+   * @param historicDurationMilliseconds - the total milliseconds to look back in time
+   * @return A double of the velocity of the robot in meters per second over the time window requested
+   */
+  public double getRecentAverageVelocityInMetersPerSecond(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> recentVelocities = this.getRecentVelocities(historicDurationMilliseconds);
+    double sumOfVelocities = 0.0;
+    int countOfDeltas = 0;
+    for(; countOfDeltas < recentVelocities.size(); ++countOfDeltas)
+    {
+      sumOfVelocities += recentVelocities.get(countOfDeltas);
+    }
+    return sumOfVelocities/countOfDeltas;
+  }
+
+  /**
+   * A method to obtain the acceleration experienced by the robot over the 
+   * @param historicDurationMilliseconds - the total milliseconds to look back in time
+   * @return A double of the average acceleration experienced by the robot in meters/second^2 for the time window requested
+   */
+  public double getRecentAverageAccelerationInMetersPerSecondSquared(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> recentAccelerations = this.getRecentAccelerations(historicDurationMilliseconds);
+    double sumOfAccelerations = 0.0;
+    int countOfDeltas = 0;
+    for(; countOfDeltas < recentAccelerations.size(); ++countOfDeltas)
+    {
+      sumOfAccelerations += recentAccelerations.get(countOfDeltas);
+    }
+    return sumOfAccelerations/countOfDeltas;
+  }
+
+  /**
    * A method to set the current position of the robot
    * @param updatedPosition - the new position of the robot
    */
@@ -169,6 +227,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // refresh the position of the robot
     this.refreshRobotPosition();
+    // store the recalculated position
+    this.storeUpdatedPosition();
 
     // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
     // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
@@ -262,4 +322,110 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("BackRightAngleDegrees", positions[3].angle.getDegrees());
     SmartDashboard.putNumber("BackRightDistanceMeters", positions[3].distanceMeters);
   }
+
+  /**
+   * A method devoted to making sure the current position is added to the historic position listing
+   * as well as maintaining the size of the list at a predefined maximum
+   */
+  private void storeUpdatedPosition()
+  {
+    this.historicPositions.add(currentPosition);
+    while(this.historicPositions.size() > PositionHistoryStorageSize)
+    {
+      this.historicPositions.remove();
+    }
+  }
+
+  /**
+   * Method to get the recent translations
+   * @param historicDurationMilliseconds - the historic time window in milliseconds of points to establish translations
+   * @return the array of translations associated with the points at hand
+   */
+  private ArrayList<Translation2d> getRecentTranslations(int historicDurationMilliseconds)
+  {
+    // first get the list of translations between the Pos2d's stored
+    int intendedCount = historicDurationMilliseconds/CommandSchedulerPeriodMilliseconds;
+    int maxCount = (intendedCount>PositionHistoryStorageSize ? PositionHistoryStorageSize : intendedCount);
+    int currentCount = 0;
+    ArrayList<Translation2d> translations = new ArrayList<Translation2d>();
+    Pose2d lastPosition = null;
+    Pose2d currentPosition = null;
+    for (Iterator<Pose2d> iter = this.historicPositions.iterator(); iter.hasNext() && currentCount < maxCount; ++currentCount ) {
+      currentPosition = iter.next();
+      // assume the first position has no translation (even though it likely actually have had one)
+      if(lastPosition != null)
+      {
+        Transform2d nextTransform = new Transform2d(lastPosition, currentPosition);
+        translations.add(nextTransform.getTranslation());
+      }
+      lastPosition = currentPosition;
+    }
+    return translations;
+  }
+
+  /**
+   * Method to obtain the array of distances recently traveled
+   * @param historicDurationMilliseconds - the historic time window in milliseconds of points to establish distances
+   * @return array of distances traveled recently
+   */
+  private ArrayList<Double> getRecentDistanceTraveled(int historicDurationMilliseconds)
+  {
+    ArrayList<Translation2d> translations = this.getRecentTranslations(historicDurationMilliseconds);
+    ArrayList<Double> resultDistances = new ArrayList<Double>();
+    Translation2d previousTranslation = null;
+    Translation2d currentTranslation = null;
+    for(int inx = 0; inx < translations.size(); ++inx)
+    {
+      currentTranslation = translations.get(inx);
+      if(previousTranslation != null)
+      {
+        resultDistances.add(previousTranslation.getDistance(currentTranslation));
+      }
+      previousTranslation = currentTranslation;
+    }
+    return resultDistances;
+  }
+
+  /**
+   * Method to obtain the array of velocities recently traveled
+   * @param historicDurationMilliseconds - the historic time window in milliseconds to obtain velocities from
+   * @return array of velocities traveled recently
+   */
+  private ArrayList<Double> getRecentVelocities(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> recentDistances = this.getRecentDistanceTraveled(historicDurationMilliseconds);
+    ArrayList<Double> resultVelocities = new ArrayList<Double>();
+    for(int inx = 0; inx < recentDistances.size(); ++inx)
+    {
+      double currentDistance = recentDistances.get(inx);
+      double currentVelocity = currentDistance * CommandSchedulerCyclesPerSecond; // assumed cycle time and that the current distance is for a 20 ms movement
+      resultVelocities.add(currentVelocity);
+    }
+    return resultVelocities;
+  }
+
+  /**
+   * Method to obtain the array of accelerations recently having occured
+   * @param historicDurationMilliseconds - the historic time window in milliseconds to obtain accelerations from
+   * @return array of accelerations traveled recently
+   */
+  private ArrayList<Double> getRecentAccelerations(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> recentVelocities = this.getRecentVelocities(historicDurationMilliseconds);
+    ArrayList<Double> resultAccelerations = new ArrayList<Double>();
+    Double currentVelocity = null;
+    Double previousVelocity = null;
+    for(int inx = 0; inx < recentVelocities.size(); ++inx)
+    {
+      currentVelocity = recentVelocities.get(inx);
+      if(previousVelocity != null)
+      {
+        double currentAcceleration = (currentVelocity - previousVelocity) * CommandSchedulerCyclesPerSecond; // assumed cycle time and that the current distance is for a 20 ms movement
+        resultAccelerations.add(currentAcceleration);
+      }
+      previousVelocity = currentVelocity;
+    }
+    return resultAccelerations;
+  }
+
 }
