@@ -44,8 +44,9 @@ public class AutoBalanceCommand extends CommandBase{
     // So, we have to command the robot in gyro(field)-oriented drive. 
     // Even if the gyro is not properly oriented to the field, this will still 
     // drive the robot up the ramp.
-    drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-      velocityVec.getX(), velocityVec.getY(), 0.0d, navxsubsystem.getGyroscopeRotation()));
+    //drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+    //  velocityVec.getX(), velocityVec.getY(), 0.0d, navxsubsystem.getGyroscopeRotation()));
+    drivetrainsubsystem.drive(new ChassisSpeeds(velocityVec.getX(), velocityVec.getY(), 0.0d));
   }
 
   // Called once the command ends or is interrupted.

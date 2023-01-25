@@ -65,8 +65,9 @@ public class AutoBalanceStepCommand extends CommandBase{
     // So, we have to command the robot in gyro(field)-oriented drive. 
     // Even if the gyro is not properly oriented to the field, this will still 
     // drive the robot up the ramp.
-    drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-      xVelocity, yVelocity, rotVelocity, navxsubsystem.getGyroscopeRotation()));
+    // drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+    //  xVelocity, yVelocity, rotVelocity, navxsubsystem.getGyroscopeRotation()));
+    drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
     // TODO wondering if these short bursts of driving make the ramp more wobbly
     // would smooth slow driving be better?
     if (driveTimer.hasElapsed(this.driveDurationSecondsValue))
