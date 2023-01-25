@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.common.QuaternionUtils;
+import frc.robot.common.VectorUtils;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj.Timer;
 
 import java.lang.Math;
 
-
+/**
+ * Implements a command to perform a single step of an auto balancing routine. 
+ * Intended to be called in a loop as AutoBalanceStepCommand.repeatedly().until(navxsubsystem.isLevel())
+ */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
   private Timer waitTimer = new Timer();
@@ -18,6 +21,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double xVelocity = 0.0;
   private double yVelocity = 0.0;
   private double rotVelocity = 0.0;
+  // wait duration needs to be sufficiently long to allow the ramp to settle for the navx to take another reading
   private double waitDurationSecondsValue = .5;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.25;  
@@ -26,20 +30,24 @@ public class AutoBalanceStepCommand extends CommandBase{
   NavxSubsystem navxsubsystem = null; 
   DrivetrainSubsystem drivetrainsubsystem = null;
 
+  /**
+   * A constructor for auto balance step command
+   * @param drivetrainSubsystem
+   * @param navxsubsystem
+   */
+  public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
+    this.navxsubsystem = navxsubsystem;
+    this.drivetrainsubsystem = drivetrainSubsystem;
 
-    public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
-      this.navxsubsystem = navxsubsystem;
-      this.drivetrainsubsystem = drivetrainSubsystem;
+    // do not need to add Navx as a requirement because it is read-only
+    addRequirements(drivetrainSubsystem);
+  }
 
-      // do not need to add Navx as a requirement because it is read-only
-      addRequirements(drivetrainSubsystem);
-    }
-
-      // Called when the command is initially scheduled.
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
-    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getPitchRollYaw());
+    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     xVelocity = velocityVec.getX();
     yVelocity = velocityVec.getY();
@@ -49,27 +57,15 @@ public class AutoBalanceStepCommand extends CommandBase{
     waitTimer.reset();
     driveTimer.start();
     done = false;
-
-    System.out.println("I AM PRINTING HERE ******************************");
-    System.out.println("This is the X velocity ------>" + xVelocity);
-    System.out.println("This is the Y velocity ------>" + yVelocity);
-    navxsubsystem.printState();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // The angle of steepest ascent above is w.r.t. the gyro's frame of reference
-    // therefore the X and Y velocities calculated are also w.r.t. the gyro's FoR.
-    // So, we have to command the robot in gyro(field)-oriented drive. 
-    // Even if the gyro is not properly oriented to the field, this will still 
-    // drive the robot up the ramp.
-    // drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-    //  xVelocity, yVelocity, rotVelocity, navxsubsystem.getGyroscopeRotation()));
+    // drive along the vector of steepest ascent
     drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
-    // TODO wondering if these short bursts of driving make the ramp more wobbly
-    // would smooth slow driving be better?
+    // drive time interval followed by wait time interval
     if (driveTimer.hasElapsed(this.driveDurationSecondsValue))
     {
       drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));

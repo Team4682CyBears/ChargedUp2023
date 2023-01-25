@@ -10,17 +10,15 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.common.QuaternionUtils;
+import frc.robot.common.EulerAngle;
+import frc.robot.common.VectorUtils;
 
 import java.lang.Math;
 
@@ -45,33 +43,43 @@ public class NavxSubsystem extends SubsystemBase {
     swerveNavx.zeroYaw();
   }
 
+  /**
+   * Determines if the navx is level.  
+   * @return true if level, false otherwise
+   */
   public boolean isLevel() {
     return (Math.abs(swerveNavx.getRoll())<Constants.navxTolDegrees) && (Math.abs(swerveNavx.getPitch())<Constants.navxTolDegrees);
   }
 
+  /**
+   * A method to get the quaternion representation of the navx pose. 
+   * @return quaternion
+   */
   public Quaternion getQuaterion() {
     Quaternion q = new Quaternion(swerveNavx.getQuaternionW(), swerveNavx.getQuaternionX(), swerveNavx.getQuaternionY(),swerveNavx.getQuaternionZ());
     return (q);
   }
 
   /**
-   * returns navx pitch, roll, yaw in degrees
-   * @return
+   * returns navx euler angle (pitch, roll, yaw) in degrees
+   * @return EulerAngle
    */
-  public Translation3d getPitchRollYaw(){
-    return new Translation3d(
+  public EulerAngle getEulerAngle(){
+    return new EulerAngle(
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
       swerveNavx.getYaw());
   }
 
+  /**
+   * a method to print relevant state of the navx
+   */
   public void printState(){
     System.out.println("**** NavX State ****");
     System.out.println("Quaternion ------>" + this.getQuaterion());
-    System.out.println("Roll, Pitch, Yaw ------>" + this.getPitchRollYaw());
+    System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
     System.out.println("Is the robot level? -------->" + this.isLevel());
-    //System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getQuaterion()));
-    System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getPitchRollYaw()));
+    System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
   }
 
   /**

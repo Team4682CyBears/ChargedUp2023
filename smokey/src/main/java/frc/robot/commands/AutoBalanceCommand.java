@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.common.QuaternionUtils;
+import frc.robot.common.VectorUtils;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,22 +9,27 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import java.lang.Math;
 
-
+/**
+ * Implements a command to perform a auto balancing routine. 
+ */
 public class AutoBalanceCommand extends CommandBase{
   private double targetVelocity = 0.3;
 
   NavxSubsystem navxsubsystem = null; 
   DrivetrainSubsystem drivetrainsubsystem = null;
 
-    public AutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
-      this.navxsubsystem = navxsubsystem;
-      this.drivetrainsubsystem = drivetrainSubsystem;
+  /**
+   * Constructor for auto balance command.
+   */
+  public AutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
+    this.navxsubsystem = navxsubsystem;
+    this.drivetrainsubsystem = drivetrainSubsystem;
 
-      // do not need to add Navx as a requirement because it is read-only
-      addRequirements(drivetrainSubsystem);
-    }
+    // do not need to add Navx as a requirement because it is read-only
+    addRequirements(drivetrainSubsystem);
+  }
 
-      // Called when the command is initially scheduled.
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -34,18 +39,10 @@ public class AutoBalanceCommand extends CommandBase{
   @Override
   public void execute()
   { 
-    // Not sure if it's OK to read the NavX on every time tick.  
+    // Not sure if it's too computationally expensive to read the NavX on every time tick.  
     // If this costs too much, could read on every Nth time through the loop   
-    //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
-    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getPitchRollYaw());
+    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
-    // The angle of steepest ascent above is w.r.t. the gyro's frame of reference
-    // therefore the X and Y velocities calculated are also w.r.t. the gyro's FoR.
-    // So, we have to command the robot in gyro(field)-oriented drive. 
-    // Even if the gyro is not properly oriented to the field, this will still 
-    // drive the robot up the ramp.
-    //drivetrainsubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-    //  velocityVec.getX(), velocityVec.getY(), 0.0d, navxsubsystem.getGyroscopeRotation()));
     drivetrainsubsystem.drive(new ChassisSpeeds(velocityVec.getX(), velocityVec.getY(), 0.0d));
   }
 
