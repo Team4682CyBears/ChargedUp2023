@@ -49,6 +49,13 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-305.5-180.0-117.0); 
 
     // *****************************************************************
+    // tolerences for odometry/movement
+    //6 inches in meters
+    public static final double positinonToleranceMeters = 0.1524;
+    // 4 degrees in radians
+    public static final double rotationToleranceRadians = Math.toRadians(4.0);
+    
+    // *****************************************************************
     // standard stuff constants - motors rotation, etc.
     public static final double DegreesPerRevolution = 360.0;
     // NEO maximum RPM 

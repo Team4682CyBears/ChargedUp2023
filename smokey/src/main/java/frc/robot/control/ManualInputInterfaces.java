@@ -11,6 +11,9 @@
 package frc.robot.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -18,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.Constants.*;
 import frc.robot.commands.DriveToAprilTagCommand;
+import frc.robot.commands.DriveToRelativeLocationCommand;
 
 public class ManualInputInterfaces
 {
@@ -97,13 +101,33 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
                 // No requirements because we don't need to interrupt anything
                 .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
-        new JoystickButton(driverController, XboxController.Button.kA.value)
+        new JoystickButton(driverController, XboxController.Button.kStart.value)
                 .onTrue(new InstantCommand(subsystemCollection.getCameraSubsystem()::getCameraPositionFromAprilTag));
 
         // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
 //              // No requirements because we don't need to interrupt anything
 //              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
+      
+        // Drive the robot forward 1 meter
+        new JoystickButton(driverController, XboxController.Button.kX.value)
+          .onTrue(new DriveToRelativeLocationCommand(
+            subsystemCollection.getDriveTrainSubsystem(), 
+            subsystemCollection.getNavxSubsystem(), 
+            new Transform2d(new Translation2d(1.0, 0.0), new Rotation2d(0.0))));
+        // Drive the robot right 1 meter
+        new JoystickButton(driverController, XboxController.Button.kY.value)
+          .onTrue(new DriveToRelativeLocationCommand(
+            subsystemCollection.getDriveTrainSubsystem(), 
+            subsystemCollection.getNavxSubsystem(), 
+            new Transform2d(new Translation2d(0.0, 1.0), new Rotation2d(0.0))));
+        // Rotate the robot clockwise 90 degrees
+        new JoystickButton(driverController, XboxController.Button.kA.value)
+          .onTrue(new DriveToRelativeLocationCommand(
+            subsystemCollection.getDriveTrainSubsystem(), 
+            subsystemCollection.getNavxSubsystem(), 
+            new Transform2d(new Translation2d(0.0, 0.0), new Rotation2d(Math.PI/2))));
+          
       }
     }
   }
