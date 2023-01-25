@@ -108,7 +108,7 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
           .onTrue(new AutoBalanceStepCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
         // Right Bumper runs auto-balancing smoothed routine. 
-        new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+        new JoystickButton(driverController, XboxController.Button.kLeftBumper.value)
           .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
         // A button prints NavX state.  TODO remove after debug
         new JoystickButton(driverController, XboxController.Button.kA.value)

@@ -11,7 +11,7 @@ import java.lang.Math;
 
 
 public class AutoBalanceCommand extends CommandBase{
-  private double targetVelocity = 0.25;
+  private double targetVelocity = 0.3;
 
   NavxSubsystem navxsubsystem = null; 
   DrivetrainSubsystem drivetrainsubsystem = null;

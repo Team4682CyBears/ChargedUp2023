@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
 
-public class AutoBalanceCommand extends CommandBase{
+public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
   private Timer waitTimer = new Timer();
   private boolean done = false;
@@ -27,7 +27,7 @@ public class AutoBalanceCommand extends CommandBase{
   DrivetrainSubsystem drivetrainsubsystem = null;
 
 
-    public AutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
+    public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
       this.navxsubsystem = navxsubsystem;
       this.drivetrainsubsystem = drivetrainSubsystem;
 

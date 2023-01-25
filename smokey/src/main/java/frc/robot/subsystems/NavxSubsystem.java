@@ -16,9 +16,11 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.common.QuaternionUtils;
 
 import java.lang.Math;
 
@@ -52,12 +54,12 @@ public class NavxSubsystem extends SubsystemBase {
     return (q);
   }
 
-  public Rotation3d getRollPitchYaw(){
-    double degreesToRadians = 1 / 180 * Math.PI;
-    return new Rotation3d(
-      swerveNavx.getRoll() * degreesToRadians, 
-      swerveNavx.getPitch() * degreesToRadians, 
-      swerveNavx.getYaw() * degreesToRadians);
+  public Translation3d getRollPitchYaw(){
+    double degreesToRadians = (1 / 180) * Math.PI;
+    return new Translation3d(
+      swerveNavx.getRoll(), 
+      swerveNavx.getPitch(), 
+      swerveNavx.getYaw());
   }
 
   public void printState(){
@@ -65,6 +67,7 @@ public class NavxSubsystem extends SubsystemBase {
     System.out.println("Quaternion ------>" + this.getQuaterion());
     System.out.println("Roll, Pitch, Yaw ------>" + this.getRollPitchYaw());
     System.out.println("Is the robot level? -------->" + this.isLevel());
+    System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getQuaterion()));
   }
 
   /**
