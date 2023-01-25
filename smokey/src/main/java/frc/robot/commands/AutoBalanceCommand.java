@@ -36,7 +36,8 @@ public class AutoBalanceCommand extends CommandBase{
   { 
     // Not sure if it's OK to read the NavX on every time tick.  
     // If this costs too much, could read on every Nth time through the loop   
-    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
+    //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
+    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getPitchRollYaw());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     // The angle of steepest ascent above is w.r.t. the gyro's frame of reference
     // therefore the X and Y velocities calculated are also w.r.t. the gyro's FoR.

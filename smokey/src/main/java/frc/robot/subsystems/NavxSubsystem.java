@@ -54,20 +54,24 @@ public class NavxSubsystem extends SubsystemBase {
     return (q);
   }
 
-  public Translation3d getRollPitchYaw(){
-    double degreesToRadians = (1 / 180) * Math.PI;
+  /**
+   * returns navx pitch, roll, yaw in degrees
+   * @return
+   */
+  public Translation3d getPitchRollYaw(){
     return new Translation3d(
-      swerveNavx.getRoll(), 
       swerveNavx.getPitch(), 
+      swerveNavx.getRoll(), 
       swerveNavx.getYaw());
   }
 
   public void printState(){
     System.out.println("**** NavX State ****");
     System.out.println("Quaternion ------>" + this.getQuaterion());
-    System.out.println("Roll, Pitch, Yaw ------>" + this.getRollPitchYaw());
+    System.out.println("Roll, Pitch, Yaw ------>" + this.getPitchRollYaw());
     System.out.println("Is the robot level? -------->" + this.isLevel());
-    System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getQuaterion()));
+    //System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getQuaterion()));
+    System.out.println("SteepestAscent --->" + QuaternionUtils.getAngleOfSteepestAscent(getPitchRollYaw()));
   }
 
   /**

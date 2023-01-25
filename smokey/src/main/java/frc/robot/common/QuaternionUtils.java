@@ -20,6 +20,7 @@ public class QuaternionUtils{
         return new Translation3d(r.getX(), r.getY(), r.getZ());
     }
 
+    /**
     public static Translation2d getAngleOfSteepestAscent(Quaternion robotPose){
         final Translation3d xyPlaneNormal = new Translation3d(0.0d, 0.0d, 1.0d);
         final Translation3d robotPoseNormal = rotateByQuaternion(xyPlaneNormal, robotPose);
@@ -33,5 +34,20 @@ public class QuaternionUtils{
         System.out.println("steepestDescent: " + steepestDescent);
         return new Translation2d(-1.0 * steepestDescent.getX(), -1.0 * steepestDescent.getY());
     }
+    */
 
+    /**
+     * Return a vector represting the angle of steepest ascent given pitch, yaw, roll
+     * @param robotPose Translation3d. x is pitch, y is roll, z is yaw
+     * @return Translation2d - the x,y vector specifying the direction of ascent
+     */
+    public static Translation2d getAngleOfSteepestAscent(Translation3d robotPose)
+    {
+        // Move X proportional to the sin of the roll (rotation about y)
+        // Move Y proportional to the sin or the pitch (rotation about x)
+        return new Translation2d(
+            Math.sin(Math.toRadians(robotPose.getY())),
+            Math.sin(Math.toRadians(robotPose.getX())));
+
+    }
 }

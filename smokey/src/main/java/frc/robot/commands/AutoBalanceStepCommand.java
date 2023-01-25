@@ -38,7 +38,8 @@ public class AutoBalanceStepCommand extends CommandBase{
       // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
+    //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
+    Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getPitchRollYaw());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     xVelocity = velocityVec.getX();
     yVelocity = velocityVec.getY();
