@@ -10,6 +10,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -28,9 +29,9 @@ public class DriveToRelativeLocationCommand extends CommandBase{
 
   private final Transform2d relativeMovement;
   private Pose2d finalPose = new Pose2d();
-  private final PIDController xPID = new PIDController(0.05, 0.0, 0.0);
-  private final PIDController yPID = new PIDController(0.05, 0.0, 0.0);
-  private final PIDController rotPID = new PIDController(0.05, 0.0, 0.0);
+  private final PIDController xPID = new PIDController(0.05, 0.05, 0.0);
+  private final PIDController yPID = new PIDController(0.05, 0.05, 0.0);
+  private final PIDController rotPID = new PIDController(0.05, 0.05, 0.0);
 
   /**
    * Creates a new DriveToRelativeLocationCommand.
@@ -78,9 +79,9 @@ public class DriveToRelativeLocationCommand extends CommandBase{
     Pose2d currentPose = drivetrain.getRobotPosition();
     drivetrain.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
-      xPID.calculate(currentPose.getX()),
-      yPID.calculate(currentPose.getY()),
-      rotPID.calculate(currentPose.getRotation().getRadians()),
+      clamp(xPID.calculate(currentPose.getX())),
+      clamp(yPID.calculate(currentPose.getY())),
+      clamp(rotPID.calculate(currentPose.getRotation().getRadians())),
       navx.getGyroscopeRotation()));
   }
 
@@ -96,4 +97,17 @@ public class DriveToRelativeLocationCommand extends CommandBase{
     // we are done when all three PIDs are at their setpoints
     return xPID.atSetpoint() && yPID.atSetpoint() && rotPID.atSetpoint();
   }
+
+  /**
+   * Clamp velocities between [-1..1]
+   * @param velocity
+   * @return new velocity
+   */
+  public double clamp(double velocity)
+  {
+    // Velocities clamped between [-1..1]
+    // TODO restore these to full speed (-1,1) once testing is complete
+    return MathUtil.clamp(velocity, -0.25,0.25);
+  }
+
 }
