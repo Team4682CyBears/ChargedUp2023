@@ -33,9 +33,7 @@ public class AutonomousChooser {
 
         autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
-        autonomousModeChooser.addOption("Distance Test 1", AutonomousMode.DISTANCE_TEST_1);
-        autonomousModeChooser.addOption("Distance Test 2", AutonomousMode.DISTANCE_TEST_2);
-        autonomousModeChooser.addOption("Distance Test 3", AutonomousMode.DISTANCE_TEST_3);
+        autonomousModeChooser.addOption("Distance Test", AutonomousMode.DISTANCE_TEST);
 
 
         SmartDashboard.putData(autonomousModeChooser);
@@ -81,35 +79,13 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getDistanceTest1() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command);
-
-        // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(0.2, 0, 0, 1.0));
-
-        return command;
-    }
-
-    public Command getDistanceTest2() {
+    public Command getDistanceTest() {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command);
 
         // drive backward and then turn counterclockwise
         command.addCommands(driveSegment(0.4, 0, 0, 0.25));
-
-        return command;
-    }
-
-    public Command getDistanceTest3() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command);
-
-        // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(0.2, 0, 0, 0.5));
 
         return command;
     }
@@ -135,17 +111,13 @@ public class AutonomousChooser {
                 return getTestAutoForward();
             case TEST_AUTO_BACKWARD :
                 return getTestAutoBackward();
-            case DISTANCE_TEST_1 :
-                return getDistanceTest1();
-            case DISTANCE_TEST_2 :
-                return getDistanceTest2();
-            case DISTANCE_TEST_3 :
-                return getDistanceTest3();
+            case DISTANCE_TEST :
+                return getDistanceTest();
         }
         return new InstantCommand();
     }
 
     private enum AutonomousMode {
-        TEST_AUTO_FORWARD, TEST_AUTO_BACKWARD, DISTANCE_TEST_1, DISTANCE_TEST_2, DISTANCE_TEST_3;
+        TEST_AUTO_FORWARD, TEST_AUTO_BACKWARD, DISTANCE_TEST;
     }
 }
