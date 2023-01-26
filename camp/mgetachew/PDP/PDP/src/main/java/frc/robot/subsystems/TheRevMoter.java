@@ -27,7 +27,7 @@ public class TheRevMoter {
     public static PowerDistribution getInstance() { return distroPannel; }
 
     public static double getTotalEnergy() {
-        return TheRevMoter.getInstance().getTotalEnergy();
+        return TheRevMoter.getInstance().getVoltage();
     }
 
     public static double getTotalCurrent() {
