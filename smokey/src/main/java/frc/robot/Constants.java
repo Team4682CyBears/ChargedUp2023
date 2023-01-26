@@ -50,10 +50,11 @@ public final class Constants {
 
     // *****************************************************************
     // tolerences for odometry/movement
+    public static final double oneInchInMeters = 0.0254;
     //6 inches in meters
-    public static final double positinonToleranceMeters = 0.1524;
+    public static final double positinonToleranceMeters = 2 * oneInchInMeters;
     // 4 degrees in radians
-    public static final double rotationToleranceRadians = Math.toRadians(20.0);
+    public static final double rotationToleranceRadians = Math.toRadians(4.0);
     
     // *****************************************************************
     // standard stuff constants - motors rotation, etc.
