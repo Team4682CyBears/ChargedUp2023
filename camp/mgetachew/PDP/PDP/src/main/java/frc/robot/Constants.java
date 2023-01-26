@@ -18,5 +18,5 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
  * @param <PowerDistribution>
  */
 public final class Constants{
-    PowerDistribution TheRevMoter = new PowerDistribution(1, ModuleType.kRev);
+
 }
