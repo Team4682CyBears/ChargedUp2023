@@ -7,12 +7,18 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class UltrasonicSensor extends SubsystemBase {
 
-    private final AnalogInput ultrasonic = new AnalogInput(0);
+    private static final AnalogInput ultrasonic = new AnalogInput(0);
 
     public UltrasonicSensor(){}
 
-    public double getRawValue() {
+    public static double getRawValue() {
         double rawValue = ultrasonic.getValue();
         return rawValue;
+    }
+
+    public static double getValueInInches(){
+        double UltrasonicRawValue = getRawValue();
+        double currentDistanceCentimeters = UltrasonicRawValue * 0.125 * 0.39;
+        return currentDistanceCentimeters;
     }
 }
