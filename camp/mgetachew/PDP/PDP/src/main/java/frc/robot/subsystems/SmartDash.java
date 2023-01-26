@@ -13,6 +13,9 @@ public class SmartDash extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    TheRevMoter.driveTheMotor();
+
        // Get the total current of all channels.
        double totalCurrent = TheRevMoter.getTotalCurrent();
        SmartDashboard.putNumber("Total Current", totalCurrent);
