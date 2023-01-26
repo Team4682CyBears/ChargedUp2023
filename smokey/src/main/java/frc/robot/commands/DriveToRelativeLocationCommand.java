@@ -107,7 +107,7 @@ public class DriveToRelativeLocationCommand extends CommandBase{
   {
     // Velocities clamped between [-1..1]
     // TODO restore these to full speed (-1,1) once testing is complete
-    return MathUtil.clamp(velocity, -0.25,0.25);
+    return MathUtil.clamp(velocity, -0.4,0.4);
   }
 
 }
