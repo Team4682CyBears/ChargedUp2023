@@ -29,9 +29,9 @@ public class DriveToRelativeLocationCommand extends CommandBase{
 
   private final Transform2d relativeMovement;
   private Pose2d finalPose = new Pose2d();
-  private final PIDController xPID = new PIDController(0.05, 0.05, 0.0);
-  private final PIDController yPID = new PIDController(0.05, 0.05, 0.0);
-  private final PIDController rotPID = new PIDController(0.05, 0.05, 0.0);
+  private final PIDController xPID = new PIDController(0.05, 0.005, 0.0);
+  private final PIDController yPID = new PIDController(0.05, 0.005, 0.0);
+  private final PIDController rotPID = new PIDController(0.05, 0.005, 0.0);
 
   /**
    * Creates a new DriveToRelativeLocationCommand.
@@ -44,8 +44,7 @@ public class DriveToRelativeLocationCommand extends CommandBase{
     NavxSubsystem navxSubsystem,
     Transform2d relativeMovement) 
     {
-    this.relativeMovement = relativeMovement;
-    rotPID.enableContinuousInput(-1 * Math.PI, Math.PI);  
+    this.relativeMovement = relativeMovement; 
 
     this.drivetrain = drivetrainSubsystem;
     this.navx = navxSubsystem;
@@ -63,6 +62,7 @@ public class DriveToRelativeLocationCommand extends CommandBase{
     yPID.setSetpoint(finalPose.getY());
     rotPID.setSetpoint(finalPose.getRotation().getRadians());
 
+    rotPID.enableContinuousInput(-1 * Math.PI, Math.PI); 
     // setup PID tolerences
     xPID.setTolerance(Constants.positinonToleranceMeters);
     yPID.setTolerance(Constants.positinonToleranceMeters);
