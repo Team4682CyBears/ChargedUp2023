@@ -101,8 +101,8 @@ public class ManualInputInterfaces
         new JoystickButton(driverController, XboxController.Button.kBack.value)
                 // No requirements because we don't need to interrupt anything
                 .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::zeroGyroscope));
-        new JoystickButton(driverController, XboxController.Button.kStart.value)
-                .onTrue(new InstantCommand(subsystemCollection.getCameraSubsystem()::getCameraPositionFromAprilTag));
+        //new JoystickButton(driverController, XboxController.Button.kStart.value)
+        //        .onTrue(new InstantCommand(subsystemCollection.getCameraSubsystem()::getCameraPositionFromAprilTag));
 
         // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
