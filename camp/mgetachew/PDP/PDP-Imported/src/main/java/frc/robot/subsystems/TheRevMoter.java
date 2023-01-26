@@ -14,14 +14,14 @@ public class TheRevMoter {
     }
 
     public static double getTotalEnergy() {
-        return 0;
+        return 10;
     }
 
     public static double getTotalCurrent() {
-        return 0;
+        return 10;
     }
 
     public static double getTotalPower() {
-        return 0;
+        return 10;
     }
 }
