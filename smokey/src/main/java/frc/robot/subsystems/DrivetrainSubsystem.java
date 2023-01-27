@@ -13,6 +13,8 @@ package frc.robot.subsystems;
 import java.util.*;
 
 import static frc.robot.Constants.*;
+
+import frc.robot.Constants;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -39,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * <p>
    * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
    */
-  public static final double MAX_VOLTAGE = 12.0;
+  public static final double MAX_VOLTAGE = 12.0 * Constants.DriveVoltageScalar;
 
   /**
    * The maximum velocity of the robot in meters per second.
@@ -49,6 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Gear ratio: 7.85:1. Free speed of 14.19 ft/s = 4.3251 m/s
    */
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.3251;
+  public static final double MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND * 0.15; // 0.15 a magic number based on testing
   /**
    * The maximum angular velocity of the robot in radians per second.
    * <p>
@@ -57,6 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+
 
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
   private static final int CommandSchedulerPeriodMilliseconds = 20;
@@ -83,7 +87,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SwerveDriveOdometry swerveOdometry = null;
   private SubsystemCollection currentCollection = null;
   private Pose2d currentPosition = new Pose2d();
-  ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
+  private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
+  private int counter = 0;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -149,6 +154,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
+    if(counter++ % 100 == 0)
+    {
+        System.out.println(
+            "x driveVelocity = " + updatedChassisSpeeds.vxMetersPerSecond + 
+            " Y driveVelocity = " + updatedChassisSpeeds.vyMetersPerSecond + 
+            " omega driveRotation = " + updatedChassisSpeeds.omegaRadiansPerSecond
+            );
+    }
     chassisSpeeds = updatedChassisSpeeds;
   }
 

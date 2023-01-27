@@ -12,6 +12,7 @@ package frc.robot;
 
 public final class Constants {
 
+    public final static double DriveVoltageScalar = 1.0;
     /**
      * The left-to-right distance between the drivetrain wheels
      *
