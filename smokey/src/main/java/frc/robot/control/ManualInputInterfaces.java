@@ -120,7 +120,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(-1.0, 0.0, 0.0)),
-            new ButtonPress("driverController", "kA.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
         );
 
         buttonY.whenReleased(
@@ -128,7 +128,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(1.0, 0.0, 0.0)),
-            new ButtonPress("driverController", "kY.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kY.whenReleased")).withTimeout(10.0)
         );
 
         buttonB.whenReleased(
@@ -136,7 +136,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(0.0, -1.0, 0.0)),
-            new ButtonPress("driverController", "kB.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kB.whenReleased")).withTimeout(10.0)
         );
 
         buttonX.whenReleased(
@@ -144,7 +144,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(0.0, 1.0, 0.0)),
-            new ButtonPress("driverController", "kX.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kX.whenReleased")).withTimeout(10.0)
         );
 
         buttonLeftBumper.whenReleased(
@@ -152,7 +152,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(0.0, 0.0, 180.0)),
-            new ButtonPress("driverController", "kX.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kLeftBumper.whenReleased")).withTimeout(10.0)
         );
 
         buttonRightBumper.whenReleased(
@@ -160,7 +160,7 @@ public class ManualInputInterfaces
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
               this.getTargetPosition(0.0, 0.0, -180.0)),
-            new ButtonPress("driverController", "kX.whenReleased").withTimeout(10.0))
+            new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
         );
       }
     }

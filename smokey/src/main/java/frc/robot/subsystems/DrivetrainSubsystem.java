@@ -51,7 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Gear ratio: 7.85:1. Free speed of 14.19 ft/s = 4.3251 m/s
    */
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.3251;
-  public static final double MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND * 0.15; // 0.15 a magic number based on testing
+  public static final double MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND * 0.14; // 0.14 a magic number based on testing
   /**
    * The maximum angular velocity of the robot in radians per second.
    * <p>
@@ -60,6 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+  public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.05; // 0.05 a magic number based on testing
 
 
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
@@ -205,6 +206,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
       sumOfVelocities += recentVelocities.get(countOfDeltas);
     }
     return sumOfVelocities/countOfDeltas;
+  }
+
+  /**
+   * A method to obtain the average angular velocity of the robot recently experienced
+   * @param historicDurationMilliseconds - the total milliseconds to look back in time
+   * @return A double of the angular velocity of the robot in radians per second over the time window requested
+   */
+  public double getRecentAverageAngularVelocityInRadiansPerSecond(int historicDurationMilliseconds)
+  {
+    ArrayList<Double> recentAngularVelocities = this.getRecentAngularVelocities(historicDurationMilliseconds);
+    double sumOfAngularVelocities = 0.0;
+    int countOfDeltas = 0;
+    for(; countOfDeltas < recentAngularVelocities.size(); ++countOfDeltas)
+    {
+      sumOfAngularVelocities += recentAngularVelocities.get(countOfDeltas);
+    }
+    return sumOfAngularVelocities/countOfDeltas;
   }
 
   /**
@@ -397,6 +415,30 @@ public class DrivetrainSubsystem extends SubsystemBase {
       previousTranslation = currentTranslation;
     }
     return resultDistances;
+  }
+
+  /**
+   * Method to obtain the array of angular velocities recently traveled
+   * @param historicDurationMilliseconds - the historic time window in milliseconds to obtain velocities from
+   * @return array of rotation velocities traveled recently - in radians/s
+   */
+  private ArrayList<Double> getRecentAngularVelocities(int historicDurationMilliseconds)
+  {
+    ArrayList<Translation2d> translations = this.getRecentTranslations(historicDurationMilliseconds);
+    ArrayList<Double> resultRotationVelocities = new ArrayList<Double>();
+    Translation2d previousTranslation = null;
+    Translation2d currentTranslation = null;
+    for(int inx = 0; inx < translations.size(); ++inx)
+    {
+      currentTranslation = translations.get(inx);
+      if(previousTranslation != null)
+      {
+        resultRotationVelocities.add(
+          (currentTranslation.getAngle().getRadians() - previousTranslation.getAngle().getRadians()) * CommandSchedulerCyclesPerSecond); // assumed cycle time and that the current distance is for a 20 ms movement
+      }
+      previousTranslation = currentTranslation;
+    }
+    return resultRotationVelocities;
   }
 
   /**

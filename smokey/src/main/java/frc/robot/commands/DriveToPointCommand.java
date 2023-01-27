@@ -28,7 +28,7 @@ public class DriveToPointCommand extends CommandBase
   private double totalDistanceMeters = 0.0;
 
   private double positionToleranceMeters = 0.05;
-  private double rotationToleranceRadians = 10.0 * 0.01745329;
+  private double rotationToleranceRadians = 4.0 * 0.01745329;
 
   private double accelerationMaximumDurationSeconds = 2.0;
   private double decelerationMaximumDurationSeconds = 2.0;
@@ -36,16 +36,23 @@ public class DriveToPointCommand extends CommandBase
   private double decelerationThresholdDistanceMeters = 0.0;
   private double targetMaximumVelocityMetersPerSecond = DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
   private double accelerationLinearRate = targetMaximumVelocityMetersPerSecond / accelerationMaximumDurationSeconds;
-  private double decelerationLinearRate = -1.0 * targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
+  private double decelerationLinearRate = targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
   private double targetOperationDurationSeconds = 0.0;
-  private double targetRotationRadiansPerSecond = 0.0;
+
   private double remainingRotationRadians = 0.0;
+  private double accelerationThresholdRotationRadians = 0.0;
+  private double decelerationThresholdRotationRadians = 0.0;
+  private double accelerationRotationalRate = DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND / accelerationMaximumDurationSeconds;
+  private double decelerationRotationalRate = DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND / decelerationMaximumDurationSeconds;
+  private double targetMaximumRotationRadiansPerSecond = 0.0;
   
   private boolean isTrapazoidalProfile = false;  
   private int counter = 0;
+  private int printCadence = 50; // every X cycles
 
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
+  private static final int RecentRepresentativeSampleCount = 10; // last 10 samples ... 200 ms
 
   /** 
   * Creates a new driveCommand. 
@@ -86,13 +93,13 @@ public class DriveToPointCommand extends CommandBase
 
     if(isTrapazoidalProfile)
     {
-        accelerationThresholdDistanceMeters = totalDistanceMeters - trapazoidalDistanceStartThresholdMeters;
-        decelerationThresholdDistanceMeters = trapazoidalDistanceEndThresholdMeters;
-        targetMaximumVelocityMetersPerSecond = DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
-        accelerationLinearRate = targetMaximumVelocityMetersPerSecond / accelerationMaximumDurationSeconds;
-        decelerationLinearRate = targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
+        this.accelerationThresholdDistanceMeters = totalDistanceMeters - trapazoidalDistanceStartThresholdMeters;
+        this.decelerationThresholdDistanceMeters = trapazoidalDistanceEndThresholdMeters;
+        this.targetMaximumVelocityMetersPerSecond = DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
+        this.accelerationLinearRate = targetMaximumVelocityMetersPerSecond / accelerationMaximumDurationSeconds;
+        this.decelerationLinearRate = targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
         // get target duration of operation
-        targetOperationDurationSeconds = 
+        this.targetOperationDurationSeconds = 
             this.accelerationMaximumDurationSeconds + 
             this.decelerationMaximumDurationSeconds + 
             (totalDistanceMeters - trapazoidalDistanceStartThresholdMeters - trapazoidalDistanceEndThresholdMeters) / this.targetMaximumVelocityMetersPerSecond;
@@ -100,23 +107,30 @@ public class DriveToPointCommand extends CommandBase
     }
     else
     {
-        targetMaximumVelocityMetersPerSecond = (totalDistanceMeters / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
-        accelerationThresholdDistanceMeters = 0.5 * targetMaximumVelocityMetersPerSecond * this.accelerationMaximumDurationSeconds;
-        decelerationThresholdDistanceMeters = accelerationThresholdDistanceMeters;
-        accelerationLinearRate = targetMaximumVelocityMetersPerSecond / accelerationMaximumDurationSeconds;
-        decelerationLinearRate = targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
+        this.targetMaximumVelocityMetersPerSecond = (totalDistanceMeters / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
+        this.accelerationThresholdDistanceMeters = 0.5 * targetMaximumVelocityMetersPerSecond * this.accelerationMaximumDurationSeconds;
+        this.decelerationThresholdDistanceMeters = accelerationThresholdDistanceMeters;
+        this.accelerationLinearRate = targetMaximumVelocityMetersPerSecond / accelerationMaximumDurationSeconds;
+        this.decelerationLinearRate = targetMaximumVelocityMetersPerSecond / decelerationMaximumDurationSeconds;
         // get target duration of operation
-        targetOperationDurationSeconds = this.accelerationMaximumDurationSeconds + this.decelerationMaximumDurationSeconds;
+        this.targetOperationDurationSeconds = this.accelerationMaximumDurationSeconds + this.decelerationMaximumDurationSeconds;
         System.out.println("Triangular");
     }
 
 
-    // get remaining spin
+    // get the initial spin necessary
     this.remainingRotationRadians = this.getRemainingRotationRadians();
-    this.targetRotationRadiansPerSecond =
+
+    // spin acceleration rates - we will always do this triangular for simplicity
+    double targetMaximumRotationRadiansPerSecond = (this.remainingRotationRadians / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
+    this.accelerationThresholdRotationRadians = 0.5 * targetMaximumRotationRadiansPerSecond * this.accelerationMaximumDurationSeconds;
+    this.decelerationThresholdRotationRadians = accelerationThresholdRotationRadians;
+    this.accelerationRotationalRate = targetMaximumRotationRadiansPerSecond / accelerationMaximumDurationSeconds;
+    this.decelerationRotationalRate = targetMaximumRotationRadiansPerSecond / decelerationMaximumDurationSeconds;
+    this.targetMaximumRotationRadiansPerSecond =
         (this.remainingRotationRadians / this.targetOperationDurationSeconds > DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) ?
-        DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND:
-        this.remainingRotationRadians / (this.targetOperationDurationSeconds * CommandSchedulerCyclesPerSecond);
+        DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND :
+        this.remainingRotationRadians / this.targetOperationDurationSeconds;
 
     // make this class start executing
     done = false;
@@ -131,37 +145,57 @@ public class DriveToPointCommand extends CommandBase
     // get current position
     this.currentPosition = drivetrain.getRobotPosition();
     // get recent velocity
-    double recentVelocity = drivetrain.getRecentAverageVelocityInMetersPerSecond(CommandSchedulerPeriodMilliseconds * 10); // last 10 samples ... 200 ms
+    double recentVelocity = drivetrain.getRecentAverageVelocityInMetersPerSecond(CommandSchedulerPeriodMilliseconds * RecentRepresentativeSampleCount); 
     // get current distance
     double remainingDistance = this.getRemainingDistanceMeters();
 
     // establish the resultant velocity
-    double targetResultantVelocityVector = targetMaximumVelocityMetersPerSecond;
+    double targetResultantVelocityVector = this.targetMaximumVelocityMetersPerSecond;
     if(Math.abs(remainingDistance) <= this.positionToleranceMeters){
         targetResultantVelocityVector = 0.0;
     }
     else if(remainingDistance > accelerationThresholdDistanceMeters){
-        targetResultantVelocityVector = Math.max(recentVelocity + accelerationLinearRate, DrivetrainSubsystem.MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND);
+        targetResultantVelocityVector = 
+            Math.max(recentVelocity + this.accelerationLinearRate, DrivetrainSubsystem.MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND);
     }
     else if(remainingDistance < decelerationThresholdDistanceMeters) {
-        targetResultantVelocityVector = Math.max(recentVelocity - decelerationLinearRate, DrivetrainSubsystem.MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND);
+        targetResultantVelocityVector =
+            Math.max(recentVelocity - this.decelerationLinearRate, DrivetrainSubsystem.MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND);
     }
     else{
-        targetResultantVelocityVector = targetMaximumVelocityMetersPerSecond;
+        targetResultantVelocityVector = this.targetMaximumVelocityMetersPerSecond;
     }
+
+    // get recent angular velocity
+    double recentAngularVelocity = drivetrain.getRecentAverageAngularVelocityInRadiansPerSecond(CommandSchedulerPeriodMilliseconds * RecentRepresentativeSampleCount);
 
     // establish the next spin
     this.remainingRotationRadians = this.getRemainingRotationRadians();
-    double targetSpinRadiansPerSecond = (Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians) ? 0.0 : this.targetRotationRadiansPerSecond;
+    double targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
+    if(Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians){
+        targetSpinRadiansPerSecond = 0.0;
+    }
+    else if(this.remainingRotationRadians > this.accelerationThresholdRotationRadians ){
+        targetSpinRadiansPerSecond =
+            Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND);
+    }
+    else if(this.remainingRotationRadians < this.decelerationThresholdRotationRadians ) {
+        targetSpinRadiansPerSecond =
+            Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND);
+    }
+    else{
+        targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
+    }
 
-    if(counter++ % 100 == 0)
+    if(counter++ % printCadence == 0)
     {
         System.out.println(
             "\nCurrent Pose2D: " + currentPosition.toString() + 
-            " recentVelocity = " + recentVelocity + 
-            " remainingDistance = " + remainingDistance + 
-            " targetResultantVelocityVector = " + targetResultantVelocityVector + 
-            " remainingRotationRadians = " + remainingRotationRadians
+            "\n\trecentVelocity = " + recentVelocity + 
+            "\n\tremainingDistance = " + remainingDistance + 
+            "\n\ttargetResultantVelocityVector = " + targetResultantVelocityVector + 
+            "\n\trecentAngularVelocity = " + recentAngularVelocity +
+            "\n\tremainingRotationRadians = " + remainingRotationRadians
             );
     }
 
@@ -177,7 +211,7 @@ public class DriveToPointCommand extends CommandBase
             xVelocity = targetResultantVelocityVector * (currentTransform.getX()/remainingDistance);
             yVelocity = targetResultantVelocityVector * (currentTransform.getY()/remainingDistance);      
         }
-        if(counter % 50 == 0)
+        if(counter % printCadence == 0)
         {
             System.out.println(
                 "\txVelocity = " + xVelocity + 
