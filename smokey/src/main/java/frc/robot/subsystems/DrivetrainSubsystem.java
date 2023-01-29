@@ -67,7 +67,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
-  private static final double RadiansPerRevolution = 3.141596 * 2.0;
+  private static final double RadiansPerRevolution = Math.PI * 2.0;
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
@@ -452,8 +452,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
           previousRadiansConverted = previousRadians + RadiansPerRevolution;
         }
 
-        resultRotationVelocities.add(
-          (currentRadiansConverted - previousRadiansConverted) * CommandSchedulerCyclesPerSecond); // assumed cycle time and that the current distance is for a 20 ms movement
+        // perform the assumption discussed above that delta measurements exceeding PI at 20 ms are physically not possible
+        double minimizedAngularDistance = currentRadiansConverted - previousRadiansConverted;
+        double absoluteMinimizedAngularDistance = Math.abs(minimizedAngularDistance);
+        if(absoluteMinimizedAngularDistance > Math.PI)
+        {
+          if(minimizedAngularDistance >= 0.0)
+          {
+            minimizedAngularDistance = RadiansPerRevolution - absoluteMinimizedAngularDistance;
+          }
+          else
+          {
+            minimizedAngularDistance = (RadiansPerRevolution - absoluteMinimizedAngularDistance) * -1.0;
+          }
+        }
+
+        // assumed cycle time and that the current distance is for a 20 ms movement
+        resultRotationVelocities.add(minimizedAngularDistance * CommandSchedulerCyclesPerSecond); 
       }
       previousTranslation = currentTranslation;
     }
