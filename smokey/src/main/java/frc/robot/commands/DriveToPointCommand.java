@@ -122,15 +122,21 @@ public class DriveToPointCommand extends CommandBase
     this.remainingRotationRadians = this.getRemainingRotationRadians();
 
     // spin acceleration rates - we will always do this triangular for simplicity
-    double targetMaximumRotationRadiansPerSecond = (this.remainingRotationRadians / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
+    targetMaximumRotationRadiansPerSecond = Math.abs(this.remainingRotationRadians / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
     this.accelerationThresholdRotationRadians = 0.5 * targetMaximumRotationRadiansPerSecond * this.accelerationMaximumDurationSeconds;
     this.decelerationThresholdRotationRadians = accelerationThresholdRotationRadians;
     this.accelerationRotationalRate = targetMaximumRotationRadiansPerSecond / accelerationMaximumDurationSeconds;
     this.decelerationRotationalRate = targetMaximumRotationRadiansPerSecond / decelerationMaximumDurationSeconds;
-    this.targetMaximumRotationRadiansPerSecond =
-        (this.remainingRotationRadians / this.targetOperationDurationSeconds > DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND) ?
-        DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND :
-        this.remainingRotationRadians / this.targetOperationDurationSeconds;
+
+    System.out.println("");
+    System.out.println(
+        "***************** INIT ************************" + 
+        "\ntargetMaximumRotationRadiansPerSecond = " + this.targetMaximumRotationRadiansPerSecond + 
+        "\naccelerationThresholdRotationRadians = " + this.accelerationThresholdRotationRadians + 
+        "\ndecelerationThresholdRotationRadians = " + this.decelerationThresholdRotationRadians + 
+        "\naccelerationRotationalRate = " + this.accelerationRotationalRate + 
+        "\ndecelerationRotationalRate = " + this.decelerationRotationalRate
+        );
 
     // make this class start executing
     done = false;
@@ -171,20 +177,33 @@ public class DriveToPointCommand extends CommandBase
 
     // establish the next spin
     this.remainingRotationRadians = this.getRemainingRotationRadians();
+    double spinMultiplier = 1.0;
+    if(this.remainingRotationRadians >= 0.0)
+    {
+        spinMultiplier = -1.0;
+    }
     double targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
     if(Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians){
         targetSpinRadiansPerSecond = 0.0;
     }
     else if(this.remainingRotationRadians > this.accelerationThresholdRotationRadians ){
+        // bug 95+% goes away when this next line has its setting overwritten to the min angular velocity
+        // so something going on with the 'recentAngularVelocity'
         targetSpinRadiansPerSecond =
-            Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND);
+            Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
+            spinMultiplier;
+        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else if(this.remainingRotationRadians < this.decelerationThresholdRotationRadians ) {
+        // bug 95+% goes away when this next line has its setting overwritten to the min angular velocity
+        // so something going on with the 'recentAngularVelocity'
         targetSpinRadiansPerSecond =
-            Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND);
+            Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
+            spinMultiplier;
+        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else{
-        targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
+        targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond * spinMultiplier;
     }
 
     if(counter++ % printCadence == 0)
@@ -259,4 +278,5 @@ public class DriveToPointCommand extends CommandBase
   {
     return currentPosition.getRotation().getRadians() - destinationPosition.getRotation().getRadians();
   }
+
 }

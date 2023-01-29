@@ -60,7 +60,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-  public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.05; // 0.05 a magic number based on testing
+  public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.06; // 0.06 a magic number based on testing
 
 
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
@@ -89,7 +89,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SubsystemCollection currentCollection = null;
   private Pose2d currentPosition = new Pose2d();
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
-  private int counter = 0;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -155,14 +154,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
-    if(counter++ % 100 == 0)
-    {
-        System.out.println(
-            "x driveVelocity = " + updatedChassisSpeeds.vxMetersPerSecond + 
-            " Y driveVelocity = " + updatedChassisSpeeds.vyMetersPerSecond + 
-            " omega driveRotation = " + updatedChassisSpeeds.omegaRadiansPerSecond
-            );
-    }
     chassisSpeeds = updatedChassisSpeeds;
   }
 
@@ -241,7 +232,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     return sumOfAccelerations/countOfDeltas;
   }
-
+  
   /**
    * A method to set the current position of the robot
    * @param updatedPosition - the new position of the robot

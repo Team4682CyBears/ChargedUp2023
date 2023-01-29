@@ -151,7 +151,7 @@ public class ManualInputInterfaces
           new ParallelCommandGroup(
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, 0.0, 180.0)),
+              this.getTargetPosition(0.0, 0.0, 90.0)),
             new ButtonPress("driverController", "kLeftBumper.whenReleased")).withTimeout(10.0)
         );
 
@@ -159,7 +159,7 @@ public class ManualInputInterfaces
           new ParallelCommandGroup(
             new DriveToPointCommand(
               this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, 0.0, -180.0)),
+              this.getTargetPosition(0.0, 0.0, -90.0)),
             new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
         );
       }
