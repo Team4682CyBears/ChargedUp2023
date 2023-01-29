@@ -177,11 +177,7 @@ public class DriveToPointCommand extends CommandBase
 
     // establish the next spin
     this.remainingRotationRadians = this.getRemainingRotationRadians();
-    double spinMultiplier = 1.0;
-    if(this.remainingRotationRadians >= 0.0)
-    {
-        spinMultiplier = -1.0;
-    }
+    double spinMultiplier = (this.remainingRotationRadians >= 0.0) ? -1.0 : 1.0;
     double targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
     if(Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians){
         targetSpinRadiansPerSecond = 0.0;

@@ -15,6 +15,7 @@ import java.util.*;
 import static frc.robot.Constants.*;
 
 import frc.robot.Constants;
+import frc.robot.common.MotorUtils;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -62,11 +63,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
   public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.06; // 0.06 a magic number based on testing
 
-
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
+  private static final double RadiansPerRevolution = 3.141596 * 2.0;
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
@@ -207,6 +208,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public double getRecentAverageAngularVelocityInRadiansPerSecond(int historicDurationMilliseconds)
   {
     ArrayList<Double> recentAngularVelocities = this.getRecentAngularVelocities(historicDurationMilliseconds);
+
+    // TODO - remove this next line when done testing
+    // test the array to look for a measurement outlier
+    MotorUtils.hasMeasurementDiscontinuity(recentAngularVelocities, true);
+
     double sumOfAngularVelocities = 0.0;
     int countOfDeltas = 0;
     for(; countOfDeltas < recentAngularVelocities.size(); ++countOfDeltas)
@@ -424,8 +430,40 @@ public class DrivetrainSubsystem extends SubsystemBase {
       currentTranslation = translations.get(inx);
       if(previousTranslation != null)
       {
+        // with this conversion below we will be making an assumption:
+        // that angular velocities will never exceed pi radians per 20 ms clock cycle
+        // (e.g., that the robot is unable to sweep > 180 degrees in 20 ms - or said another way the robot can't physically spin > 25 spins per second)
+
+        // to cleanly produce a result, we need to handle a couple of cases:
+        // pose2d that are negative - we will convert negative angle to its positive equivalent (2*pi + negative radians)
+        // pose2d that exceed a full rotation - we will remove full rotations above 1 or below -1
+        double currentRadians = currentTranslation.getAngle().getRadians();
+        double previousRadians = previousTranslation.getAngle().getRadians();
+        int currentFullRotations = (int)(currentRadians / RadiansPerRevolution);
+        int previousFullRotations = (int)(previousRadians / RadiansPerRevolution);
+        double currentFractionalRadiansConverted = 0.0;
+        double previousFractionalRadiansConverted = 0.0;
+
+        if(currentRadians >= 0.0)
+        {
+          currentFractionalRadiansConverted = currentRadians - (currentFullRotations * RadiansPerRevolution);
+        }
+        else
+        {
+          currentFractionalRadiansConverted = currentRadians + RadiansPerRevolution - (currentFullRotations * RadiansPerRevolution);
+        }
+
+        if(previousRadians >= 0.0)
+        {
+          previousFractionalRadiansConverted = previousRadians - (previousFullRotations * RadiansPerRevolution);
+        }
+        else
+        {
+          previousFractionalRadiansConverted = previousRadians + RadiansPerRevolution - (previousFullRotations * RadiansPerRevolution);
+        }
+
         resultRotationVelocities.add(
-          (currentTranslation.getAngle().getRadians() - previousTranslation.getAngle().getRadians()) * CommandSchedulerCyclesPerSecond); // assumed cycle time and that the current distance is for a 20 ms movement
+          (currentFractionalRadiansConverted - previousFractionalRadiansConverted) * CommandSchedulerCyclesPerSecond); // assumed cycle time and that the current distance is for a 20 ms movement
       }
       previousTranslation = currentTranslation;
     }

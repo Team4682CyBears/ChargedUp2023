@@ -10,6 +10,8 @@
 
 package frc.robot.common;
 
+import java.util.*;
+
 public class MotorUtils
 {
 
@@ -57,5 +59,69 @@ public class MotorUtils
             trimmedValue = maxBoundary;
         }
         return trimmedValue;
-    }  
+    }
+
+
+    /**
+     * Method to help provide debug info for measurement discontinuities
+     * @param measurements array of measurements - must be minimul length of 1, should ideally give 4+ measurements
+     * @param doDescriptivePrint
+     * @return true when a measurement discontinuity was found, else false
+     */
+    public static boolean hasMeasurementDiscontinuity(
+        ArrayList<Double> measurements,
+        boolean doDescriptivePrint)
+    {
+        // dupe the inbound list - make sure we do deep copy
+        ArrayList<Double> sortableList = new ArrayList<Double>();
+        for(int inx = 0; inx < measurements.size(); ++inx)
+        {
+            sortableList.add((double)measurements.get(inx));
+        }
+
+        // sort the dup'd list
+        Collections.sort(sortableList);
+
+        // get the interquartile range measurements
+        int firstQuartileIndex = measurements.size() / 4;
+        int thirdQuartileIndex = measurements.size() * 3 / 4;
+        double firstQuartile = measurements.get(firstQuartileIndex);
+        double thirdQuartile = measurements.get(thirdQuartileIndex);
+        double innerQuartileRange = thirdQuartile - firstQuartile;
+        double lowerFence = firstQuartile - (1.5 * innerQuartileRange);
+        double upperFence = thirdQuartile + (1.5 * innerQuartileRange);
+
+        boolean foundDiscontinuity = false;
+
+        // flow through original array looking for outliers
+        for(int inx = 0; inx < measurements.size(); ++inx)
+        {
+            double nextMeasurement = measurements.get(inx);
+            foundDiscontinuity &= (nextMeasurement < lowerFence || nextMeasurement > upperFence);
+        }
+
+        if(doDescriptivePrint)
+        {
+            System.out.println("DISCONTINUITY FOUND:");
+            // flow through original array looking for outliers
+            for(int inx = 0; inx < measurements.size(); ++inx)
+            {
+                double nextMeasurement = measurements.get(inx);
+                if(nextMeasurement < lowerFence)
+                {
+                    System.out.println(nextMeasurement + " <- LOW OUTLIER");
+                }
+                else if(nextMeasurement > upperFence)
+                {
+                    System.out.println(nextMeasurement + " <- HIGH OUTLIER");
+                }
+                else
+                {
+                    System.out.println(nextMeasurement);
+                }
+            }
+        }
+
+        return foundDiscontinuity;
+    }
 }
