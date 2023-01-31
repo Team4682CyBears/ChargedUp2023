@@ -5,8 +5,7 @@ package frc.robot;
 
 
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
