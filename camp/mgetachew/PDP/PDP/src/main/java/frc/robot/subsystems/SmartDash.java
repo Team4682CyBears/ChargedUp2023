@@ -4,13 +4,19 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SmartDash extends SubsystemBase {
+  private static final double SpeedMotor = null;
+
   /** Creates a new ExampleSubsystem. */
   public SmartDash() {}
 
+  /* (non-Javadoc)
+   * @see edu.wpi.first.wpilibj2.command.Subsystem#periodic()
+   */
   @Override
   public void periodic() {
 
@@ -29,6 +35,13 @@ public class SmartDash extends SubsystemBase {
        // Energy is the power summed over time with units Joules.
        double totalEnergy = TheRevMoter.getTotalEnergy();
        SmartDashboard.putNumber("Total Energy", totalEnergy);
+
+       // Get the total energy of all channels.
+       // Energy is the power summed over time with units Joules.
+       SmartDashboard.putData(SpeedMotor);
+
+       double Speedtest = SpeedMotor;
+       SmartDashboard.putNumber("Speedtest", SpeedMotor);
   }
 
   @Override

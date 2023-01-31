@@ -1,0 +1,34 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX[16]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[16]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[16]/Integrated Sensor": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[16]/Rev Limit": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/SmartDash": "Subsystem",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller"
+    }
+  }
+}

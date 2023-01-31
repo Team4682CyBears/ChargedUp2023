@@ -18,5 +18,5 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
  * @param <PowerDistribution>
  */
 public final class Constants{
-
+   private static int motorcurrentlimit = 5;
 }
