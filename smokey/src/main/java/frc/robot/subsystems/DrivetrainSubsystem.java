@@ -369,13 +369,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param historicDurationMilliseconds - the historic time window in milliseconds of points to establish translations
    * @return the array of translations associated with the points at hand
    */
-  private ArrayList<Translation2d> getRecentTranslations(int historicDurationMilliseconds)
+  private ArrayList<Transform2d> getRecentTransforms(int historicDurationMilliseconds)
   {
     // first get the list of translations between the Pos2d's stored
     int intendedCount = historicDurationMilliseconds/CommandSchedulerPeriodMilliseconds;
     int maxCount = (intendedCount>PositionHistoryStorageSize ? PositionHistoryStorageSize : intendedCount);
     int currentCount = 0;
-    ArrayList<Translation2d> translations = new ArrayList<Translation2d>();
+    ArrayList<Transform2d> transforms = new ArrayList<Transform2d>();
     Pose2d lastPosition = null;
     Pose2d currentPosition = null;
     for (Iterator<Pose2d> iter = this.historicPositions.iterator(); iter.hasNext() && currentCount < maxCount; ++currentCount ) {
@@ -384,11 +384,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
       if(lastPosition != null)
       {
         Transform2d nextTransform = new Transform2d(lastPosition, currentPosition);
-        translations.add(nextTransform.getTranslation());
+        transforms.add(nextTransform);
       }
       lastPosition = currentPosition;
     }
-    return translations;
+    return transforms;
   }
 
   /**
@@ -398,13 +398,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   private ArrayList<Double> getRecentDistanceTraveled(int historicDurationMilliseconds)
   {
-    ArrayList<Translation2d> translations = this.getRecentTranslations(historicDurationMilliseconds);
+    ArrayList<Transform2d> transforms = this.getRecentTransforms(historicDurationMilliseconds);
     ArrayList<Double> resultDistances = new ArrayList<Double>();
     Translation2d previousTranslation = null;
     Translation2d currentTranslation = null;
-    for(int inx = 0; inx < translations.size(); ++inx)
+    for(int inx = 0; inx < transforms.size(); ++inx)
     {
-      currentTranslation = translations.get(inx);
+      currentTranslation = transforms.get(inx).getTranslation();
       if(previousTranslation != null)
       {
         resultDistances.add(previousTranslation.getDistance(currentTranslation));
@@ -421,14 +421,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   private ArrayList<Double> getRecentAngularVelocities(int historicDurationMilliseconds)
   {
-    ArrayList<Translation2d> translations = this.getRecentTranslations(historicDurationMilliseconds);
+    ArrayList<Transform2d> transforms = this.getRecentTransforms(historicDurationMilliseconds);
     ArrayList<Double> resultRotationVelocities = new ArrayList<Double>();
-    Translation2d previousTranslation = null;
-    Translation2d currentTranslation = null;
-    for(int inx = 0; inx < translations.size(); ++inx)
+    Transform2d previousTransform = null;
+    Transform2d currentTransform = null;
+    for(int inx = 0; inx < transforms.size(); ++inx)
     {
-      currentTranslation = translations.get(inx);
-      if(previousTranslation != null)
+      currentTransform = transforms.get(inx);
+      if(previousTransform != null)
       {
         // with this conversion below we will be making an assumption:
         // that angular velocities will never exceed pi radians per 20 ms clock cycle
@@ -437,8 +437,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // to cleanly produce a result, we need to handle a couple of cases:
         // pose2d that exceed a full rotation - we will remove full rotations above 1 or below -1 -> to do this we will use the MathUtil.angleModulus() static method
         // pose2d that are negative - we will convert negative angle to its positive equivalent (2*pi + negative radians)
-        double currentRadians = MathUtil.angleModulus(currentTranslation.getAngle().getRadians());
-        double previousRadians = MathUtil.angleModulus(previousTranslation.getAngle().getRadians());
+        double currentRadians = MathUtil.angleModulus(currentTransform.getRotation().getRadians());
+        double previousRadians = MathUtil.angleModulus(previousTransform.getRotation().getRadians());
         double currentRadiansConverted = currentRadians;
         double previousRadiansConverted = previousRadians;
 
@@ -470,7 +470,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // assumed cycle time and that the current distance is for a 20 ms movement
         resultRotationVelocities.add(minimizedAngularDistance * CommandSchedulerCyclesPerSecond); 
       }
-      previousTranslation = currentTranslation;
+      previousTransform = currentTransform;
     }
     return resultRotationVelocities;
   }
