@@ -188,7 +188,7 @@ public class DriveToPointCommand extends CommandBase
         targetSpinRadiansPerSecond =
             Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
-        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
+//        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else if(this.remainingRotationRadians < this.decelerationThresholdRotationRadians ) {
         // bug 95+% goes away when this next line has its setting overwritten to the min angular velocity
@@ -196,7 +196,7 @@ public class DriveToPointCommand extends CommandBase
         targetSpinRadiansPerSecond =
             Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
-        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
+//        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else{
         targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond * spinMultiplier;
