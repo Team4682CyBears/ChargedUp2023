@@ -103,67 +103,78 @@ public class ManualInputInterfaces
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
 
-                // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
+        // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
 //              // No requirements because we don't need to interrupt anything
 //              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
 
-        JoystickButton buttonX = new JoystickButton(driverController, XboxController.Button.kX.value);
-        JoystickButton buttonY = new JoystickButton(driverController, XboxController.Button.kY.value);
-        JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
-        JoystickButton buttonB = new JoystickButton(driverController, XboxController.Button.kB.value);
-        JoystickButton buttonLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
-        JoystickButton buttonRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
-        
-        buttonA.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(-1.0, 0.0, 0.0)),
-            new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
-        );
-
-        buttonY.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(1.0, 0.0, 0.0)),
-            new ButtonPress("driverController", "kY.whenReleased")).withTimeout(10.0)
-        );
-
-        buttonB.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, -1.0, 0.0)),
-            new ButtonPress("driverController", "kB.whenReleased")).withTimeout(10.0)
-        );
-
-        buttonX.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, 1.0, 0.0)),
-            new ButtonPress("driverController", "kX.whenReleased")).withTimeout(10.0)
-        );
-
-        buttonLeftBumper.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, 0.0, 90.0)),
-            new ButtonPress("driverController", "kLeftBumper.whenReleased")).withTimeout(10.0)
-        );
-
-        buttonRightBumper.whenReleased(
-          new ParallelCommandGroup(
-            new DriveToPointCommand(
-              this.subsystemCollection.getDriveTrainSubsystem(),
-              this.getTargetPosition(0.0, 0.0, -90.0)),
-            new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
-        );
+        if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController)
+        {
+          this.bindBasicDriveToPointButtonsToDriverXboxController();          
+        }
       }
     }
+  }
+
+  /**
+   * A method that will bind buttons for basic drive to point commands to driver controller
+   */
+  private void bindBasicDriveToPointButtonsToDriverXboxController()
+  {
+      JoystickButton buttonX = new JoystickButton(driverController, XboxController.Button.kX.value);
+      JoystickButton buttonY = new JoystickButton(driverController, XboxController.Button.kY.value);
+      JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
+      JoystickButton buttonB = new JoystickButton(driverController, XboxController.Button.kB.value);
+      JoystickButton buttonLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+      JoystickButton buttonRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+      
+      buttonA.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(-1.0, 0.0, 0.0)),
+          new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonY.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(1.0, 0.0, 0.0)),
+          new ButtonPress("driverController", "kY.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonB.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(0.0, -1.0, 0.0)),
+          new ButtonPress("driverController", "kB.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonX.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(0.0, 1.0, 0.0)),
+          new ButtonPress("driverController", "kX.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonLeftBumper.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(0.0, 0.0, 90.0)),
+          new ButtonPress("driverController", "kLeftBumper.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonRightBumper.whenReleased(
+        new ParallelCommandGroup(
+          new DriveToPointCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.getTargetPosition(0.0, 0.0, -90.0)),
+          new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
+      );
   }
 
   /**

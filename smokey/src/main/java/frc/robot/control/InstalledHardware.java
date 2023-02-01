@@ -43,4 +43,6 @@ public class InstalledHardware
     public static final boolean rightFrontDriveInstalled = true;
     public static final boolean rightRearDriveInstalled = true;
 
+    // Controller button install control
+    public static final boolean applyBasicDriveToPointButtonsToDriverXboxController = false;
 }
