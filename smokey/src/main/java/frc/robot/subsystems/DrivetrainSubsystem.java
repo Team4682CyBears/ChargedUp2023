@@ -210,10 +210,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   {
     ArrayList<Double> recentAngularVelocities = this.getRecentAngularVelocities(historicDurationMilliseconds);
 
-    // TODO - remove this next line when done testing
-    // test the array to look for a measurement outlier
-    DebugUtils.hasMeasurementDiscontinuity(recentAngularVelocities, true);
-
     double sumOfAngularVelocities = 0.0;
     int countOfDeltas = 0;
     for(; countOfDeltas < recentAngularVelocities.size(); ++countOfDeltas)

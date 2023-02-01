@@ -20,7 +20,7 @@ public class DebugUtils {
      * @param doDescriptivePrint
      * @return true when a measurement discontinuity was found, else false
      */
-    public static boolean hasMeasurementDiscontinuity(
+    public static boolean hasMeasurementContinuity(
         ArrayList<Double> measurements,
         boolean doDescriptivePrint)
     {
@@ -43,16 +43,20 @@ public class DebugUtils {
         double lowerFence = firstQuartile - (1.5 * innerQuartileRange);
         double upperFence = thirdQuartile + (1.5 * innerQuartileRange);
 
-        boolean foundDiscontinuity = false;
+        boolean measurementContinuity = true;
 
         // flow through original array looking for outliers
         for(int inx = 0; inx < measurements.size(); ++inx)
         {
             double nextMeasurement = measurements.get(inx);
-            foundDiscontinuity &= (nextMeasurement < lowerFence || nextMeasurement > upperFence);
+            measurementContinuity &= (nextMeasurement >= lowerFence && nextMeasurement <= upperFence);
+            if(!measurementContinuity)
+            {
+                break;
+            }
         }
 
-        if(doDescriptivePrint)
+        if(doDescriptivePrint && !measurementContinuity)
         {
             System.out.println("DISCONTINUITY FOUND:");
             // flow through original array looking for outliers
@@ -74,6 +78,6 @@ public class DebugUtils {
             }
         }
 
-        return foundDiscontinuity;
+        return measurementContinuity;
     }
 }

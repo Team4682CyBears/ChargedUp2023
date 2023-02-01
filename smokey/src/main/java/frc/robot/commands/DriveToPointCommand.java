@@ -47,8 +47,6 @@ public class DriveToPointCommand extends CommandBase
   private double targetMaximumRotationRadiansPerSecond = 0.0;
   
   private boolean isTrapazoidalProfile = false;  
-  private int counter = 0;
-  private int printCadence = 50; // every X cycles
 
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
@@ -128,16 +126,6 @@ public class DriveToPointCommand extends CommandBase
     this.accelerationRotationalRate = targetMaximumRotationRadiansPerSecond / accelerationMaximumDurationSeconds;
     this.decelerationRotationalRate = targetMaximumRotationRadiansPerSecond / decelerationMaximumDurationSeconds;
 
-    System.out.println("");
-    System.out.println(
-        "***************** INIT ************************" + 
-        "\ntargetMaximumRotationRadiansPerSecond = " + this.targetMaximumRotationRadiansPerSecond + 
-        "\naccelerationThresholdRotationRadians = " + this.accelerationThresholdRotationRadians + 
-        "\ndecelerationThresholdRotationRadians = " + this.decelerationThresholdRotationRadians + 
-        "\naccelerationRotationalRate = " + this.accelerationRotationalRate + 
-        "\ndecelerationRotationalRate = " + this.decelerationRotationalRate
-        );
-
     // make this class start executing
     done = false;
     timer.reset();
@@ -183,35 +171,17 @@ public class DriveToPointCommand extends CommandBase
         targetSpinRadiansPerSecond = 0.0;
     }
     else if(this.remainingRotationRadians > this.accelerationThresholdRotationRadians ){
-        // bug 95+% goes away when this next line has its setting overwritten to the min angular velocity
-        // so something going on with the 'recentAngularVelocity'
         targetSpinRadiansPerSecond =
             Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
-//        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else if(this.remainingRotationRadians < this.decelerationThresholdRotationRadians ) {
-        // bug 95+% goes away when this next line has its setting overwritten to the min angular velocity
-        // so something going on with the 'recentAngularVelocity'
         targetSpinRadiansPerSecond =
             Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
-//        targetSpinRadiansPerSecond = DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND * spinMultiplier;
     }
     else{
         targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond * spinMultiplier;
-    }
-
-    if(counter++ % printCadence == 0)
-    {
-        System.out.println(
-            "\nCurrent Pose2D: " + currentPosition.toString() + 
-            "\n\trecentVelocity = " + recentVelocity + 
-            "\n\tremainingDistance = " + remainingDistance + 
-            "\n\ttargetResultantVelocityVector = " + targetResultantVelocityVector + 
-            "\n\trecentAngularVelocity = " + recentAngularVelocity +
-            "\n\tremainingRotationRadians = " + remainingRotationRadians
-            );
     }
 
     if(!done && (targetResultantVelocityVector != 0.0 || targetSpinRadiansPerSecond != 0.0))
@@ -225,14 +195,6 @@ public class DriveToPointCommand extends CommandBase
             Transform2d currentTransform = new Transform2d(this.currentPosition, this.destinationPosition);
             xVelocity = targetResultantVelocityVector * (currentTransform.getX()/remainingDistance);
             yVelocity = targetResultantVelocityVector * (currentTransform.getY()/remainingDistance);      
-        }
-        if(counter % printCadence == 0)
-        {
-            System.out.println(
-                "\txVelocity = " + xVelocity + 
-                "\n\tyVelocity = " + yVelocity + 
-                "\n\ttargetSpinRadiansPerSecond = " + targetSpinRadiansPerSecond
-                );
         }
         drivetrain.drive(new ChassisSpeeds(xVelocity, yVelocity, targetSpinRadiansPerSecond));
     }
