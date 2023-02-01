@@ -58,4 +58,9 @@ public final class Constants {
     // input device constants
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
+    //************************************
+    // trajectory constants
+    public static final double TrajectoryMaxAcceleration = 1;
+    public static final double TrajectoryMaxVelocity = 1;
+
 }
