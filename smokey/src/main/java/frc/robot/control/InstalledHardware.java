@@ -45,4 +45,5 @@ public class InstalledHardware
 
     // Controller button install control
     public static final boolean applyBasicDriveToPointButtonsToDriverXboxController = false;
+    public static final boolean applyDriveTrajectoryButtonsToDriverXboxController = true;
 }

@@ -53,6 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Gear ratio: 7.85:1. Free speed of 14.19 ft/s = 4.3251 m/s
    */
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.3251;
+  public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1.0;
   public static final double MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND * 0.14; // 0.14 a magic number based on testing
   /**
    * The maximum angular velocity of the robot in radians per second.
@@ -68,7 +69,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
-  private static final double RadiansPerRevolution = Math.PI * 2.0;
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
@@ -429,43 +429,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
       {
         // with this conversion below we will be making an assumption:
         // that angular velocities will never exceed pi radians per 20 ms clock cycle
-        // (e.g., that the robot is unable to sweep > 180 degrees in 20 ms - or said another way the robot can't physically spin > 25 spins per second)
-
-        // to cleanly produce a result, we need to handle a couple of cases:
-        // pose2d that exceed a full rotation - we will remove full rotations above 1 or below -1 -> to do this we will use the MathUtil.angleModulus() static method
-        // pose2d that are negative - we will convert negative angle to its positive equivalent (2*pi + negative radians)
+        // (e.g., that the robot is unable to sweep > 180 degrees in 20 ms,
+        // or said another way the robot can't physically spin > 25 spins per second - 1500 RPM)
+        // to produce a result, we need to rely on MathUtil.angleModulus() static method - this keeps the math tidy
         double currentRadians = MathUtil.angleModulus(currentTransform.getRotation().getRadians());
         double previousRadians = MathUtil.angleModulus(previousTransform.getRotation().getRadians());
-        double currentRadiansConverted = currentRadians;
-        double previousRadiansConverted = previousRadians;
-
-        if(currentRadians < 0.0)
-        {
-          currentRadiansConverted = currentRadians + RadiansPerRevolution;
-        }
-
-        if(previousRadians < 0.0)
-        {
-          previousRadiansConverted = previousRadians + RadiansPerRevolution;
-        }
-
-        // perform the assumption discussed above that delta measurements exceeding PI at 20 ms are physically not possible
-        double minimizedAngularDistance = currentRadiansConverted - previousRadiansConverted;
-        double absoluteMinimizedAngularDistance = Math.abs(minimizedAngularDistance);
-        if(absoluteMinimizedAngularDistance > Math.PI)
-        {
-          if(minimizedAngularDistance >= 0.0)
-          {
-            minimizedAngularDistance = RadiansPerRevolution - absoluteMinimizedAngularDistance;
-          }
-          else
-          {
-            minimizedAngularDistance = (RadiansPerRevolution - absoluteMinimizedAngularDistance) * -1.0;
-          }
-        }
+        double deltaRadians = MathUtil.angleModulus(currentRadians - previousRadians);
 
         // assumed cycle time and that the current distance is for a 20 ms movement
-        resultRotationVelocities.add(minimizedAngularDistance * CommandSchedulerCyclesPerSecond); 
+        resultRotationVelocities.add(deltaRadians * CommandSchedulerCyclesPerSecond); 
       }
       previousTransform = currentTransform;
     }

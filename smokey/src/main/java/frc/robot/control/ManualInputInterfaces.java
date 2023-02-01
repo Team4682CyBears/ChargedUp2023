@@ -10,12 +10,17 @@
 
 package frc.robot.control;
 
+import java.util.*;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -23,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.*;
 import frc.robot.commands.ButtonPress;
 import frc.robot.commands.DriveToPointCommand;
+import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class ManualInputInterfaces
 {
@@ -112,6 +119,10 @@ public class ManualInputInterfaces
         {
           this.bindBasicDriveToPointButtonsToDriverXboxController();          
         }
+        if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController)
+        {
+          this.bindDriveTrajectoryButtonsToDriverXboxController();
+        }
       }
     }
   }
@@ -175,6 +186,70 @@ public class ManualInputInterfaces
             this.getTargetPosition(0.0, 0.0, -90.0)),
           new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
       );
+  }
+
+    /**
+   * A method that will bind buttons for basic drive to point commands to driver controller
+   */
+  private void bindDriveTrajectoryButtonsToDriverXboxController()
+  {
+      JoystickButton buttonY = new JoystickButton(driverController, XboxController.Button.kY.value);
+      JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
+      
+      buttonY.whenReleased(
+        new ParallelCommandGroup(
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.buildTraverseForwardArc()),
+          new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
+      );
+
+      buttonA.whenReleased(
+        new ParallelCommandGroup(
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            this.buildTraverseBackwardArc()),
+          new ButtonPress("driverController", "kY.whenReleased")).withTimeout(10.0)
+      );
+
+  }
+
+  private Trajectory buildTraverseForwardArc()
+  {
+    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(-180));
+
+    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
+    interiorWaypoints.add(new Translation2d(0.5, 0.25));
+    interiorWaypoints.add(new Translation2d(1.0, 0.50));
+    interiorWaypoints.add(new Translation2d(1.5, 0.25));
+
+    // GO SLOW!!!
+    TrajectoryConfig config = new TrajectoryConfig(
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+    config.setReversed(false);
+
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+  }
+
+  private Trajectory buildTraverseBackwardArc()
+  {
+    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(-180));
+    Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+
+    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
+    interiorWaypoints.add(new Translation2d(-0.5, -0.25));
+    interiorWaypoints.add(new Translation2d(-1.0, -0.50));
+    interiorWaypoints.add(new Translation2d(-1.5, -0.25));
+
+    // GO SLOW!!!
+    TrajectoryConfig config = new TrajectoryConfig(
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+    config.setReversed(false);
+
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
   }
 
   /**
