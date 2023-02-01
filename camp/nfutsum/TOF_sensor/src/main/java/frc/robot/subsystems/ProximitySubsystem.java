@@ -4,12 +4,37 @@
 
 package frc.robot.subsystems;
 
+import com.playingwithfusion.TimeOfFlight;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ExampleSubsystem extends SubsystemBase {
+
+public class ProximitySubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  
+  public static TimeOfFlight tofSensor = new TimeOfFlight(0);
+
+  
+
+public static final double getRange(){
+  //gets range and converts from millimeters to inches
+   return getRange(1000 * tofSensor.TimeOfFlight.RangingMode.Short * 39.37, 200.0);
+}
+
+public static final double getRangeSigma(){
+  return  getRangeSigma(1000 * tofSensor.TimeOfFlight.RangingMode.Short * 39.37, 200.0);
+}
+
+public boolean isRangeValid(){
+  if(isRangeValid()){
+    return true;
+  }else{
+    return false;
+  }
+
+}
+
 
   /**
    * Example command factory method.
