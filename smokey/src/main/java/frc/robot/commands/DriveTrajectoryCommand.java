@@ -80,11 +80,16 @@ public class DriveTrajectoryCommand extends CommandBase
         double currentElapsedTimeInSeconds = timer.get();
         Pose2d currentLocation = drivetrain.getRobotPosition();
         Trajectory.State targetState = movementPlan.sample(currentElapsedTimeInSeconds);
+
+        // based on docs it would appear this method is potentially the most complex one - there are multiple overloads - not sure which one to use
+        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/holonomic.html#getting-adjusted-velocities
+        // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/math/controller/HolonomicDriveController.html#calculate(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.geometry.Rotation2d)
         ChassisSpeeds calculatedSpeed = controller.calculate(
             currentLocation,
             targetState.poseMeters,
             targetState.velocityMetersPerSecond,
             targetState.poseMeters.getRotation());
+            
         drivetrain.drive(calculatedSpeed);
     }
   }
