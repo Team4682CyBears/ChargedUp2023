@@ -10,12 +10,13 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 
 public class ProximitySubsystem extends SubsystemBase {
 
   // put CAN ID in constants.java
-  public static TimeOfFlight tofSensor = new TimeOfFlight(0);
+  public static TimeOfFlight tofSensor = new TimeOfFlight(Constants.canID);
 
   public void ProximitySubysytem(){
     tofSensor.setRangingMode(RangingMode.Short, 200);
