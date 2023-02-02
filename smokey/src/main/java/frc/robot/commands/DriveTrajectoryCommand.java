@@ -98,7 +98,7 @@ public class DriveTrajectoryCommand extends CommandBase
             targetState.velocityMetersPerSecond,
             targetState.poseMeters.getRotation());
             
-        drivetrain.drive(calculatedSpeed);
+        drivetrain.drive(drivetrain.clampChassisSpeeds(calculatedSpeed));
     }
   }
 

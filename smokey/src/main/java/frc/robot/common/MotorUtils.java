@@ -11,6 +11,10 @@
 package frc.robot.common;
 
 import java.util.*;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.signum;
+import static java.lang.Math.abs;
 
 public class MotorUtils
 {
@@ -60,5 +64,43 @@ public class MotorUtils
         }
         return trimmedValue;
     }
+
+    /**
+	 * Clamps a value between a minimum and a maximum value.
+	 *
+	 * @param value The value to clamp.
+	 * @param min The minimum value of the range. This value must be less than max.
+	 * @param max The maximum value of the range. This value must be greater than min.
+	 * @return the clamped value.
+	 *
+	 */
+	public static double clamp(double value, double min, double max) {
+		if (min > max) {
+			throw new IllegalArgumentException("min must not be greater than max");
+		}
+
+		return max(min, min(value, max));
+	}
+
+    /**
+	 * Clamps the absolute value between a minimum and a maximum value. Retains the sign. 
+	 *
+	 * @param value The value to clamp.
+	 * @param min The minimum value of the range. This value must be positive and less than max.
+	 * @param max The maximum value of the range. This value must be positive and greater than min.
+	 * @return the clamped value.
+	 *
+	 */
+	public static double doubleSidedClamp(double value, double min, double max) {
+		if (min > max) {
+			throw new IllegalArgumentException("min must not be greater than max");
+		}
+        if (min < 0) {
+            throw new IllegalArgumentException("min must be positive");
+        }
+
+        double sign = signum(value);
+		return sign * clamp(abs(value), min, max);
+	}
 
 }

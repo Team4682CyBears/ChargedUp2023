@@ -306,6 +306,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * Clamps the chassis speeds between a min and max.  
+   * Separete min and max for translational (x,y) vs. rotational speeds
+   * @param chassisSpeeds
+   * @param translationMin
+   * @param translationMax
+   * @param rotationMin
+   * @param rotationMax
+   * @return clamped chassisSpeeds
+   */
+  public ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds, 
+  double translationMin, double translationMax, double rotationMin, double rotationMax){
+    return new ChassisSpeeds(
+      MotorUtils.doubleSidedClamp(chassisSpeeds.vxMetersPerSecond, translationMin, translationMax),
+      MotorUtils.doubleSidedClamp(chassisSpeeds.vyMetersPerSecond, translationMin, translationMax),
+      MotorUtils.doubleSidedClamp(chassisSpeeds.omegaRadiansPerSecond, rotationMin, rotationMax));
+  }
+
+  /**
+   * Clamps the chassis speeds between the drivetrain min and max velocities
+   * @param chassisSpeeds
+   * @return clamped chassisSpeeds
+   */
+  public ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds){
+    return this.clampChassisSpeeds(chassisSpeeds, 
+    MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND,
+    MAX_VELOCITY_METERS_PER_SECOND, 
+    MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND, 
+    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+  }
+
+  /**
    * Helper method to obtain the SwerveModulePostion array from an existing SwerveModules in this class
    * @return - a SwerveModulePosition array for the modules
    */
