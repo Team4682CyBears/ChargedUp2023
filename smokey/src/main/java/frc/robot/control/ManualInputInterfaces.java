@@ -200,20 +200,20 @@ public class ManualInputInterfaces
       JoystickButton buttonLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
       JoystickButton buttonRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
       
-      buttonB.whenReleased(
-        new ParallelCommandGroup(
-          new DriveTrajectoryCommand(
-            this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseForwardArc()),
-          new ButtonPress("driverController", "kB.whenReleased")).withTimeout(10.0)
-      );
-
       buttonA.whenReleased(
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
+            this.buildTraverseForwardArc()),
+          new ButtonPress("driverController", "kA.whenReleased"))
+      );
+
+      buttonB.whenReleased(
+        new ParallelCommandGroup(
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseBackwardArc()),
-          new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
+          new ButtonPress("driverController", "kB.whenReleased"))
       );
 
       buttonX.whenReleased(
@@ -221,7 +221,7 @@ public class ManualInputInterfaces
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseSimpleForward()),
-          new ButtonPress("driverController", "kX.whenReleased")).withTimeout(10.0)
+          new ButtonPress("driverController", "kX.whenReleased"))
       );
 
       buttonY.whenReleased(
@@ -229,7 +229,7 @@ public class ManualInputInterfaces
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseSimpleRight()),
-          new ButtonPress("driverController", "kA.whenReleased")).withTimeout(10.0)
+          new ButtonPress("driverController", "kA.whenReleased"))
       );
 
       buttonLeftBumper.whenReleased(
@@ -237,7 +237,7 @@ public class ManualInputInterfaces
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseTurn270()),
-          new ButtonPress("driverController", "kLeftBumper.whenReleased")).withTimeout(10.0)
+          new ButtonPress("driverController", "kLeftBumper.whenReleased"))
       );
 
       buttonRightBumper.whenReleased(
@@ -245,7 +245,7 @@ public class ManualInputInterfaces
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseTurn90()),
-          new ButtonPress("driverController", "kRightBumper.whenReleased")).withTimeout(10.0)
+          new ButtonPress("driverController", "kRightBumper.whenReleased"))
       );
 
   }
@@ -257,6 +257,7 @@ public class ManualInputInterfaces
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     // no waypoints
+    interiorWaypoints.add(new Translation2d(1.0, 0.0));
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
@@ -264,16 +265,18 @@ public class ManualInputInterfaces
       DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
     config.setReversed(false);
 
+    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
     return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
   }
 
   private Trajectory buildTraverseSimpleRight()
   {
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(1.0, 0.0, Rotation2d.fromDegrees(0));
+    Pose2d end = new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     // no waypoints
+    interiorWaypoints.add(new Translation2d(0.0, 0.5));
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
@@ -281,16 +284,18 @@ public class ManualInputInterfaces
       DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
     config.setReversed(false);
 
+    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
     return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
   }
 
   private Trajectory buildTraverseTurn270()
   {
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(-90));
+    Pose2d end = new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     // no waypoints
+    interiorWaypoints.add(new Translation2d(0.25, 0.0));
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
@@ -298,16 +303,18 @@ public class ManualInputInterfaces
       DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
     config.setReversed(false);
 
+    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
     return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
   }
 
   private Trajectory buildTraverseTurn90()
   {
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(90));
+    Pose2d end = new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(90));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     // no waypoints
+    interiorWaypoints.add(new Translation2d(0.25, 0.0));
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
@@ -315,13 +322,14 @@ public class ManualInputInterfaces
       DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
     config.setReversed(false);
 
+    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
     return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
   }
 
   private Trajectory buildTraverseForwardArc()
   {
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(-180));
+    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     interiorWaypoints.add(new Translation2d(0.5, 0.25));
@@ -339,7 +347,7 @@ public class ManualInputInterfaces
 
   private Trajectory buildTraverseBackwardArc()
   {
-    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(-180));
+    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
     Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
