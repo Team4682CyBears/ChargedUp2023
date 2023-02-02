@@ -83,7 +83,8 @@ public class MotorUtils
 	}
 
     /**
-	 * Clamps the absolute value between a minimum and a maximum value. Retains the sign. 
+	 * Clamps absolute value between a minimum and a maximum value. Retains the sign. 
+     * 0 returns 0
 	 *
 	 * @param value The value to clamp.
 	 * @param min The minimum value of the range. This value must be positive and less than max.
@@ -99,7 +100,9 @@ public class MotorUtils
             throw new IllegalArgumentException("min must be positive");
         }
 
-        double sign = signum(value);
+        double sign = signum(value); 
+        // sign returns {-1, 0, 1}, 
+        // so below returns 0 when input value = 0, and the clamped value otherwise;
 		return sign * clamp(abs(value), min, max);
 	}
 
