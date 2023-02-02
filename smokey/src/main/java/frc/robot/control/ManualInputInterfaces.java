@@ -286,8 +286,8 @@ public class ManualInputInterfaces
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
     config.setReversed(false);
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
@@ -305,8 +305,8 @@ public class ManualInputInterfaces
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
     config.setReversed(false);
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
@@ -324,8 +324,8 @@ public class ManualInputInterfaces
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
     config.setReversed(false);
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
@@ -343,8 +343,8 @@ public class ManualInputInterfaces
 
     // GO SLOW!!!
     TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
+      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
     config.setReversed(false);
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");

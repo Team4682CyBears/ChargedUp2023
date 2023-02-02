@@ -9,10 +9,14 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot.commands;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -29,14 +33,16 @@ public class DriveTrajectoryCommand extends CommandBase
   private boolean done = false;
   private double expectedDuration = 0.0;
 
-  private PIDController xPidController = new PIDController(1.0,0.0,0.0);
-  private PIDController yPidController = new PIDController(1.0,0.0,0.0);
+  private PIDController xPidController = new PIDController(2.0,0.0,0.0);
+  private PIDController yPidController = new PIDController(2.0,0.0,0.0);
   private Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-  private ProfiledPIDController thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
+  private ProfiledPIDController thetaPidController = new ProfiledPIDController(2.0, 0.0, 0.0, movementConstraints);
   private HolonomicDriveController controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
-  
+
+  private Pose2d finalPosition = null;
+  private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
   /** 
   * Creates a new driveCommand. 
   * 
@@ -60,6 +66,8 @@ public class DriveTrajectoryCommand extends CommandBase
   {
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     expectedDuration = movementPlan.getTotalTimeSeconds();
+    this.finalPosition = movementPlan.sample(expectedDuration).poseMeters;
+    //controller.setTolerance(new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5)));
     timer.reset();
     timer.start();
     done = false;
@@ -69,7 +77,7 @@ public class DriveTrajectoryCommand extends CommandBase
   @Override
   public void execute()
   {
-    if(controller.atReference() == true)
+    if(controller.atReference() == true || (timer.get() > expectedDuration && this.isDeltaReasonable()))
     {
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         timer.stop();
@@ -112,5 +120,20 @@ public class DriveTrajectoryCommand extends CommandBase
   public boolean isFinished()
   {
     return done;
+  }
+
+  private boolean isDeltaReasonable()
+  {
+    Pose2d currentPosition = this.drivetrain.getRobotPosition();
+    Transform2d delta = new Transform2d(currentPosition, this.finalPosition);
+    if( delta.getX() <= this.overTimeDelta.getX() &&
+        delta.getY() <= this.overTimeDelta.getY() &&
+        MathUtil.angleModulus(delta.getRotation().getRadians()) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians()))
+    {
+      System.out.println("isDeltaReasonable == true ...........");
+      return true;
+    }
+    System.out.println("isDeltaReasonable == FALSE !!!!!!!!!!!!!!");
+    return false;
   }
 }
