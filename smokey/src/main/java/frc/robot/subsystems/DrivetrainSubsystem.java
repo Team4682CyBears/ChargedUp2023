@@ -247,6 +247,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.initializeSwerveOdometry(currentPosition);
   }
 
+  public void zeroRobotPosition()
+  {
+    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+  }
+
   @Override
   public void periodic() {
 

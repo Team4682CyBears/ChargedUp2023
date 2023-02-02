@@ -260,6 +260,11 @@ public class ManualInputInterfaces
    */
   private void bindDriveZeroPositionButtonToDriverXboxController()
   {
+    // Back button zeros the gyroscope
+    new Button(driverController::getStartButton)
+            // No requirements because we don't need to interrupt anything
+            .whenPressed(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition);
+    /*
     JoystickButton buttonStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
       
     buttonStart.whenReleased(
@@ -267,6 +272,7 @@ public class ManualInputInterfaces
         new RunCommand(() -> subsystemCollection.getDriveTrainSubsystem().setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)))),
         new ButtonPress("driverController", "kStart.whenReleased"))
     );
+     */
   }
 
   private Trajectory buildTraverseSimpleForward()
