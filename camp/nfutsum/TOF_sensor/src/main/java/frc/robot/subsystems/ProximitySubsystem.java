@@ -25,9 +25,9 @@ public class ProximitySubsystem extends SubsystemBase {
 
 public double getRange(){
   //gets range and converts from millimeters to inches
-    return Units.metersToInches(1000 * tofSensor.getRange());
-
-    System.out.println("The range is " + Units.metersToInches(1000 * tofSensor.getRange()));
+    double range = Units.metersToInches(1000 * tofSensor.getRange());
+    System.out.println("The range is " + range);
+    return range;
 }
 
 public static final double getRangeSigma(){
