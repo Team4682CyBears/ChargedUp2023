@@ -14,6 +14,7 @@ import java.util.*;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -122,6 +123,10 @@ public class ManualInputInterfaces
         if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController)
         {
           this.bindDriveTrajectoryButtonsToDriverXboxController();
+        }
+        if(InstalledHardware.applyDriveZeroPositionButtonToDriverXboxController)
+        {
+          this.bindDriveZeroPositionButtonToDriverXboxController();
         }
       }
     }
@@ -248,6 +253,20 @@ public class ManualInputInterfaces
           new ButtonPress("driverController", "kRightBumper.whenReleased"))
       );
 
+  }
+
+  /**
+   * A method that will bind zero button to driver controller
+   */
+  private void bindDriveZeroPositionButtonToDriverXboxController()
+  {
+    JoystickButton buttonStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
+      
+    buttonStart.whenReleased(
+      new ParallelCommandGroup(
+        new RunCommand(() -> subsystemCollection.getDriveTrainSubsystem().setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)))),
+        new ButtonPress("driverController", "kStart.whenReleased"))
+    );
   }
 
   private Trajectory buildTraverseSimpleForward()
