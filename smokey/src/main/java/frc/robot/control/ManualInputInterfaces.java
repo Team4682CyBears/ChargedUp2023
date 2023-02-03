@@ -262,8 +262,10 @@ public class ManualInputInterfaces
   {
     // Back button zeros the gyroscope
     new Button(driverController::getStartButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition);
+            // Require drivetrain susbystem because this will cause crazy behavior if pressed when 
+            // the drivetrain is executing a field-oriented drive command
+            .whenPressed(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition, 
+            this.subsystemCollection.getDriveTrainSubsystem());
     /*
     JoystickButton buttonStart = new JoystickButton(driverController, XboxController.Button.kStart.value);
       
