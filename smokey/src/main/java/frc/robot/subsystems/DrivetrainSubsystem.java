@@ -320,7 +320,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return new ChassisSpeeds(
       MotorUtils.doubleSidedClamp(chassisSpeeds.vxMetersPerSecond, translationMin, translationMax),
       MotorUtils.doubleSidedClamp(chassisSpeeds.vyMetersPerSecond, translationMin, translationMax),
-      MotorUtils.doubleSidedClamp(chassisSpeeds.omegaRadiansPerSecond, rotationMin, rotationMax));
+      //remove clamp on rotational component
+      chassisSpeeds.omegaRadiansPerSecond);
   }
 
   /**
