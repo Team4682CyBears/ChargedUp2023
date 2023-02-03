@@ -98,12 +98,18 @@ public class DriveTrajectoryCommand extends CommandBase
         // based on docs it would appear this method is potentially the most complex one - there are multiple overloads - not sure which one to use
         // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/holonomic.html#getting-adjusted-velocities
         // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/math/controller/HolonomicDriveController.html#calculate(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.geometry.Rotation2d)
-        ChassisSpeeds calculatedSpeed = controller.calculate(
-            currentLocation,
-            targetState.poseMeters,
-            targetState.velocityMetersPerSecond,
-            targetState.poseMeters.getRotation());
-            
+        //ChassisSpeeds calculatedSpeed = controller.calculate(
+        //    currentLocation,
+        //    targetState.poseMeters,
+        //    targetState.velocityMetersPerSecond,
+        //    targetState.poseMeters.getRotation());
+
+        // For swerve drive, call the controller like this:
+        // https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/SwerveControllerCommand.java#L222
+        // The key is to override each rotation with the trajectory's final rotation
+        ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());    
+
+
         drivetrain.drive(drivetrain.clampChassisSpeeds(calculatedSpeed));
     }
   }
