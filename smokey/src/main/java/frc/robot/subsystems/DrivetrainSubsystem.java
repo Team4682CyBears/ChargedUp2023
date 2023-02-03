@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -91,6 +92,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SubsystemCollection currentCollection = null;
   private Pose2d currentPosition = new Pose2d();
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
+  private TrajectoryConfig trajectoryConfig;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -149,6 +151,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
 
+    // setup default TrajectoryConfig
+    this.trajectoryConfig =  new TrajectoryConfig(
+    MAX_VELOCITY_METERS_PER_SECOND,
+    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    trajectoryConfig.setReversed(false);
+    trajectoryConfig.setKinematics(swerveKinematics);
   }
 
   /**
@@ -529,4 +537,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return resultAccelerations;
   }
 
+  public TrajectoryConfig getTrajectoryConfig() {
+    return trajectoryConfig;
+  }
 }

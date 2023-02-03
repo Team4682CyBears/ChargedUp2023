@@ -233,7 +233,7 @@ public class ManualInputInterfaces
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseSimpleRight()),
+            this.buildTraverseSimpleLeft()),
           new ButtonPress("driverController", "kY.whenReleased"))
       );
 
@@ -275,8 +275,7 @@ public class ManualInputInterfaces
      */
   }
 
-  private Trajectory buildTraverseSimpleForward()
-  {
+  private Trajectory buildTraverseSimpleForward(){
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
     Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
 
@@ -284,18 +283,12 @@ public class ManualInputInterfaces
     // no waypoints
     interiorWaypoints.add(new Translation2d(1.0, 0.0));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    config.setReversed(false);
-
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
-  private Trajectory buildTraverseSimpleRight()
-  {
+  private Trajectory buildTraverseSimpleLeft(){
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
     Pose2d end = new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0));
 
@@ -303,14 +296,9 @@ public class ManualInputInterfaces
     // no waypoints
     interiorWaypoints.add(new Translation2d(0.0, 0.5));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    config.setReversed(false);
-
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   private Trajectory buildTraverseTurn270()
@@ -322,14 +310,9 @@ public class ManualInputInterfaces
     // no waypoints
     interiorWaypoints.add(new Translation2d(0.25, 0.0));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    config.setReversed(false);
-
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   private Trajectory buildTraverseTurn90()
@@ -341,14 +324,9 @@ public class ManualInputInterfaces
     // no waypoints
     interiorWaypoints.add(new Translation2d(0.25, 0.0));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    config.setReversed(false);
-
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   private Trajectory buildTraverseForwardArc()
@@ -361,13 +339,8 @@ public class ManualInputInterfaces
     interiorWaypoints.add(new Translation2d(1.0, 0.50));
     interiorWaypoints.add(new Translation2d(1.5, 0.25));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
-    config.setReversed(false);
-
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   private Trajectory buildTraverseBackwardArc()
@@ -380,13 +353,8 @@ public class ManualInputInterfaces
     interiorWaypoints.add(new Translation2d(-1.0, -0.50));
     interiorWaypoints.add(new Translation2d(-1.5, -0.25));
 
-    // GO SLOW!!!
-    TrajectoryConfig config = new TrajectoryConfig(
-      DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND/10,
-      DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED/10);
-    config.setReversed(false);
-
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config); 
+    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   /**
