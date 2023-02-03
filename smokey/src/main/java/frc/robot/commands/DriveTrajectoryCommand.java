@@ -9,6 +9,7 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot.commands;
+import static java.lang.Math.abs;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -33,12 +34,12 @@ public class DriveTrajectoryCommand extends CommandBase
   private boolean done = false;
   private double expectedDuration = 0.0;
 
-  private PIDController xPidController = new PIDController(2.0,0.0,0.0);
-  private PIDController yPidController = new PIDController(2.0,0.0,0.0);
+  private PIDController xPidController = new PIDController(1.0,0.0,0.0);
+  private PIDController yPidController = new PIDController(1.0,0.0,0.0);
   private Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-  private ProfiledPIDController thetaPidController = new ProfiledPIDController(2.0, 0.0, 0.0, movementConstraints);
+  private ProfiledPIDController thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
   private HolonomicDriveController controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
 
   private Pose2d finalPosition = null;
@@ -126,9 +127,9 @@ public class DriveTrajectoryCommand extends CommandBase
   {
     Pose2d currentPosition = this.drivetrain.getRobotPosition();
     Transform2d delta = new Transform2d(currentPosition, this.finalPosition);
-    if( delta.getX() <= this.overTimeDelta.getX() &&
-        delta.getY() <= this.overTimeDelta.getY() &&
-        MathUtil.angleModulus(delta.getRotation().getRadians()) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians()))
+    if( abs(delta.getX()) <= this.overTimeDelta.getX() &&
+        abs(delta.getY()) <= this.overTimeDelta.getY() &&
+        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians()))
     {
       System.out.println("isDeltaReasonable == true ...........");
       return true;

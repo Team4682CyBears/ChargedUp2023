@@ -234,7 +234,7 @@ public class ManualInputInterfaces
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             this.buildTraverseSimpleRight()),
-          new ButtonPress("driverController", "kA.whenReleased"))
+          new ButtonPress("driverController", "kY.whenReleased"))
       );
 
       buttonLeftBumper.whenReleased(
