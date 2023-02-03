@@ -317,7 +317,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds, 
   double translationMin, double translationMax, double rotationMin, double rotationMax){
-    double clampedOmega = MotorUtils.doubleSidedClamp(chassisSpeeds.omegaRadiansPerSecond, rotationMin, rotationMax);
+    // do not scale omega
+    //double clampedOmega = MotorUtils.doubleSidedClamp(chassisSpeeds.omegaRadiansPerSecond, rotationMin, rotationMax);
     // if one or both of X or Y needs to be clamped, we need to scale both proportionally
     // form a Translation2d of x, y so the math is easier
     Translation2d translation = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
@@ -326,7 +327,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // scale the translation by the clamped velocity scale factor
     double scale = clampedVelocity/velocity;
     translation = translation.times(scale);
-    return new ChassisSpeeds(translation.getX(), translation.getY(), clampedOmega);
+    return new ChassisSpeeds(translation.getX(), translation.getY(), chassisSpeeds.omegaRadiansPerSecond);
   }
 
   /**
