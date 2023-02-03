@@ -36,11 +36,8 @@ public class DriveTrajectoryCommand extends CommandBase
 
   private PIDController xPidController = new PIDController(1.0,0.0,0.0);
   private PIDController yPidController = new PIDController(1.0,0.0,0.0);
-  private Constraints movementConstraints = new TrapezoidProfile.Constraints(
-    DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-  private ProfiledPIDController thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
-  private HolonomicDriveController controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
+  private ProfiledPIDController thetaPidController;
+  private HolonomicDriveController controller;
 
   private Pose2d finalPosition = null;
   private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
@@ -59,6 +56,14 @@ public class DriveTrajectoryCommand extends CommandBase
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrainSubsystem);
+    
+    // setup theta PID controller and holonomic controller
+    Constraints movementConstraints = new TrapezoidProfile.Constraints(
+    DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
+    thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
+    controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
   }
 
   // Called when the command is initially scheduled.
