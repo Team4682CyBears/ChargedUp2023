@@ -20,7 +20,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,10 +29,8 @@ import frc.robot.*;
 import frc.robot.commands.ButtonPress;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class ManualInputInterfaces
-{
+public class ManualInputInterfaces{
   // sets joystick variables to joysticks
   private XboxController driverController = new XboxController(Constants.portDriverController); 
   private XboxController coDriverController = new XboxController(Constants.portCoDriverController); 
@@ -44,8 +41,7 @@ public class ManualInputInterfaces
   /**
    * The constructor to build this 'manual input' conduit
    */
-  public ManualInputInterfaces(SubsystemCollection currentCollection)
-  {
+  public ManualInputInterfaces(SubsystemCollection currentCollection){
     subsystemCollection = currentCollection;
   }
 
@@ -53,8 +49,7 @@ public class ManualInputInterfaces
    * A method to get the arcade drive X componet being input from humans
    * @return - a double value associated with the magnitude of the x componet
    */
-  public double getInputArcadeDriveX()
-  {
+  public double getInputArcadeDriveX(){
     return driverController.getLeftX();
   }
 
@@ -62,8 +57,7 @@ public class ManualInputInterfaces
    * A method to get the arcade drive X componet being input from humans
    * @return - a double value associated with the magnitude of the x componet
    */
-  public double getInputArcadeDriveY()
-  {
+  public double getInputArcadeDriveY(){
     return driverController.getLeftY();
   }
 
@@ -71,8 +65,7 @@ public class ManualInputInterfaces
    * A method to get the spin drive X componet being input from humans
    * @return - a double value associated with the magnitude of the x componet
    */
-  public double getInputSpinDriveX()
-  {
+  public double getInputSpinDriveX(){
     return driverController.getRightX();
   }
 
@@ -83,14 +76,12 @@ public class ManualInputInterfaces
   public void initializeButtonCommandBindings()
   {
     // Configure the driver xbox controller bindings
-    if(InstalledHardware.driverXboxControllerInstalled)
-    {
+    if(InstalledHardware.driverXboxControllerInstalled){
       this.bindCommandsToDriverXboxButtons();
     }
 
     // Configure the co-driver xbox controller bindings
-    if(InstalledHardware.coDriverXboxControllerInstalled)
-    {
+    if(InstalledHardware.coDriverXboxControllerInstalled){
       this.bindCommandsToCoDriverXboxButtons();
     }
   }
@@ -98,14 +89,11 @@ public class ManualInputInterfaces
   /**
    * Will attach commands to the Driver XBox buttons 
    */
-  private void bindCommandsToDriverXboxButtons()
-  {
-    if(InstalledHardware.driverXboxControllerInstalled)
-    {
+  private void bindCommandsToDriverXboxButtons(){
+    if(InstalledHardware.driverXboxControllerInstalled){
       // TODO - do we need anything else needed here?
       
-      if(subsystemCollection.getDriveTrainSubsystem() != null)
-      {
+      if(subsystemCollection.getDriveTrainSubsystem() != null){
         // Back button zeros the gyroscope
         new Button(driverController::getBackButton)
                 // No requirements because we don't need to interrupt anything
@@ -116,16 +104,13 @@ public class ManualInputInterfaces
 //              // No requirements because we don't need to interrupt anything
 //              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
 
-        if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController)
-        {
+        if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController){
           this.bindBasicDriveToPointButtonsToDriverXboxController();          
         }
-        if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController)
-        {
+        if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController){
           this.bindDriveTrajectoryButtonsToDriverXboxController();
         }
-        if(InstalledHardware.applyDriveZeroPositionButtonToDriverXboxController)
-        {
+        if(InstalledHardware.applyDriveZeroPositionButtonToDriverXboxController){
           this.bindDriveZeroPositionButtonToDriverXboxController();
         }
       }
@@ -135,8 +120,7 @@ public class ManualInputInterfaces
   /**
    * A method that will bind buttons for basic drive to point commands to driver controller
    */
-  private void bindBasicDriveToPointButtonsToDriverXboxController()
-  {
+  private void bindBasicDriveToPointButtonsToDriverXboxController(){
       JoystickButton buttonX = new JoystickButton(driverController, XboxController.Button.kX.value);
       JoystickButton buttonY = new JoystickButton(driverController, XboxController.Button.kY.value);
       JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
@@ -196,8 +180,7 @@ public class ManualInputInterfaces
     /**
    * A method that will bind buttons for basic drive to point commands to driver controller
    */
-  private void bindDriveTrajectoryButtonsToDriverXboxController()
-  {
+  private void bindDriveTrajectoryButtonsToDriverXboxController(){
       JoystickButton buttonB = new JoystickButton(driverController, XboxController.Button.kB.value);
       JoystickButton buttonA = new JoystickButton(driverController, XboxController.Button.kA.value);
       JoystickButton buttonX = new JoystickButton(driverController, XboxController.Button.kX.value);
@@ -258,8 +241,7 @@ public class ManualInputInterfaces
   /**
    * A method that will bind zero button to driver controller
    */
-  private void bindDriveZeroPositionButtonToDriverXboxController()
-  {
+  private void bindDriveZeroPositionButtonToDriverXboxController(){
     // Back button zeros the gyroscope
     new Button(driverController::getStartButton)
             // Require drivetrain susbystem because this will cause crazy behavior if pressed when 
@@ -278,61 +260,46 @@ public class ManualInputInterfaces
   }
 
   private Trajectory buildTraverseSimpleForward(){
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    // no waypoints
-    interiorWaypoints.add(new Translation2d(1.0, 0.0));
+    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
+    waypoints.add(new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    return TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
   private Trajectory buildTraverseSimpleLeft(){
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    // no waypoints
-    interiorWaypoints.add(new Translation2d(0.0, 0.5));
+    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
+    waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    return TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
-  private Trajectory buildTraverseTurn270()
-  {
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    // no waypoints
-    interiorWaypoints.add(new Translation2d(0.25, 0.0));
+  private Trajectory buildTraverseTurn270(){
+    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
+    waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    return TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
-  private Trajectory buildTraverseTurn90()
-  {
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(90));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    // no waypoints
-    interiorWaypoints.add(new Translation2d(0.25, 0.0));
+  private Trajectory buildTraverseTurn90(){
+    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
+    waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(90)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    return TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
-  private Trajectory buildTraverseForwardArc()
-  {
+  private Trajectory buildTraverseForwardArc(){
     Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
     Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
 
@@ -345,8 +312,7 @@ public class ManualInputInterfaces
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
   }
 
-  private Trajectory buildTraverseBackwardArc()
-  {
+  private Trajectory buildTraverseBackwardArc(){
     Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
     Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
 
@@ -366,8 +332,7 @@ public class ManualInputInterfaces
    * @param rotationDegrees
    * @return
    */
-  private Pose2d getTargetPosition(double xTranslation, double yTranslation, double rotationDegrees)
-  {
+  private Pose2d getTargetPosition(double xTranslation, double yTranslation, double rotationDegrees){
     Pose2d startPos = this.subsystemCollection.getDriveTrainSubsystem().getRobotPosition();
     Translation2d theTranslation = new Translation2d(xTranslation, yTranslation);
     Rotation2d theRotation = Rotation2d.fromDegrees(rotationDegrees);
@@ -377,10 +342,8 @@ public class ManualInputInterfaces
   /**
    * Will attach commands to the Co Driver XBox buttons 
    */
-  private void bindCommandsToCoDriverXboxButtons()
-  {
-    if(InstalledHardware.coDriverXboxControllerInstalled)
-    {
+  private void bindCommandsToCoDriverXboxButtons(){
+    if(InstalledHardware.coDriverXboxControllerInstalled){
       JoystickButton bumperLeft = new JoystickButton(coDriverController, XboxController.Button.kLeftBumper.value);
       JoystickButton bumperRight = new JoystickButton(coDriverController, XboxController.Button.kRightBumper.value);
       JoystickButton buttonY = new JoystickButton(coDriverController, XboxController.Button.kY.value);
