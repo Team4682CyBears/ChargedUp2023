@@ -50,7 +50,15 @@ public class SwerveTrajectoryGenerator {
         return new Trajectory(states);
     }
 
-    // make a new generateTrajectory for Pose2d trajectories
+    /**
+     * Generates trajectories for swerver drives.  The translation motions of the trajectory is 
+     * unconstrained by the initial and final robot pose.  All trajectory states' rotations are then overridden 
+     * by the desired final pose.  The profiled PID controller in the holonomic drive controller
+     * handles smoothing out the trajectories. 
+     * @param waypoints
+     * @param config
+     * @return
+     */
     public static Trajectory generateTrajectory(ArrayList<Pose2d> waypoints, TrajectoryConfig config){
         int len = waypoints.size();
         Rotation2d origStartingAngle = waypoints.get(0).getRotation();
@@ -77,13 +85,22 @@ public class SwerveTrajectoryGenerator {
         return new Trajectory(states);
     }   
 
+    /**
+     * prints a trajectory one state per line
+     * @param t Trajectory
+     */
     public static void printTrajectory(Trajectory t){
         for (int i = 0; i < t.getStates().size(); i++) {
             System.out.println(t.getStates().get(i));
         }
     }
 
-
+    /**
+     * fix up the rotations in every state to always be the final rotation. 
+     * @param states
+     * @param finalAngle
+     * @return the modified states
+     */
     private static List<Trajectory.State> OverrideStateRotations(List<Trajectory.State> states, Rotation2d finalAngle){
         for (int i = 0; i < states.size(); i++) {
             State s = states.get(i);
@@ -93,6 +110,13 @@ public class SwerveTrajectoryGenerator {
         return states;
     }
 
+    /**
+     * //Calaculate time for rotational trapezoidal profile. 
+     * @param config
+     * @param startAngle
+     * @param endAngle
+     * @return the total rotational time
+     */
     private static double CalculateRotationTime(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
         TrapezoidProfile.Constraints thetaProfileConstraints = new TrapezoidProfile.
         Constraints(config.getMaxVelocity(),config.getMaxAcceleration());
