@@ -46,6 +46,14 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-305.5-180.0-117.0); 
 
     // *****************************************************************
+    // arm constants
+    public static final int HorizontalArmDriveMotorCanId = 13;
+    public static final int VerticalArmDriveMotorCanId = 14;
+    public static final int VirticalArmMagneticSensor = 0;
+    public static final int HorizontalArmMagneticSensor = 1;
+
+
+    // *****************************************************************
     // standard stuff constants - motors rotation, etc.
     public static final double DegreesPerRevolution = 360.0;
     // NEO maximum RPM 
