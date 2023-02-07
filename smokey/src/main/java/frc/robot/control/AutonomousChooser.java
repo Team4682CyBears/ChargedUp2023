@@ -10,10 +10,13 @@
 
 package frc.robot.control;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -21,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.*;
 //import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.DriveToPointCommand;
+import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.control.Trajectories;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -28,6 +33,7 @@ import frc.robot.commands.DriveToPointCommand;
 public class AutonomousChooser {
     private SubsystemCollection subsystems;
     private final SendableChooser<AutonomousMode> autonomousModeChooser = new SendableChooser<>();
+    private Trajectories trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
 
     /**
      * Constructor for AutonomousChooser
@@ -39,6 +45,10 @@ public class AutonomousChooser {
         autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
         autonomousModeChooser.addOption("Test Auto To A Position", AutonomousMode.TEST_AUTO_DRIVE_TO_POSITION);
+        autonomousModeChooser.addOption("Test Auto Blue Up and Over", AutonomousMode.TEST_BLUE_UP_AND_OVER);
+        autonomousModeChooser.addOption("Test Auto Blue Down and Under", AutonomousMode.TEST_BLUE_DOWN_AND_UNDER);
+        autonomousModeChooser.addOption("Test Auto Blue Across Ramp", AutonomousMode.TEST_BLUE_ACROSS_RAMP);
+        
 
         SmartDashboard.putData(autonomousModeChooser);
     }
@@ -99,6 +109,27 @@ public class AutonomousChooser {
         return command;
     }    
 
+    public Command getBlueUpAndOver() {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        resetRobotPose(command);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluUpAndOverTrajectory));
+        return command;
+    }
+    
+    public Command getBlueDownAndUnder() {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        resetRobotPose(command);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluDownAndUnderTrajectory));
+        return command;
+    }   
+
+    public Command getBluAcrossRamp() {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        resetRobotPose(command);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluAcrossRampTrajectory));
+        return command;
+    }   
+
     private Command driveSegment(double x, double y, double rot, double durationSeconds) {
         return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), x, y, rot, durationSeconds);
     }
@@ -122,6 +153,12 @@ public class AutonomousChooser {
                 return this.getTestAutoBackward();
             case TEST_AUTO_DRIVE_TO_POSITION :
                 return this.getTestAutoToPosition();
+            case TEST_BLUE_UP_AND_OVER :
+                return this.getBlueUpAndOver();
+            case TEST_BLUE_DOWN_AND_UNDER :
+                return this.getBlueDownAndUnder();
+            case TEST_BLUE_ACROSS_RAMP :
+                return this.getBluAcrossRamp();
         }
         return new InstantCommand();
     }
@@ -130,5 +167,8 @@ public class AutonomousChooser {
         TEST_AUTO_FORWARD,
         TEST_AUTO_BACKWARD,
         TEST_AUTO_DRIVE_TO_POSITION, 
+        TEST_BLUE_UP_AND_OVER,
+        TEST_BLUE_DOWN_AND_UNDER, 
+        TEST_BLUE_ACROSS_RAMP
     }
 }
