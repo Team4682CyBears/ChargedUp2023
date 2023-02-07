@@ -10,12 +10,17 @@
 
 package frc.robot.control;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 //import edu.wpi.first.math.geometry.Pose2d;
 //import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.commands.DriveTimeCommand;
+import frc.robot.commands.DriveToPointCommand;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -33,6 +38,7 @@ public class AutonomousChooser {
 
         autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
+        autonomousModeChooser.addOption("Test Auto To A Position", AutonomousMode.TEST_AUTO_DRIVE_TO_POSITION);
 
         SmartDashboard.putData(autonomousModeChooser);
     }
@@ -77,6 +83,22 @@ public class AutonomousChooser {
         return command;
     }
 
+    /**
+     * A method to get the create a DriveToPointCommand using the current position as a starting point
+     * @return command
+     */
+    public Command getTestAutoToPosition() {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command);
+
+        Pose2d currentPosition = subsystems.getDriveTrainSubsystem().getRobotPosition();
+        Pose2d destinationPosition = currentPosition.plus(new Transform2d(new Translation2d(1.5, 0.5), Rotation2d.fromDegrees(180.0)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), destinationPosition));
+
+        return command;
+    }    
+
     private Command driveSegment(double x, double y, double rot, double durationSeconds) {
         return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), x, y, rot, durationSeconds);
     }
@@ -95,14 +117,18 @@ public class AutonomousChooser {
     public Command getCommand() {
         switch (autonomousModeChooser.getSelected()) {
             case TEST_AUTO_FORWARD :
-                return getTestAutoForward();
+                return this.getTestAutoForward();
             case TEST_AUTO_BACKWARD :
-                return getTestAutoBackward();
+                return this.getTestAutoBackward();
+            case TEST_AUTO_DRIVE_TO_POSITION :
+                return this.getTestAutoToPosition();
         }
         return new InstantCommand();
     }
 
     private enum AutonomousMode {
-        TEST_AUTO_FORWARD, TEST_AUTO_BACKWARD 
+        TEST_AUTO_FORWARD,
+        TEST_AUTO_BACKWARD,
+        TEST_AUTO_DRIVE_TO_POSITION, 
     }
 }
