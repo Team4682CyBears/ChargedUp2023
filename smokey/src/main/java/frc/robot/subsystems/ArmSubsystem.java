@@ -26,6 +26,8 @@ import frc.robot.Constants;
 import frc.robot.common.*;
 import java.util.*;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class ArmSubsystem extends SubsystemBase
 {
     /* *********************************************************************
@@ -41,8 +43,10 @@ public class ArmSubsystem extends SubsystemBase
     // TODO - must get this from build side / Owen
     private static final double minimumVerticalArmExtensionMeters = 0.0;
     private static final double maximumVerticalArmExtensionMeters = 0.25;
+    private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = 0.40;
+    private static final double toleranceHorizontalArmExtensionMeters = 0.001;
 
     // TODO - use something less than 1.0 for testing
     private static final double neoMotorSpeedReductionFactor = 0.3;
@@ -59,14 +63,13 @@ public class ArmSubsystem extends SubsystemBase
     private SparkMaxPIDController horizontalPidController;
     private RelativeEncoder horizontalEncoder;
     private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
-    private double motorReferencePosition = 0.0;
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
     private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
 
-    private boolean isHorizontalMotorRetractDirectionPositive = false;
-    private boolean isVerticalMotorRetractDirectionPositive = false;
+    private boolean isHorizontalMotorInverted = false;
+    private boolean isVerticalMotorInverted = false;
 
     private boolean inSpeedMode = true;
     private double requestedHorizontalMotorSpeed = 0.0;
@@ -110,6 +113,9 @@ public class ArmSubsystem extends SubsystemBase
       this.requestedVerticalArmExtension = MotorUtils.truncateValue(verticalArmExtension, minimumVerticalArmExtensionMeters, maximumVerticalArmExtensionMeters);
     }
     
+    /**
+     * A method to handle periodic processing
+     */
     @Override
     public void periodic() {
 
@@ -117,78 +123,86 @@ public class ArmSubsystem extends SubsystemBase
       this.initializeMotorsSmartMotion();
       this.refreshArmPosition();
 
-      boolean allowHorizontalMovementDespiteStop = false;
-      if(this.isHorizontalMotorRetractDirectionPositive){
-        allowHorizontalMovementDespiteStop = 
-          (this.inSpeedMode == true) ? 
-          (this.requestedHorizontalMotorSpeed < 0.0) :
-          (this.requestedHorizontalArmExtension > minimumHorizontalArmExtensionMeters && this.requestedVerticalArmExtension < maximumHorizontalArmExtensionMeters);
-      }            
-      else{
-        allowHorizontalMovementDespiteStop =
-          (this.inSpeedMode == true) ?
-          (this.requestedHorizontalMotorSpeed > 0.0) :
-          (this.requestedHorizontalArmExtension > minimumHorizontalArmExtensionMeters && this.requestedVerticalArmExtension < maximumHorizontalArmExtensionMeters);
-      }
+      // determine if the movement is in the stop range
+      // stop range implies any of the following:
+      // magnetic sensor triggered 
+      // arm deployed >= limit (e.g., maximumXXXArmExtensionMeters)
+      double currentHorizontalExtensionInMeters = this.getCurrentHorizontalArmExtensionInMeters();
+      boolean isHorizontalArmAtOrBelowLowStop = this.horizontalArmMageneticSensor.get();
+      boolean isHorizontalArmAtOrAboveHighStop = currentHorizontalExtensionInMeters >= maximumHorizontalArmExtensionMeters;
+      double currentVerticalExtensionInMeters = this.getCurrentVerticalArmExtensionInMeters();
+      boolean isVerticalArmAtOrBelowLowStop = this.verticalArmMageneticSensor.get();
+      boolean isVerticalArmAtOrAboveHighStop = currentVerticalExtensionInMeters >= maximumVerticalArmExtensionMeters;
 
-      boolean allowVerticalMovementDespiteStop = false;
-      if(this.isVerticalMotorRetractDirectionPositive){
-        allowVerticalMovementDespiteStop =
-          (this.inSpeedMode == true) ?
-          (this.requestedVerticalMotorSpeed < 0.0) :
-          (this.requestedVerticalArmExtension > minimumVerticalArmExtensionMeters && this.requestedVerticalArmExtension < maximumHorizontalArmExtensionMeters);
-      }            
-      else{
-        allowVerticalMovementDespiteStop =
-          (this.inSpeedMode == true) ?
-          (this.requestedVerticalMotorSpeed > 0.0) :
-          (this.requestedVerticalArmExtension > minimumVerticalArmExtensionMeters && this.requestedVerticalArmExtension < maximumHorizontalArmExtensionMeters);
-      }
-
-      // move motors in speed mode - where the input is in speed units
+      // if we are in speed mode always set motor speeds using motor set
       if(this.inSpeedMode) {
-        // horizontal motor
-        if(this.horizontalArmMageneticSensor.get() && !allowHorizontalMovementDespiteStop){
+
+        // Horizontal
+        if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalMotorSpeed < 0.0) {
           this.horizontalMotor.set(0.0);
           this.horizontalEncoder.setPosition(0.0);
         }
-        else{
-          this.horizontalMotor.set(this.requestedHorizontalMotorSpeed);
+        else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalMotorSpeed > 0.0) {
+          this.horizontalMotor.set(0.0);
         }
-        // vertical motor
-        if(this.verticalArmMageneticSensor.get() && !allowVerticalMovementDespiteStop){
+        else {
+          this.horizontalMotor.set(this.requestedHorizontalMotorSpeed * neoMotorSpeedReductionFactor);
+        }
+        
+        // Vertical
+        if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalMotorSpeed < 0.0) {
           this.verticalMotor.set(0.0);
           this.verticalEncoder.setPosition(0.0);
         }
-        else{
-          this.verticalMotor.set(this.requestedVerticalMotorSpeed);
+        else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
+          this.verticalMotor.set(0.0);
         }
+        else {
+          this.verticalMotor.set(this.requestedVerticalMotorSpeed * neoMotorSpeedReductionFactor);
+        }
+
       }
-      // use smart motion to control the movement
-      else {
-        // horizontal motor
-        if(this.horizontalArmMageneticSensor.get() && !allowHorizontalMovementDespiteStop){
+      // if not in speed mode we assume the caller wants smart motion
+      else{
+
+        boolean isHorizontalWithinTolerance =  (Math.abs(currentHorizontalExtensionInMeters - this.requestedHorizontalArmExtension) <= toleranceHorizontalArmExtensionMeters);
+        boolean isVerticalWithinTolerance =  (Math.abs(currentVerticalExtensionInMeters - this.requestedVerticalArmExtension) <= toleranceVerticalArmExtensionMeters);
+
+        // Horizontal
+        if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalArmExtension <= 0.0) {
           this.horizontalMotor.set(0.0);
           this.horizontalEncoder.setPosition(0.0);
         }
-        else{
+        else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalArmExtension >= maximumHorizontalArmExtensionMeters) {
+          this.horizontalMotor.set(0.0);
+        }
+        else if (isHorizontalWithinTolerance) {
+          this.horizontalMotor.set(0.0);
+        }
+        else {
           horizontalPidController.setReference(
             this.convertHorizontalArmExtensionFromMetersToTicks(this.requestedHorizontalArmExtension),
             ControlType.kSmartMotion);
         }
-        // vertical motor
-        if(this.verticalArmMageneticSensor.get() && !allowVerticalMovementDespiteStop){
+
+        // Vertical
+        if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalArmExtension <= 0.0) {
           this.verticalMotor.set(0.0);
           this.verticalEncoder.setPosition(0.0);
         }
-        else{
+        else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalArmExtension >= maximumVerticalArmExtensionMeters) {
+          this.verticalMotor.set(0.0);
+        }
+        else if (isVerticalWithinTolerance) {
+          this.verticalMotor.set(0.0);
+        }
+        else {
           verticalPidController.setReference(
-            this.convertHorizontalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
+            this.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
             ControlType.kSmartMotion);
         }
+
       }
-
-
     }
 
     @Override
@@ -285,6 +299,7 @@ public class ArmSubsystem extends SubsystemBase
 
         verticalMotor.restoreFactoryDefaults();
         verticalMotor.setIdleMode(IdleMode.kBrake);
+        verticalMotor.setInverted(this.isVerticalMotorInverted);
         verticalPidController = verticalMotor.getPIDController();
         verticalEncoder = verticalMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, (int)Constants.RevNeoEncoderTicksPerRevolution);
         verticalEncoder.setPositionConversionFactor((double)Constants.RevNeoEncoderTicksPerRevolution);
@@ -304,6 +319,7 @@ public class ArmSubsystem extends SubsystemBase
 
         horizontalMotor.restoreFactoryDefaults();
         horizontalMotor.setIdleMode(IdleMode.kBrake);
+        horizontalMotor.setInverted(this.isHorizontalMotorInverted);
         horizontalPidController = horizontalMotor.getPIDController();
         horizontalEncoder = horizontalMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, (int)Constants.RevNeoEncoderTicksPerRevolution);
         horizontalEncoder.setPositionConversionFactor((double)Constants.RevNeoEncoderTicksPerRevolution);
