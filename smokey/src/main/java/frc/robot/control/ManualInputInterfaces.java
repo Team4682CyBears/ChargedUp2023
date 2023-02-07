@@ -29,6 +29,7 @@ import frc.robot.*;
 import frc.robot.commands.ButtonPress;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.common.SwerveTrajectoryGenerator;
 
 public class ManualInputInterfaces{
   // sets joystick variables to joysticks
@@ -265,18 +266,20 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
-    return TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    return t;
   }
 
   private Trajectory buildTraverseSimpleLeft(){
     ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
-    waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0)));
+    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)));
+    waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
-    return TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    return t;
   }
 
   private Trajectory buildTraverseTurn270(){
@@ -285,8 +288,10 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
-    return TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    //SwerveTrajectoryGenerator.printTrajectory(t);
+    return t;
   }
 
   private Trajectory buildTraverseTurn90(){
@@ -295,34 +300,49 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(90)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
-    return TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    SwerveTrajectoryGenerator.printTrajectory(t);
+    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90 Alternate");
+    Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    SwerveTrajectoryGenerator.printTrajectory(tAlt);
+    return t;
   }
 
   private Trajectory buildTraverseForwardArc(){
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
+    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
     interiorWaypoints.add(new Translation2d(0.5, 0.25));
     interiorWaypoints.add(new Translation2d(1.0, 0.50));
     interiorWaypoints.add(new Translation2d(1.5, 0.25));
 
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    Trajectory t = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    return t;
   }
 
   private Trajectory buildTraverseBackwardArc(){
-    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0));
-    Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
+    Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
 
     ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    interiorWaypoints.add(new Translation2d(-0.5, -0.25));
-    interiorWaypoints.add(new Translation2d(-1.0, -0.50));
-    interiorWaypoints.add(new Translation2d(-1.5, -0.25));
+    interiorWaypoints.add(new Translation2d(1.5, 0.25));
+    interiorWaypoints.add(new Translation2d(1.0, 0.50));
+    interiorWaypoints.add(new Translation2d(0.5, 0.25));
 
-    return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, 
+    System.out.println(">>> Building Traverse Backward Arc");
+    Trajectory t = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    SwerveTrajectoryGenerator.printTrajectory(t);
+
+    System.out.println(">>> Building Traverse Backward Arc Alternate");
+    Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
+    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
+    SwerveTrajectoryGenerator.printTrajectory(tAlt);
+    return t;
   }
 
   /**
