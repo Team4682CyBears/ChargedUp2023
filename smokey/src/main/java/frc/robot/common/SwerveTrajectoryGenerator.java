@@ -77,7 +77,7 @@ public class SwerveTrajectoryGenerator {
         return new Trajectory(states);
     }   
 
-    public void printTrajectory(Trajectory t){
+    public static void printTrajectory(Trajectory t){
         for (int i = 0; i < t.getStates().size(); i++) {
             System.out.println(t.getStates().get(i));
         }
