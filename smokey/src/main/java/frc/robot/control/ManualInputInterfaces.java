@@ -62,6 +62,27 @@ public class ManualInputInterfaces
   }
 
   /**
+   * A method to get the arcade arm Y componet being input from humans
+   * @return - a double value associated with the magnitude of the Y componet
+   */
+  public double getInputArcadeArmY()
+  {
+    // use the co drivers left X to represent the horizontal movement
+    return coDriverController.getLeftX();
+  }
+
+  /**
+   * A method to get the arcade arm Z componet being input from humans
+   * @return - a double value associated with the magnitude of the Z componet
+   */
+  public double getInputArcadeArmZ()
+  {
+    // use the co drivers left X to represent the vertical movement
+    // and multiply by -1.0 as xbox reports values flipped
+    return -1.0 * coDriverController.getLeftY();
+  }
+
+  /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
    */
