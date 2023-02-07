@@ -266,7 +266,7 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
-    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     return t;
   }
@@ -277,7 +277,7 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
-    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     return t;
   }
@@ -288,7 +288,7 @@ public class ManualInputInterfaces{
     waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90)));
 
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
-    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
+    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     //SwerveTrajectoryGenerator.printTrajectory(t);
     return t;
@@ -307,7 +307,7 @@ public class ManualInputInterfaces{
     Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     SwerveTrajectoryGenerator.printTrajectory(tAlt);
-    return t;
+    return tAlt;
   }
 
   private Trajectory buildTraverseForwardArc(){
@@ -319,7 +319,7 @@ public class ManualInputInterfaces{
     interiorWaypoints.add(new Translation2d(1.0, 0.50));
     interiorWaypoints.add(new Translation2d(1.5, 0.25));
 
-    Trajectory t = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
+    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     return t;
   }
@@ -342,7 +342,7 @@ public class ManualInputInterfaces{
     Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     SwerveTrajectoryGenerator.printTrajectory(tAlt);
-    return t;
+    return tAlt;
   }
 
   /**
