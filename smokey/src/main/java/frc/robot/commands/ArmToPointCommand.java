@@ -48,9 +48,9 @@ public class ArmToPointCommand extends CommandBase {
         if(interrupted){
             done = true;
         }
+        this.armSubsystem.setArmSpeeds(0.0, 0.0);
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished(){
         return done;
