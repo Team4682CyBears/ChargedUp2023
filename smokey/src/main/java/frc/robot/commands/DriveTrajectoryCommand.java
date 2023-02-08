@@ -32,8 +32,8 @@ public class DriveTrajectoryCommand extends CommandBase{
   private boolean done = false;
   private double expectedDuration = 0.0;
 
-  private PIDController xPidController = new PIDController(1.0,0.0,0.0);
-  private PIDController yPidController = new PIDController(1.0,0.0,0.0);
+  private PIDController xPidController = new PIDController(2.0,0.0,0.0);
+  private PIDController yPidController = new PIDController(2.0,0.0,0.0);
   private ProfiledPIDController thetaPidController;
   private HolonomicDriveController controller;
 
@@ -58,7 +58,7 @@ public class DriveTrajectoryCommand extends CommandBase{
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
+    thetaPidController = new ProfiledPIDController(3.0, 0.0, 0.0, movementConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
     controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
   }
@@ -93,13 +93,14 @@ public class DriveTrajectoryCommand extends CommandBase{
         // The key is to override each rotation with the trajectory's final rotation
         ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());    
         ChassisSpeeds clampedSpeed = drivetrain.clampChassisSpeeds(calculatedSpeed);
-        drivetrain.drive(clampedSpeed);
+        // TODO removed clamping
+        drivetrain.drive(calculatedSpeed);
 
         // TODO remove debug print statements
-        System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
-        System.out.println("Target State: " + targetState);
-        System.out.println("Calculated Speed: " + calculatedSpeed);
-        System.out.println("Clamped Speed: " + clampedSpeed);
+        //System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
+        //System.out.println("Target State: " + targetState);
+        //System.out.println("Calculated Speed: " + calculatedSpeed);
+        //System.out.println("Clamped Speed: " + clampedSpeed);
     }
   }
 
