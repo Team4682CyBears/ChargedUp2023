@@ -39,14 +39,24 @@ public class ArmSubsystem extends SubsystemBase
     private static final double verticalArmMovementInMetersPerMotorRotation = (0.2/12.0) * (1.0/50.0); // (linear distance meters / number of teeth moved in one rotation) * (gear ratio - number of final gear rotations / number of motor rotations)
     private static final double horizontalArmMovementInMetersPerMotorRotation = verticalArmMovementInMetersPerMotorRotation;
 
-    // important - this should be the maximum extension of the arms - in meters
-    // TODO - must get this from build side / Owen
+    // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
     private static final double maximumVerticalArmExtensionMeters = 0.25;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = 0.40;
     private static final double toleranceHorizontalArmExtensionMeters = 0.001;
+
+    // the various geometry aspects of the arm setup
+    private static final double lengthFloorToHorizontalArmPivotMeters = 0.15;
+    private static final double lengthFloorToVerticalArmPivotMeters = 0.15;
+    private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = 0.42;
+    private static final double lengthHorizontalArmPinDistanceMeters = 0.34;
+    private static final double lengthMinimumVerticalArmMeters = 0.20;
+    private static final double lengthMaximumVerticalArmMeters = lengthMinimumVerticalArmMeters + (maximumVerticalArmExtensionMeters - minimumVerticalArmExtensionMeters);
+    private static final double lengthMinimumHorizontalArmMeters = 0.38;
+    private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
+
 
     // TODO - use something less than 1.0 for testing
     private static final double neoMotorSpeedReductionFactor = 0.3;
@@ -72,6 +82,7 @@ public class ArmSubsystem extends SubsystemBase
     private boolean isVerticalMotorInverted = false;
 
     private boolean inSpeedMode = true;
+    private boolean movementWithinTolerance = false;
     private double requestedHorizontalMotorSpeed = 0.0;
     private double requestedVerticalMotorSpeed = 0.0;
     private double requestedHorizontalArmExtension = 0.0;
@@ -98,6 +109,7 @@ public class ArmSubsystem extends SubsystemBase
      */
     public void setArmSpeeds(double horizontalArmSpeed, double verticalArmSpeed){
       this.inSpeedMode = true;
+      this.movementWithinTolerance = false;
       this.requestedHorizontalMotorSpeed = MotorUtils.truncateValue(horizontalArmSpeed, -1.0, 1.0);
       this.requestedVerticalMotorSpeed = MotorUtils.truncateValue(verticalArmSpeed, -1.0, 1.0);
     }
@@ -109,10 +121,46 @@ public class ArmSubsystem extends SubsystemBase
      */
     public void setArmExtensions(double horizontalArmExtension, double verticalArmExtension){
       this.inSpeedMode = false;
+      this.movementWithinTolerance = false;
       this.requestedHorizontalArmExtension = MotorUtils.truncateValue(horizontalArmExtension, minimumHorizontalArmExtensionMeters, maximumHorizontalArmExtensionMeters);
       this.requestedVerticalArmExtension = MotorUtils.truncateValue(verticalArmExtension, minimumVerticalArmExtensionMeters, maximumVerticalArmExtensionMeters);
     }
     
+    /**
+     * A method to set requested the arms motor extension distance
+     * @param yPointMeters the y aspect of the arm from the primary arm pivot center in meters
+     * @param zPointMeters the z aspect of the arm above the level playing floor in meters
+     * @return true if the position is valid and was set, otherwise false
+     */
+    public boolean setArmToPointInSpace(double yPointMeters, double zPointMeters){
+      
+      double requestedAngle = Math.atan(zPointMeters/yPointMeters);
+      double requestedHorizontalArmLength = yPointMeters/Math.cos(requestedAngle);
+      double requestedVerticalArmLength = Math.tan(requestedAngle) * lengthHorizontalArmPinDistanceMeters;
+
+      double requestedHorizontalArmExtensionMeters = requestedHorizontalArmLength - lengthMinimumHorizontalArmMeters;
+      double requestedVerticalArmExtensionMeters = requestedVerticalArmLength - lengthMinimumVerticalArmMeters;
+
+      boolean armPointInSpaceValid = false;
+      if( requestedHorizontalArmExtensionMeters >= minimumHorizontalArmExtensionMeters &&
+        requestedHorizontalArmExtensionMeters <= maximumHorizontalArmExtensionMeters &&
+        requestedVerticalArmExtensionMeters >= minimumVerticalArmExtensionMeters &&
+        requestedVerticalArmExtensionMeters <= maximumVerticalArmExtensionMeters) {
+          armPointInSpaceValid = true;
+          this.setArmExtensions(requestedHorizontalArmExtensionMeters, requestedVerticalArmExtensionMeters);
+      }
+      return armPointInSpaceValid;
+    }
+
+    /**
+     * Method to help indicate when a requested movement is complete
+     * @return true when the arms have arrived at their extension distances, else false
+     */
+    public boolean isRequestedArmMovementComplete()
+    {
+      return this.inSpeedMode == false &&  this.movementWithinTolerance;
+    }
+
     /**
      * A method to handle periodic processing
      */
@@ -167,6 +215,7 @@ public class ArmSubsystem extends SubsystemBase
 
         boolean isHorizontalWithinTolerance =  (Math.abs(currentHorizontalExtensionInMeters - this.requestedHorizontalArmExtension) <= toleranceHorizontalArmExtensionMeters);
         boolean isVerticalWithinTolerance =  (Math.abs(currentVerticalExtensionInMeters - this.requestedVerticalArmExtension) <= toleranceVerticalArmExtensionMeters);
+        movementWithinTolerance = isHorizontalWithinTolerance && isVerticalWithinTolerance;
 
         // Horizontal
         if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalArmExtension <= 0.0) {
@@ -268,13 +317,43 @@ public class ArmSubsystem extends SubsystemBase
     }
 
     /**
+     * A method to return the current horizontal arm angle measured from floor to arm centerline
+     * @return the angle
+     */
+    private double getCurrentHorizontalArmAngle()
+    {
+      return Math.atan((lengthMinimumVerticalArmMeters + this.getCurrentVerticalArmExtensionInMeters())/lengthHorizontalArmPinDistanceMeters);
+    }
+
+    /**
+     * A method to return the current arms Z height in meters from the floor
+     * @return the height in meters from the floor to the arm tip
+     */
+    private double getCurrentArmsHeightInMeters()
+    {
+      return lengthFloorToHorizontalArmPivotMeters + (Math.sin(this.getCurrentHorizontalArmAngle()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters()));
+    }
+
+    /**
+     * A method to return the current arms Y distance in meters from the floor
+     * @return the height in meters from the floor to the arm tip
+     */
+    private double getCurrentArmsDistanceInMeters()
+    {
+      return Math.cos(this.getCurrentHorizontalArmAngle()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters());
+    }
+
+    /**
      * A function intended to be called from perodic to update the robots centroid position on the field.
      */
     private void refreshArmPosition() {
-      SmartDashboard.putNumber("HorizontalArmTicks", this.horizontalEncoder.getPosition());
-      SmartDashboard.putNumber("HorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
-      SmartDashboard.putNumber("VerticalArmTicks", this.verticalEncoder.getPosition());
-      SmartDashboard.putNumber("VerticalArmMeters", this.getCurrentVerticalArmExtensionInMeters());
+      SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
+      SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
+      SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
+      SmartDashboard.putNumber("ExtensionVerticalArmMeters", this.getCurrentVerticalArmExtensionInMeters());
+      SmartDashboard.putNumber("ArmAngle", this.getCurrentHorizontalArmAngle());
+      SmartDashboard.putNumber("ArmHeightMetersZ", this.getCurrentArmsHeightInMeters());
+      SmartDashboard.putNumber("ArmDistanceMetersY", this.getCurrentArmsDistanceInMeters());
     }
 
     // a method devoted to establishing proper startup of the jaws motors

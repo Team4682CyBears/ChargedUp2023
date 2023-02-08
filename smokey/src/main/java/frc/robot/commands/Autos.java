@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public final class Autos {
   /** Example static factory for an autonomous command. */
   public static CommandBase exampleAuto(ArmSubsystem subsystem) {
-    return Commands.sequence(new ExampleArmCommand(subsystem));
+    return Commands.sequence(new ArmToPointCommand(subsystem, 1.0, 0.5));
   }
 
   private Autos() {
