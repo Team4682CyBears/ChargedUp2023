@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import java.util.ArrayList;
 
 public class Trajectories {
+    public Pose2d BluStart;
     public static Trajectory BluUpAndOverTrajectory;
     public static Trajectory BluDownAndUnderTrajectory;
     public static Trajectory BluAcrossRampTrajectory;
@@ -23,26 +24,35 @@ public class Trajectories {
     public Trajectories(DrivetrainSubsystem drivetrain){
 
         TrajectoryConfig config = drivetrain.getTrajectoryConfig();
+        System.out.println("created trajectory config");
 
-        Pose2d BluStart = new Pose2d(2.007, 2.748, Rotation2d.fromDegrees(0));
+        this.BluStart = new Pose2d(2.007, 2.748, Rotation2d.fromDegrees(0));
         Pose2d BluEnd = new Pose2d(5.2, 2.748, Rotation2d.fromDegrees(90));
         Pose2d BluRamp = new Pose2d(3.922, 2.748, Rotation2d.fromDegrees(90));
 
         ArrayList<Translation2d> BluUpAndOverWaypoints = new ArrayList<Translation2d>();
         BluUpAndOverWaypoints.add(new Translation2d(2.769, 4.122));
         BluUpAndOverWaypoints.add(new Translation2d(4.9, 4.122));
+        System.out.println(">>>>> Generating Blue up and over");
         this.BluUpAndOverTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluStart, BluUpAndOverWaypoints, BluEnd, config);
         ArrayList<Translation2d> BluDownAndUnderWaypoints = new ArrayList<Translation2d>();
         BluDownAndUnderWaypoints.add(new Translation2d(2.769, 1.374));
         BluDownAndUnderWaypoints.add(new Translation2d(4.9, 1.374));
+        System.out.println(">>>>> Generating Blue down and under");
         this.BluDownAndUnderTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluStart, BluDownAndUnderWaypoints, BluEnd, config);
-        ArrayList<Translation2d> BluAcrossRampWaypoints = new ArrayList<Translation2d>();
-        BluAcrossRampWaypoints.add(new Translation2d(5.2, 2.748));
-        this.BluAcrossRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluStart, BluAcrossRampWaypoints, BluEnd, config);
-        ArrayList<Translation2d> BluOntoRampWaypoints = new ArrayList<Translation2d>();
-        BluOntoRampWaypoints.add(new Translation2d(3.922, 2.748));
-        this.BluOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluEnd, BluOntoRampWaypoints, BluRamp, config);
+        ArrayList<Pose2d> BlueAcrossRampWaypoints = new ArrayList<Pose2d>();
+        BlueAcrossRampWaypoints.add(BluStart);
+        BlueAcrossRampWaypoints.add(BluEnd);
+        System.out.println(">>>>> Generating Blue across ramp");
+        this.BluAcrossRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BlueAcrossRampWaypoints, config);
+        ArrayList<Pose2d> BluOntoRampWaypoints = new ArrayList<Pose2d>();
+        BluOntoRampWaypoints.add(BluEnd);
+        BluOntoRampWaypoints.add(BluRamp);
+        System.out.println(">>>>> Generating Blue onto ramp");
+        this.BluOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluOntoRampWaypoints, config);
+        System.out.println(">>>>> Done Generating Blue trajectories!!");
 
+        /* 
         Pose2d RedStart = new Pose2d(14.533, 2.748, Rotation2d.fromDegrees(0));
         Pose2d RedEnd = new Pose2d(11.34, 2.748, Rotation2d.fromDegrees(90));
         Pose2d RedRamp = new Pose2d(12.618, 2.748, Rotation2d.fromDegrees(90));
@@ -61,7 +71,7 @@ public class Trajectories {
         ArrayList<Translation2d> RedOntoRampWaypoints = new ArrayList<Translation2d>();
         RedOntoRampWaypoints.add(new Translation2d(12.618, 2.748));
         this.RedOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(RedEnd, BluOntoRampWaypoints, RedRamp, config);
-
+*/
     }
 
 

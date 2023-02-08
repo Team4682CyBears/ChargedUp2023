@@ -33,7 +33,7 @@ import frc.robot.control.Trajectories;
 public class AutonomousChooser {
     private SubsystemCollection subsystems;
     private final SendableChooser<AutonomousMode> autonomousModeChooser = new SendableChooser<>();
-    private Trajectories trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
+    private Trajectories trajectories;
 
     /**
      * Constructor for AutonomousChooser
@@ -41,6 +41,10 @@ public class AutonomousChooser {
      */
     public AutonomousChooser(SubsystemCollection subsystems) {
         this.subsystems = subsystems;
+        System.out.println(">>>> creating auto trajectories");
+        this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
+        System.out.println(">>>> finished creating auto trajectories");
+        
 
         autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
         autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
@@ -112,21 +116,24 @@ public class AutonomousChooser {
     public Command getBlueUpAndOver() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluUpAndOverTrajectory));
+        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluUpAndOverTrajectory));
         return command;
     }
     
     public Command getBlueDownAndUnder() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluDownAndUnderTrajectory));
+        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluDownAndUnderTrajectory));
         return command;
     }   
 
     public Command getBluAcrossRamp() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectories.BluAcrossRampTrajectory));
+        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluAcrossRampTrajectory));
         return command;
     }   
 

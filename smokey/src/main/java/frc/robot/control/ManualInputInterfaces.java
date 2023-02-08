@@ -302,11 +302,11 @@ public class ManualInputInterfaces{
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
     Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(t);
+    //SwerveTrajectoryGenerator.printTrajectory(t);
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90 Alternate");
     Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(tAlt);
+    //SwerveTrajectoryGenerator.printTrajectory(tAlt);
     return tAlt;
   }
 
@@ -336,12 +336,12 @@ public class ManualInputInterfaces{
     System.out.println(">>> Building Traverse Backward Arc");
     Trajectory t = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(t);
+    //SwerveTrajectoryGenerator.printTrajectory(t);
 
     System.out.println(">>> Building Traverse Backward Arc Alternate");
     Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(tAlt);
+    //SwerveTrajectoryGenerator.printTrajectory(tAlt);
     return tAlt;
   }
 
