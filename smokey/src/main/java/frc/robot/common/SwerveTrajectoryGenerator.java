@@ -1,3 +1,13 @@
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: ManualInputInterfaces.java
+// Intent: Forms a class that generates trajectories for swerve drives.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
+
 package frc.robot.common;
 
 import java.util.ArrayList;
@@ -15,7 +25,7 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 public class SwerveTrajectoryGenerator {
 
     /**
-     * Generates trajectories for swerver drives.  The translation motions of the trajectory is 
+     * Generates trajectories for swerve drives.  The translation motions of the trajectory are 
      * unconstrained by the initial and final robot pose.  All trajectory states' rotations are then overridden 
      * by the desired final pose.  The profiled PID controller in the holonomic drive controller
      * handles smoothing out the trajectories. 
@@ -51,7 +61,7 @@ public class SwerveTrajectoryGenerator {
     }
 
     /**
-     * Generates trajectories for swerver drives.  The translation motions of the trajectory is 
+     * Generates trajectories for swerve drives.  The translation motions of the trajectory are 
      * unconstrained by the initial and final robot pose.  All trajectory states' rotations are then overridden 
      * by the desired final pose.  The profiled PID controller in the holonomic drive controller
      * handles smoothing out the trajectories. 
@@ -96,7 +106,7 @@ public class SwerveTrajectoryGenerator {
     }
 
     /**
-     * fix up the rotations in every state to always be the final rotation. 
+     * overrides rotations in every state to always be the final rotation. 
      * @param states
      * @param finalAngle
      * @return the modified states
@@ -111,19 +121,31 @@ public class SwerveTrajectoryGenerator {
     }
 
     /**
-     * //Calaculate time for rotational trapezoidal profile. 
+     * Generates a trapezoid profile for rotation movement
      * @param config
      * @param startAngle
      * @param endAngle
-     * @return the total rotational time
+     * @return trapezoid profile
      */
-    private static double CalculateRotationTime(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
+    public static TrapezoidProfile GenerateRotationTrapezoidProfile(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
         TrapezoidProfile.Constraints thetaProfileConstraints = new TrapezoidProfile.
         Constraints(config.getMaxVelocity(),config.getMaxAcceleration());
         TrapezoidProfile thetaProfile = new TrapezoidProfile(
             thetaProfileConstraints, 
             new TrapezoidProfile.State(endAngle.getRadians(), 0.0),
             new TrapezoidProfile.State(startAngle.getRadians(), 0.0));
+        return thetaProfile;
+    }
+
+    /**
+     * //Calaculate time for rotational trapezoidal profile. 
+     * @param config
+     * @param startAngle
+     * @param endAngle
+     * @return the total rotational time
+     */
+    public static double CalculateRotationTime(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
+        TrapezoidProfile thetaProfile = GenerateRotationTrapezoidProfile(config, startAngle, endAngle);
         return thetaProfile.totalTime();
     }
 }

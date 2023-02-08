@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -26,8 +25,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class DriveTrajectoryCommand extends CommandBase
-{
+public class DriveTrajectoryCommand extends CommandBase{
   private DrivetrainSubsystem drivetrain;
   private Trajectory movementPlan;
   private Timer timer = new Timer();
@@ -49,8 +47,7 @@ public class DriveTrajectoryCommand extends CommandBase
   */
   public DriveTrajectoryCommand(
     DrivetrainSubsystem drivetrainSubsystem,
-    Trajectory plan)
-  {
+    Trajectory plan){
     this.drivetrain = drivetrainSubsystem;
     this.movementPlan = plan;
 
@@ -68,8 +65,7 @@ public class DriveTrajectoryCommand extends CommandBase
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
+  public void initialize(){
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     expectedDuration = movementPlan.getTotalTimeSeconds();
     this.finalPosition = movementPlan.sample(expectedDuration).poseMeters;
@@ -81,47 +77,38 @@ public class DriveTrajectoryCommand extends CommandBase
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
-    if(controller.atReference() == true || (timer.get() > expectedDuration && this.isDeltaReasonable()))
-    {
+  public void execute(){
+    if(timer.get() > expectedDuration && this.isDeltaReasonable()){
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         timer.stop();
         done = true;
     }
-    else
-    {
+    else{
         double currentElapsedTimeInSeconds = timer.get();
         Pose2d currentLocation = drivetrain.getRobotPosition();
         Trajectory.State targetState = movementPlan.sample(currentElapsedTimeInSeconds);
-
-        // based on docs it would appear this method is potentially the most complex one - there are multiple overloads - not sure which one to use
-        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/holonomic.html#getting-adjusted-velocities
-        // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/math/controller/HolonomicDriveController.html#calculate(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.geometry.Rotation2d)
-        //ChassisSpeeds calculatedSpeed = controller.calculate(
-        //    currentLocation,
-        //    targetState.poseMeters,
-        //    targetState.velocityMetersPerSecond,
-        //    targetState.poseMeters.getRotation());
-
+        
         // For swerve drive, call the controller like this:
         // https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/SwerveControllerCommand.java#L222
         // The key is to override each rotation with the trajectory's final rotation
         ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());    
+        ChassisSpeeds clampedSpeed = drivetrain.clampChassisSpeeds(calculatedSpeed);
+        drivetrain.drive(clampedSpeed);
 
-
-        drivetrain.drive(drivetrain.clampChassisSpeeds(calculatedSpeed));
+        // TODO remove debug print statements
+        System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
+        System.out.println("Target State: " + targetState);
+        System.out.println("Calculated Speed: " + calculatedSpeed);
+        System.out.println("Clamped Speed: " + clampedSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted){
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     timer.stop();
-    if(interrupted)
-    {
+    if(interrupted){
       done = true;      
     }
     System.out.println("Movement Complete: expected duration (seconds) == " + this.expectedDuration + " actual duration (seconds) == " + timer.get());
@@ -129,19 +116,16 @@ public class DriveTrajectoryCommand extends CommandBase
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished(){
     return done;
   }
 
-  private boolean isDeltaReasonable()
-  {
+  private boolean isDeltaReasonable(){
     Pose2d currentPosition = this.drivetrain.getRobotPosition();
     Transform2d delta = new Transform2d(currentPosition, this.finalPosition);
     if( abs(delta.getX()) <= this.overTimeDelta.getX() &&
         abs(delta.getY()) <= this.overTimeDelta.getY() &&
-        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians()))
-    {
+        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians())){
       System.out.println("isDeltaReasonable == true ...........");
       return true;
     }

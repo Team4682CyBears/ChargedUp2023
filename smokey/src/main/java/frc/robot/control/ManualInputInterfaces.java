@@ -20,7 +20,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -290,24 +289,22 @@ public class ManualInputInterfaces{
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
     Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    //SwerveTrajectoryGenerator.printTrajectory(t);
     return t;
   }
 
+  // Test purely rotational trajectory.  Have to construct trajectory by hand
+  // Since trajectory generator can't generate trajectories when there is no translational component.
   private Trajectory buildTraverseTurn90(){
-    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
-    waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(90)));
-
     System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
-    Trajectory t = TrajectoryGenerator.generateTrajectory(waypoints,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(t);
-    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90 Alternate");
-    Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(tAlt);
-    return tAlt;
+    double rotationTime = SwerveTrajectoryGenerator.CalculateRotationTime(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig(),
+    Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(90));
+    // States have no translation component.  Use final rotation for all states. 
+    Pose2d pose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
+    ArrayList<Trajectory.State> states = new ArrayList<Trajectory.State>();
+    states.add(new Trajectory.State(0.0, 0.0, 0.0, pose, 0.0));
+    states.add(new Trajectory.State(rotationTime, 0.0, 0.0, pose, 0.0));
+    Trajectory t = new Trajectory(states);
+    return t;
   }
 
   private Trajectory buildTraverseForwardArc(){
@@ -319,6 +316,7 @@ public class ManualInputInterfaces{
     interiorWaypoints.add(new Translation2d(1.0, 0.50));
     interiorWaypoints.add(new Translation2d(1.5, 0.25));
 
+    System.out.println(">>>>>>>>>>>>>>>> Building Traverse Forward Arc");
     Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
     return t;
@@ -333,16 +331,10 @@ public class ManualInputInterfaces{
     interiorWaypoints.add(new Translation2d(1.0, 0.50));
     interiorWaypoints.add(new Translation2d(0.5, 0.25));
 
-    System.out.println(">>> Building Traverse Backward Arc");
-    Trajectory t = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
+    System.out.println(">>>>>>>>>>>>>>>> Building Traverse Backward Arc");
+    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
     subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(t);
-
-    System.out.println(">>> Building Traverse Backward Arc Alternate");
-    Trajectory tAlt = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    SwerveTrajectoryGenerator.printTrajectory(tAlt);
-    return tAlt;
+    return t;
   }
 
   /**
