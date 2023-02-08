@@ -19,15 +19,20 @@ public class ProximitySubsystem extends SubsystemBase {
   public static TimeOfFlight tofSensor = new TimeOfFlight(Constants.canID);
 
   public void ProximitySubysytem(){
-    tofSensor.setRangingMode(RangingMode.Short, 200);
+    tofSensor.setRangingMode(RangingMode.Long, 33);
   }
   
 
 public double getRange(){
   //gets range and converts from millimeters to inches
-    double range = Units.metersToInches(1000 * tofSensor.getRange());
-    System.out.println("The range is " + range);
+    double range = Units.metersToInches(tofSensor.getRange()/1000)-1;
+//-1 in offset    
+    System.out.println("The range is " + range + " inches");
     return range;
+}
+
+public void blinkSensor(){
+  tofSensor.identifySensor();
 }
 
 public static final double getRangeSigma(){
