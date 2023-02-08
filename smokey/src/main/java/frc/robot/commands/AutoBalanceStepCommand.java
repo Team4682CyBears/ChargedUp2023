@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.lang.Math;
+import java.util.ArrayList;
 
 /**
  * Implements a command to perform a single step of an auto balancing routine. 
@@ -26,6 +27,10 @@ public class AutoBalanceStepCommand extends CommandBase{
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.25;  
   private double velocityValue = 0.4;
+
+  public ArrayList IsLeveLValues = new ArrayList<Double>();
+  private int LevelListMaxSize = 3;
+
 
   NavxSubsystem navxsubsystem = null; 
   DrivetrainSubsystem drivetrainsubsystem = null;
