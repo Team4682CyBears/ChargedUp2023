@@ -17,8 +17,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
+import java.util.ArrayList;
+import java.lang.Math;
+import java.lang.StrictMath;
 
 import java.lang.Math;
 
@@ -26,7 +30,14 @@ public class NavxSubsystem extends SubsystemBase {
 
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  public final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+
+  // store yaw/pitch history
+  private static int LevelListMaxSize = 3;
+  private ArrayList<Float> RecentYaws = new ArrayList<Float>();
+  private ArrayList<Float> RecentPitches = new ArrayList<Float>();
+  private boolean levelChecker = false;
+
 
   /** Creates a new NavX. */
   public NavxSubsystem() {}
@@ -43,12 +54,30 @@ public class NavxSubsystem extends SubsystemBase {
     swerveNavx.zeroYaw();
   }
 
+  private void storeYaw(){
+    this.RecentYaws.add(this.swerveNavx.getYaw());
+    while(this.RecentYaws.size() > LevelListMaxSize)
+    {
+      RecentYaws.remove(0);
+    }
+  }
+  private void storePitch(){
+    RecentPitches.add(swerveNavx.getYaw());
+    while(RecentPitches.size() > LevelListMaxSize)
+    {
+      RecentPitches.remove(0);
+    }
+  }
+
   /**
    * Determines if the navx is level.  
    * @return true if level, false otherwise
    */
   public boolean isLevel() {
-    return (Math.abs(swerveNavx.getRoll())<Constants.navxTolDegrees) && (Math.abs(swerveNavx.getPitch())<Constants.navxTolDegrees);
+    this.levelChecker = true;
+    int i = 0;
+    for(i <= LevelListMaxSize;);
+      if (Math.abs(this.RecentYaws.get(i))<Constants.navxTolDegrees){
   }
 
   /**
