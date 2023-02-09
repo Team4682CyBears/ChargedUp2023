@@ -1,40 +1,50 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class TheRevMoter {
     /**
      *
      */
-    private static PowerDistribution distroPannel = new PowerDistribution(2, ModuleType.kCTRE);
-
     private static WPI_TalonFX rightMotor = new WPI_TalonFX(16);
+    private static double motormovespeedby = 0.0;
+    private ShuffleboardTab tab = Shuffleboard.getTab("Right Motor");
+   // stop causing errors - private NetworkTableEntry rightMotorSpeed = tab.add("Right Motor", 0).withWidget(BuiltInWidgets.kDial).getEntry();
 
     private TheRevMoter() {
+        // put the default value
+
     }
 
-    public static void driveTheMotor() { rightMotor.set(0.2); }
-
-    public static PowerDistribution getInstance() { return distroPannel; }
-
-    public static double getTotalEnergy() {
-        return TheRevMoter.getInstance().getVoltage();
+    public static void driveTheMotor() { 
+        rightMotor.set(motormovespeedby); 
     }
 
-    public static double getTotalCurrent() {
-        return TheRevMoter.getInstance().getTotalCurrent();
+    public void setMotorSpeedFromDashboard(){
+
     }
 
-    public static double getTotalPower() {
-        return TheRevMoter.getInstance().getTotalPower();
+    public void stopMotor(){
+        rightMotor.stopMotor();
     }
+
+    // from https://www.chiefdelphi.com/t/smartdashboard-input-output/162502/4 100% not plagarism
+    private static double createSmartDashboardNumber(String key, double defValue) {
+
+        // See if already on dashboard, and if so, fetch current value
+        double value = SmartDashboard.getNumber(key, defValue);
+      
+        // Make sure value is on dashboard, puts back current value if already set
+        // otherwise puts back default value
+        SmartDashboard.putNumber(key, value);
+      
+        return value;
+      }
+      
+
 }

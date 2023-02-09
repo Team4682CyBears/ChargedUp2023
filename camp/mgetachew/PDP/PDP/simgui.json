@@ -21,6 +21,16 @@
           "open": true
         }
       }
+    },
+    "PowerDistributions": {
+      "2": {
+        "PowerDistribution[2]": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
+      }
     }
   },
   "NTProvider": {
@@ -29,6 +39,18 @@
       "/LiveWindow/SmartDash": "Subsystem",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller"
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    }
+  },
+  "NetworkTables Info": {
+    "Server": {
+      "Subscribers": {
+        "open": true
+      }
     }
   }
 }

@@ -4,13 +4,10 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SmartDash extends SubsystemBase {
-  private static double ChangeMotor = 0.2;
+
 
   /** Creates a new ExampleSubsystem. */
   public SmartDash() {}
@@ -19,9 +16,9 @@ public class SmartDash extends SubsystemBase {
    * @see edu.wpi.first.wpilibj2.command.Subsystem#periodic()
    */
   @Override
-  public void periodic() {
+   public void periodic() {
 
-    TheRevMoter.driveTheMotor();
+     /* TheRevMoter.driveTheMotorSafely();
     
 
        // Get the total current of all channels.
@@ -39,8 +36,7 @@ public class SmartDash extends SubsystemBase {
        SmartDashboard.putNumber("Total Energy", totalEnergy);
 
        // JJDHSHJGNNHHGHNHHFhdGYSDYADUShushusdhgfddsfhusdfhuasfijsfhsauhfsdjdsfajofe
-      SmartDashboard.putNumber("Change Motor Speed", ChangeMotor)
-  }
+   */ }
 
   @Override
   public void simulationPeriodic() {
