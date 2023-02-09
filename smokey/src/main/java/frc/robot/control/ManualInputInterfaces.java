@@ -29,6 +29,7 @@ import frc.robot.commands.ButtonPress;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.common.SwerveTrajectoryGenerator;
+import frc.robot.common.TestTrajectories;
 
 public class ManualInputInterfaces{
   // sets joystick variables to joysticks
@@ -187,12 +188,13 @@ public class ManualInputInterfaces{
       JoystickButton buttonY = new JoystickButton(driverController, XboxController.Button.kY.value);
       JoystickButton buttonLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
       JoystickButton buttonRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+      TestTrajectories testTrajectories = new TestTrajectories(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig());
       
       buttonA.whenReleased(
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseForwardArc()),
+            testTrajectories.traverseForwardArc),
           new ButtonPress("driverController", "kA.whenReleased"))
       );
 
@@ -200,7 +202,7 @@ public class ManualInputInterfaces{
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseBackwardArc()),
+            testTrajectories.traverseBackwardArc),
           new ButtonPress("driverController", "kB.whenReleased"))
       );
 
@@ -208,7 +210,7 @@ public class ManualInputInterfaces{
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseSimpleForward()),
+            testTrajectories.traverseSimpleForward),
           new ButtonPress("driverController", "kX.whenReleased"))
       );
 
@@ -216,7 +218,7 @@ public class ManualInputInterfaces{
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseSimpleLeft()),
+            testTrajectories.traverseSimpleLeft),
           new ButtonPress("driverController", "kY.whenReleased"))
       );
 
@@ -224,7 +226,7 @@ public class ManualInputInterfaces{
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseTurn270()),
+            testTrajectories.traverseTurn270),
           new ButtonPress("driverController", "kLeftBumper.whenReleased"))
       );
 
@@ -232,10 +234,9 @@ public class ManualInputInterfaces{
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
-            this.buildTraverseTurn90()),
+            testTrajectories.turn90),
           new ButtonPress("driverController", "kRightBumper.whenReleased"))
       );
-
   }
 
   /**
@@ -258,87 +259,6 @@ public class ManualInputInterfaces{
     );
      */
   }
-
-  private Trajectory buildTraverseSimpleForward(){
-    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
-    waypoints.add(new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0)));
-
-    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
-    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    return t;
-  }
-
-  private Trajectory buildTraverseSimpleLeft(){
-    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)));
-    waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)));
-
-    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
-    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    return t;
-  }
-
-  private Trajectory buildTraverseTurn270(){
-    ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-    waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
-    waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90)));
-
-    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
-    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    return t;
-  }
-
-  // Test purely rotational trajectory.  Have to construct trajectory by hand
-  // Since trajectory generator can't generate trajectories when there is no translational component.
-  private Trajectory buildTraverseTurn90(){
-    System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 90");
-    double rotationTime = SwerveTrajectoryGenerator.CalculateRotationTime(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig(),
-    Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(90));
-    // States have no translation component.  Use final rotation for all states. 
-    Pose2d startPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0));
-    Pose2d endPose = new Pose2d(0.0, 0.01, Rotation2d.fromDegrees(90));
-    ArrayList<Trajectory.State> states = new ArrayList<Trajectory.State>();
-    states.add(new Trajectory.State(0.0, 0.0, 0.0, startPose, 0.0));
-    states.add(new Trajectory.State(rotationTime, 0.0, 0.0, endPose, 0.0));
-    Trajectory t = new Trajectory(states);
-    SwerveTrajectoryGenerator.printSampledTrajectory(t, 10);
-    return t;
-  }
-
-  private Trajectory buildTraverseForwardArc(){
-    Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-    Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    interiorWaypoints.add(new Translation2d(0.5, 0.25));
-    interiorWaypoints.add(new Translation2d(1.0, 0.50));
-    interiorWaypoints.add(new Translation2d(1.5, 0.25));
-
-    System.out.println(">>>>>>>>>>>>>>>> Building Traverse Forward Arc");
-    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    return t;
-  }
-
-  private Trajectory buildTraverseBackwardArc(){
-    Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
-    Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    interiorWaypoints.add(new Translation2d(1.5, 0.25));
-    interiorWaypoints.add(new Translation2d(1.0, 0.50));
-    interiorWaypoints.add(new Translation2d(0.5, 0.25));
-
-    System.out.println(">>>>>>>>>>>>>>>> Building Traverse Backward Arc");
-    Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end,
-    subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig()); 
-    return t;
-  }
-
   /**
    * A method to do the transformation of current robot position to another position
    * @param xTranslation

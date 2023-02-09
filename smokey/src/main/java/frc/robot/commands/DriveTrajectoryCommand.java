@@ -39,6 +39,7 @@ public class DriveTrajectoryCommand extends CommandBase{
 
   private Pose2d finalPosition = null;
   private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
+
   /** 
   * Creates a new driveCommand. 
   * 
@@ -58,7 +59,8 @@ public class DriveTrajectoryCommand extends CommandBase{
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    thetaPidController = new ProfiledPIDController(4.2, 0.0, 0.0, movementConstraints);
+    thetaPidController = new ProfiledPIDController(4.5, 0.001, 0.0, movementConstraints);
+    //TODO looks like HolonomicDriveController enablesContinuousInput.  Try removing this and re-testing.  
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
     controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
   }
@@ -69,7 +71,6 @@ public class DriveTrajectoryCommand extends CommandBase{
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     expectedDuration = movementPlan.getTotalTimeSeconds();
     this.finalPosition = movementPlan.sample(expectedDuration).poseMeters;
-    //controller.setTolerance(new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5)));
     timer.reset();
     timer.start();
     done = false;
