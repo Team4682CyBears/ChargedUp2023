@@ -36,7 +36,6 @@ public class DriveTrajectoryCommand extends CommandBase{
   private PIDController yPidController = new PIDController(2.0,0.0,0.0);
   private ProfiledPIDController thetaPidController;
   private HolonomicDriveController controller;
-  int printCount = 0;
 
   private Pose2d finalPosition = null;
   private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
@@ -92,19 +91,9 @@ public class DriveTrajectoryCommand extends CommandBase{
         // For swerve drive, call the controller like this:
         // https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/SwerveControllerCommand.java#L222
         // The key is to override each rotation with the trajectory's final rotation
-        ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());    
-        ChassisSpeeds clampedSpeed = drivetrain.clampChassisSpeeds(calculatedSpeed);
-        // TODO removed clamping
+        ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());
+        // Note: we previously used drivetrain.clampChassisSpeeds here, but that caused erratic behavior   
         drivetrain.drive(calculatedSpeed);
-
-        // TODO remove debug print statements
-        if (printCount++ >= 10){
-          System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
-          System.out.println("Target State: " + targetState);
-          System.out.println("Calculated Speed: " + calculatedSpeed);
-          //System.out.println("Clamped Speed: " + clampedSpeed);
-          printCount = 1;
-        }
     }
   }
 

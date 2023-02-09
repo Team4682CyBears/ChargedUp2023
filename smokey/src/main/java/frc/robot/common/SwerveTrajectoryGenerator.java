@@ -105,6 +105,12 @@ public class SwerveTrajectoryGenerator {
         }
     }
 
+    public static void printSampledTrajectory(Trajectory trajectory, int numSamples){
+        for (double t = 0; t <= trajectory.getTotalTimeSeconds() + 1; t += trajectory.getTotalTimeSeconds()/numSamples){
+            System.out.println(trajectory.sample(t));
+        }
+    }
+
     /**
      * overrides rotations in every state to always be the final rotation. 
      * @param states
