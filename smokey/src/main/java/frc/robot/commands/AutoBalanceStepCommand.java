@@ -28,9 +28,6 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double driveDurationSecondsValue = 0.25;  
   private double velocityValue = 0.4;
 
-  public ArrayList IsLeveLValues = new ArrayList<Double>();
-  private int LevelListMaxSize = 3;
-
 
   NavxSubsystem navxsubsystem = null; 
   DrivetrainSubsystem drivetrainsubsystem = null;
@@ -110,5 +107,6 @@ public class AutoBalanceStepCommand extends CommandBase{
     double h = Math.sqrt(Math.pow(vec.getX(), 2) + Math.pow(vec.getY(), 2));
     return new Translation2d((vec.getX()/h) * velocityValue, (vec.getY()/h) * velocityValue);
   }
+
 
 }
