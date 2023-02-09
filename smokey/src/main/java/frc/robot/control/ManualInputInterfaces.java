@@ -299,11 +299,13 @@ public class ManualInputInterfaces{
     double rotationTime = SwerveTrajectoryGenerator.CalculateRotationTime(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig(),
     Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(90));
     // States have no translation component.  Use final rotation for all states. 
-    Pose2d pose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
+    Pose2d startPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+    Pose2d endPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
     ArrayList<Trajectory.State> states = new ArrayList<Trajectory.State>();
-    states.add(new Trajectory.State(0.0, 0.0, 0.0, pose, 0.0));
-    states.add(new Trajectory.State(rotationTime, 0.0, 0.0, pose, 0.0));
+    states.add(new Trajectory.State(0.0, 0.0, 1.0, startPose, 0.0));
+    states.add(new Trajectory.State(rotationTime, 0.0, -1.0, endPose, 0.0));
     Trajectory t = new Trajectory(states);
+    SwerveTrajectoryGenerator.printTrajectory(t);
     return t;
   }
 

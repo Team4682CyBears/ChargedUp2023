@@ -36,6 +36,7 @@ public class DriveTrajectoryCommand extends CommandBase{
   private PIDController yPidController = new PIDController(2.0,0.0,0.0);
   private ProfiledPIDController thetaPidController;
   private HolonomicDriveController controller;
+  int printCount = 0;
 
   private Pose2d finalPosition = null;
   private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
@@ -97,10 +98,13 @@ public class DriveTrajectoryCommand extends CommandBase{
         drivetrain.drive(calculatedSpeed);
 
         // TODO remove debug print statements
-        //System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
-        //System.out.println("Target State: " + targetState);
-        //System.out.println("Calculated Speed: " + calculatedSpeed);
-        //System.out.println("Clamped Speed: " + clampedSpeed);
+        if (printCount++ >= 10){
+          System.out.println(currentElapsedTimeInSeconds + ": CurrentLocation " + currentLocation);
+          System.out.println("Target State: " + targetState);
+          System.out.println("Calculated Speed: " + calculatedSpeed);
+          //System.out.println("Clamped Speed: " + clampedSpeed);
+          printCount = 1;
+        }
     }
   }
 
