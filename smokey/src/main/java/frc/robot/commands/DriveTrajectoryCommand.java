@@ -58,7 +58,7 @@ public class DriveTrajectoryCommand extends CommandBase{
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    thetaPidController = new ProfiledPIDController(3.0, 0.0, 0.0, movementConstraints);
+    thetaPidController = new ProfiledPIDController(4.0, 0.0, 0.0, movementConstraints);
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
     controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
   }
