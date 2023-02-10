@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -26,21 +25,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class DriveTrajectoryCommand extends CommandBase
-{
+public class DriveTrajectoryCommand extends CommandBase{
   private DrivetrainSubsystem drivetrain;
   private Trajectory movementPlan;
   private Timer timer = new Timer();
   private boolean done = false;
   private double expectedDuration = 0.0;
 
-  private PIDController xPidController = new PIDController(1.0,0.0,0.0);
-  private PIDController yPidController = new PIDController(1.0,0.0,0.0);
+  private PIDController xPidController = new PIDController(2.0,0.0,0.0);
+  private PIDController yPidController = new PIDController(2.0,0.0,0.0);
   private ProfiledPIDController thetaPidController;
   private HolonomicDriveController controller;
 
   private Pose2d finalPosition = null;
   private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
+
   /** 
   * Creates a new driveCommand. 
   * 
@@ -49,8 +48,7 @@ public class DriveTrajectoryCommand extends CommandBase
   */
   public DriveTrajectoryCommand(
     DrivetrainSubsystem drivetrainSubsystem,
-    Trajectory plan)
-  {
+    Trajectory plan){
     this.drivetrain = drivetrainSubsystem;
     this.movementPlan = plan;
 
@@ -61,19 +59,18 @@ public class DriveTrajectoryCommand extends CommandBase
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
     DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    thetaPidController = new ProfiledPIDController(1.0, 0.0, 0.0, movementConstraints);
+    thetaPidController = new ProfiledPIDController(4.5, 0.001, 0.0, movementConstraints);
+    //TODO looks like HolonomicDriveController enablesContinuousInput.  Try removing this and re-testing.  
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);
     controller = new HolonomicDriveController(xPidController, yPidController, thetaPidController);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
+  public void initialize(){
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     expectedDuration = movementPlan.getTotalTimeSeconds();
     this.finalPosition = movementPlan.sample(expectedDuration).poseMeters;
-    //controller.setTolerance(new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5)));
     timer.reset();
     timer.start();
     done = false;
@@ -81,47 +78,32 @@ public class DriveTrajectoryCommand extends CommandBase
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
-    if(controller.atReference() == true || (timer.get() > expectedDuration && this.isDeltaReasonable()))
-    {
+  public void execute(){
+    if(timer.get() > expectedDuration && this.isDeltaReasonable()){
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         timer.stop();
         done = true;
     }
-    else
-    {
+    else{
         double currentElapsedTimeInSeconds = timer.get();
         Pose2d currentLocation = drivetrain.getRobotPosition();
         Trajectory.State targetState = movementPlan.sample(currentElapsedTimeInSeconds);
-
-        // based on docs it would appear this method is potentially the most complex one - there are multiple overloads - not sure which one to use
-        // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/holonomic.html#getting-adjusted-velocities
-        // https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/math/controller/HolonomicDriveController.html#calculate(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.geometry.Rotation2d)
-        //ChassisSpeeds calculatedSpeed = controller.calculate(
-        //    currentLocation,
-        //    targetState.poseMeters,
-        //    targetState.velocityMetersPerSecond,
-        //    targetState.poseMeters.getRotation());
-
+        
         // For swerve drive, call the controller like this:
         // https://github.com/wpilibsuite/allwpilib/blob/main/wpilibNewCommands/src/main/java/edu/wpi/first/wpilibj2/command/SwerveControllerCommand.java#L222
         // The key is to override each rotation with the trajectory's final rotation
-        ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());    
-
-
-        drivetrain.drive(drivetrain.clampChassisSpeeds(calculatedSpeed));
+        ChassisSpeeds calculatedSpeed = controller.calculate(currentLocation, targetState, finalPosition.getRotation());
+        // Note: we previously used drivetrain.clampChassisSpeeds here, but that caused erratic behavior   
+        drivetrain.drive(calculatedSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted){
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     timer.stop();
-    if(interrupted)
-    {
+    if(interrupted){
       done = true;      
     }
     System.out.println("Movement Complete: expected duration (seconds) == " + this.expectedDuration + " actual duration (seconds) == " + timer.get());
@@ -129,19 +111,16 @@ public class DriveTrajectoryCommand extends CommandBase
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished(){
     return done;
   }
 
-  private boolean isDeltaReasonable()
-  {
+  private boolean isDeltaReasonable(){
     Pose2d currentPosition = this.drivetrain.getRobotPosition();
     Transform2d delta = new Transform2d(currentPosition, this.finalPosition);
     if( abs(delta.getX()) <= this.overTimeDelta.getX() &&
         abs(delta.getY()) <= this.overTimeDelta.getY() &&
-        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians()))
-    {
+        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians())){
       System.out.println("isDeltaReasonable == true ...........");
       return true;
     }
