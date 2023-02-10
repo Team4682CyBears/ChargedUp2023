@@ -12,6 +12,7 @@ package frc.robot.control;
 
 import java.util.*;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -99,6 +100,9 @@ public class ManualInputInterfaces{
         new Button(driverController::getBackButton)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
+        // cancel all commands bound to left trigger
+        JoystickButton buttonLBumper = new JoystickButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        buttonLBumper.whenPressed(CommandScheduler.getInstance()::cancelAll);
 
         // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
