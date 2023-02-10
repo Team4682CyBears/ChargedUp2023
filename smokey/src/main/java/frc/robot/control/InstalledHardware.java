@@ -35,13 +35,13 @@ public class InstalledHardware
 
     // External Input Hardware
     public static final boolean driverXboxControllerInstalled = true;
-    public static final boolean coDriverXboxControllerInstalled = false;
+    public static final boolean coDriverXboxControllerInstalled = true;
 
     // DriveTrain Related Hardware
-    public static final boolean leftFrontDriveInstalled = true;
-    public static final boolean leftRearDriveInstalled = true;
-    public static final boolean rightFrontDriveInstalled = true;
-    public static final boolean rightRearDriveInstalled = true;
+    public static final boolean leftFrontDriveInstalled = false;
+    public static final boolean leftRearDriveInstalled = false;
+    public static final boolean rightFrontDriveInstalled = false;
+    public static final boolean rightRearDriveInstalled = false;
 
     // Arm Related Hardware
     public static final boolean horizontalArmMotorInstalled = true;
