@@ -35,26 +35,30 @@ public class ArmSubsystem extends SubsystemBase
     ************************************************************************/
     // expected to be < 1.0 due to encoder granularity being lower for Rev/Neo
     private static final double telescopingArmsMotorEncoderTicksPerDegree = Constants.RevNeoEncoderTicksPerRevolution / Constants.DegreesPerRevolution;
-    // TODO - find out gear ratio from build side / Owen
-    private static final double verticalArmMovementInMetersPerMotorRotation = (0.2/12.0) * (1.0/50.0); // (linear distance meters / number of teeth moved in one rotation) * (gear ratio - number of final gear rotations / number of motor rotations)
-    private static final double horizontalArmMovementInMetersPerMotorRotation = verticalArmMovementInMetersPerMotorRotation;
+    // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:100
+    // TODO - confirm gearbox reduction
+    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 100.0); 
+    // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:100
+    // TODO - confirm gearbox reduction
+    private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 100.0); 
+    
 
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = 0.25;
+    private static final double maximumVerticalArmExtensionMeters = 0.254; // 10.0 inches
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
-    private static final double maximumHorizontalArmExtensionMeters = 0.40;
+    private static final double maximumHorizontalArmExtensionMeters = 0.9439402; // 78.5" - 41.337" == 37.163 inches
     private static final double toleranceHorizontalArmExtensionMeters = 0.001;
 
     // the various geometry aspects of the arm setup
-    private static final double lengthFloorToHorizontalArmPivotMeters = 0.15;
-    private static final double lengthFloorToVerticalArmPivotMeters = 0.15;
-    private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = 0.42;
-    private static final double lengthHorizontalArmPinDistanceMeters = 0.34;
-    private static final double lengthMinimumVerticalArmMeters = 0.20;
+    private static final double lengthFloorToHorizontalArmPivotMeters = 0.0762; // 3 inches
+    private static final double lengthFloorToVerticalArmPivotMeters = 0.0762; // 3 inches
+    private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = 0.572262; // 22.53 inches
+    private static final double lengthHorizontalArmPinDistanceMeters = 0.5554472; // 21.868 inches
+    private static final double lengthMinimumVerticalArmMeters = 0.5140706; // 20.239 inches
     private static final double lengthMaximumVerticalArmMeters = lengthMinimumVerticalArmMeters + (maximumVerticalArmExtensionMeters - minimumVerticalArmExtensionMeters);
-    private static final double lengthMinimumHorizontalArmMeters = 0.38;
+    private static final double lengthMinimumHorizontalArmMeters = 1.1537188; // 45.422 inches
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
 
