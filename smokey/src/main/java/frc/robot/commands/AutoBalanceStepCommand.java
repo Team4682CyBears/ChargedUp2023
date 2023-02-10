@@ -38,6 +38,7 @@ public class AutoBalanceStepCommand extends CommandBase{
    * @param navxsubsystem
    */
   public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
+    System.out.println("constructing auto balance step command");
     this.navxsubsystem = navxsubsystem;
     this.drivetrainsubsystem = drivetrainSubsystem;
 
@@ -48,6 +49,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("initializaing auto balance step command");
     //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
     Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
@@ -75,6 +77,9 @@ public class AutoBalanceStepCommand extends CommandBase{
     }
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
+      System.out.println("auto balance step command: completed one cycle");
+      System.out.println("RecentPitches " + navxsubsystem.getRecentPitches());
+      System.out.println("RecentRolls " + navxsubsystem.getRecentRolls());
       done = true;
     }
   }

@@ -33,11 +33,9 @@ public class NavxSubsystem extends SubsystemBase {
   public final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
   // store yaw/pitch history
-  private static int LevelListMaxSize = 3;
-  private ArrayList<Float> RecentYaws = new ArrayList<Float>();
+  private static int LevelListMaxSize = 20;
+  private ArrayList<Float> RecentRolls = new ArrayList<Float>();
   private ArrayList<Float> RecentPitches = new ArrayList<Float>();
-  private boolean levelChecker = false;
-
 
   /** Creates a new NavX. */
   public NavxSubsystem() {}
@@ -54,15 +52,15 @@ public class NavxSubsystem extends SubsystemBase {
     swerveNavx.zeroYaw();
   }
 
-  private void storeYaw(){
-    this.RecentYaws.add(this.swerveNavx.getYaw());
-    while(this.RecentYaws.size() > LevelListMaxSize)
+  private void storeRoll(){
+    this.RecentRolls.add(this.swerveNavx.getRoll());
+    while(this.RecentRolls.size() > LevelListMaxSize)
     {
-      RecentYaws.remove(0);
+      RecentRolls.remove(0);
     }
   }
   private void storePitch(){
-    RecentPitches.add(swerveNavx.getYaw());
+    RecentPitches.add(swerveNavx.getPitch());
     while(RecentPitches.size() > LevelListMaxSize)
     {
       RecentPitches.remove(0);
@@ -74,10 +72,7 @@ public class NavxSubsystem extends SubsystemBase {
    * @return true if level, false otherwise
    */
   public boolean isLevel() {
-    this.levelChecker = true;
-    int i = 0;
-    for(i <= LevelListMaxSize;);
-      if (Math.abs(this.RecentYaws.get(i))<Constants.navxTolDegrees){
+   return areAllLevel(RecentPitches) && areAllLevel(RecentRolls);
   }
 
   /**
@@ -98,6 +93,25 @@ public class NavxSubsystem extends SubsystemBase {
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
       swerveNavx.getYaw());
+  }
+
+  private boolean areAllLevel(ArrayList<Float> recentAngles){
+    boolean levelChecker = true;
+    for(int i = 0; i < LevelListMaxSize; i++){
+      if (Math.abs(recentAngles.get(i))>=Constants.navxTolDegrees){
+        levelChecker = false;
+      }
+    }
+    System.out.println("Is Level? " + levelChecker);
+    return levelChecker;
+  }
+
+  public ArrayList<Float> getRecentPitches(){
+    return RecentPitches;
+  }
+
+  public ArrayList<Float> getRecentRolls(){
+    return RecentRolls;
   }
 
   /**
@@ -148,6 +162,8 @@ public class NavxSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    storePitch();
+    storeRoll();
   }
 
   @Override

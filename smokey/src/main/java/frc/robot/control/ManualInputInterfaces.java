@@ -110,6 +110,18 @@ public class ManualInputInterfaces{
 //        new JoystickButton(driverController, XboxController.Button.kBack.value)
 //              // No requirements because we don't need to interrupt anything
 //              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
+        if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController){
+          this.bindBasicDriveToPointButtonsToDriverXboxController();
+        }
+        if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController){
+          this.bindDriveTrajectoryButtonsToDriverXboxController();
+        }
+        if(InstalledHardware.applyDriveZeroPositionButtonToDriverXboxController){
+          this.bindDriveZeroPositionButtonToDriverXboxController();
+        }
+        if(InstalledHardware.applyAutoBalanceButtonToDriverXboxController){
+          this.bindAutoBalanceButtonsToDriverXboxController();
+        }
       }
     }
   }
@@ -255,6 +267,23 @@ public class ManualInputInterfaces{
     );
      */
   }
+
+  /**
+   * A method that will bind auto balance buttons to driver controller
+   */
+  private void bindAutoBalanceButtonsToDriverXboxController(){
+    System.out.println("Binding auto balance buttons to xbox controller.");
+    // Right Bumper runs auto-balancing step-based routine. 
+    new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+      .onTrue(new AutoBalanceStepCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel));
+    // Right Bumper runs auto-balancing smoothed routine. 
+    new JoystickButton(driverController, XboxController.Button.kLeftBumper.value)
+      .onTrue(new AutoBalanceCommand(subsystemCollection.getDriveTrainSubsystem(), subsystemCollection.getNavxSubsystem()));
+    // A button prints NavX state.  TODO remove after debug
+    new JoystickButton(driverController, XboxController.Button.kA.value)
+      .onTrue(new InstantCommand(subsystemCollection.getNavxSubsystem()::printState));
+  }
+
   /**
    * A method to do the transformation of current robot position to another position
    * @param xTranslation
