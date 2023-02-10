@@ -116,7 +116,7 @@ public class AutonomousChooser {
     public Command getBlueUpAndOver() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluUpAndOverTrajectory));
         return command;
     }
@@ -124,7 +124,7 @@ public class AutonomousChooser {
     public Command getBlueDownAndUnder() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluDownAndUnderTrajectory));
         return command;
     }   
@@ -132,7 +132,7 @@ public class AutonomousChooser {
     public Command getBluAcrossRamp() {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart);
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluAcrossRampTrajectory));
         return command;
     }   
