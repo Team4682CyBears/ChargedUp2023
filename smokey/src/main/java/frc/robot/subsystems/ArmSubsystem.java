@@ -17,6 +17,8 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,12 +37,12 @@ public class ArmSubsystem extends SubsystemBase
     ************************************************************************/
     // expected to be < 1.0 due to encoder granularity being lower for Rev/Neo
     private static final double telescopingArmsMotorEncoderTicksPerDegree = Constants.RevNeoEncoderTicksPerRevolution / Constants.DegreesPerRevolution;
-    // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:100
+    // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:10
     // TODO - confirm gearbox reduction
-    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 100.0); 
-    // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:100
+    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 10.0); 
+    // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:10
     // TODO - confirm gearbox reduction
-    private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 100.0); 
+    private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 10.0); 
     
 
     // the extension distances of the arms - in meters
@@ -56,14 +58,14 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthFloorToVerticalArmPivotMeters = 0.0762; // 3 inches
     private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = 0.572262; // 22.53 inches
     private static final double lengthHorizontalArmPinDistanceMeters = 0.5554472; // 21.868 inches
-    private static final double lengthMinimumVerticalArmMeters = 0.5140706; // 20.239 inches
+    private static final double lengthMinimumVerticalArmMeters = 0.5394706; //0.5140706 - 20.239 inches  // 0.5394706 - 21.239??
     private static final double lengthMaximumVerticalArmMeters = lengthMinimumVerticalArmMeters + (maximumVerticalArmExtensionMeters - minimumVerticalArmExtensionMeters);
     private static final double lengthMinimumHorizontalArmMeters = 1.1537188; // 45.422 inches
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
 
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 0.3;
+    private static final double neoMotorSpeedReductionFactor = 0.7;
     private static final double neoMotorFindZeroSpeed = 0.3;
 
     /* *********************************************************************
@@ -80,7 +82,8 @@ public class ArmSubsystem extends SubsystemBase
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+//    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+    private DigitalInput horizontalArmMageneticSensor = verticalArmMageneticSensor;
 
     private boolean isHorizontalMotorInverted = false;
     private boolean isVerticalMotorInverted = false;
@@ -180,10 +183,10 @@ public class ArmSubsystem extends SubsystemBase
       // magnetic sensor triggered 
       // arm deployed >= limit (e.g., maximumXXXArmExtensionMeters)
       double currentHorizontalExtensionInMeters = this.getCurrentHorizontalArmExtensionInMeters();
-      boolean isHorizontalArmAtOrBelowLowStop = this.horizontalArmMageneticSensor.get();
+      boolean isHorizontalArmAtOrBelowLowStop = (this.horizontalArmMageneticSensor.get() == false);
       boolean isHorizontalArmAtOrAboveHighStop = currentHorizontalExtensionInMeters >= maximumHorizontalArmExtensionMeters;
       double currentVerticalExtensionInMeters = this.getCurrentVerticalArmExtensionInMeters();
-      boolean isVerticalArmAtOrBelowLowStop = this.verticalArmMageneticSensor.get();
+      boolean isVerticalArmAtOrBelowLowStop = (this.verticalArmMageneticSensor.get() == false);
       boolean isVerticalArmAtOrAboveHighStop = currentVerticalExtensionInMeters >= maximumVerticalArmExtensionMeters;
 
       // if we are in speed mode always set motor speeds using motor set
@@ -272,7 +275,7 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm extension is epected for coresponding ticks
      */
     private double convertHorizontalArmExtensionFromTicksToMeters(double targetPositionTicks) {
-      return targetPositionTicks * horizontalArmMovementInMetersPerMotorRotation * Constants.RevNeoEncoderTicksPerRevolution;
+      return targetPositionTicks / Constants.RevNeoEncoderTicksPerRevolution * horizontalArmMovementInMetersPerMotorRotation;
     }
 
     /**
@@ -281,7 +284,7 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm extension is epected for coresponding ticks
      */
     private double convertVerticalArmExtensionFromTicksToMeters(double targetPositionTicks) {
-      return targetPositionTicks * verticalArmMovementInMetersPerMotorRotation * Constants.RevNeoEncoderTicksPerRevolution;
+      return targetPositionTicks / Constants.RevNeoEncoderTicksPerRevolution * verticalArmMovementInMetersPerMotorRotation;
     }
 
     /**
@@ -324,9 +327,22 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current horizontal arm angle measured from floor to arm centerline
      * @return the angle
      */
-    private double getCurrentHorizontalArmAngle()
+    private double getCurrentHorizontalArmAngleRadians()
     {
-      return Math.atan((lengthMinimumVerticalArmMeters + this.getCurrentVerticalArmExtensionInMeters())/lengthHorizontalArmPinDistanceMeters);
+      // need to use arc cos equation for angle given all three sides
+      double a = lengthMinimumVerticalArmMeters + this.getCurrentVerticalArmExtensionInMeters();
+      double b = lengthHorizontalArmPinDistanceMeters;
+      double c = lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters;
+      return Math.acos((Math.pow(b, 2) + Math.pow(c, 2) - Math.pow(a, 2))/(2 * b * c));
+    }
+
+    /**
+     * A method to return the current horizontal arm angle measured from floor to arm centerline
+     * @return the angle
+     */
+    private double getCurrentHorizontalArmAngleDegrees()
+    {
+      return Units.radiansToDegrees(this.getCurrentHorizontalArmAngleRadians());
     }
 
     /**
@@ -335,7 +351,7 @@ public class ArmSubsystem extends SubsystemBase
      */
     private double getCurrentArmsHeightInMeters()
     {
-      return lengthFloorToHorizontalArmPivotMeters + (Math.sin(this.getCurrentHorizontalArmAngle()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters()));
+      return lengthFloorToHorizontalArmPivotMeters + (Math.sin(this.getCurrentHorizontalArmAngleRadians()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters()));
     }
 
     /**
@@ -344,7 +360,7 @@ public class ArmSubsystem extends SubsystemBase
      */
     private double getCurrentArmsDistanceInMeters()
     {
-      return Math.cos(this.getCurrentHorizontalArmAngle()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters());
+      return Math.cos(this.getCurrentHorizontalArmAngleRadians()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters());
     }
 
     /**
@@ -355,7 +371,8 @@ public class ArmSubsystem extends SubsystemBase
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
       SmartDashboard.putNumber("ExtensionVerticalArmMeters", this.getCurrentVerticalArmExtensionInMeters());
-      SmartDashboard.putNumber("ArmAngle", this.getCurrentHorizontalArmAngle());
+      SmartDashboard.putNumber("ArmAngleRadians", this.getCurrentHorizontalArmAngleRadians());
+      SmartDashboard.putNumber("ArmAngleDegrees", this.getCurrentHorizontalArmAngleDegrees());
       SmartDashboard.putNumber("ArmHeightMetersZ", this.getCurrentArmsHeightInMeters());
       SmartDashboard.putNumber("ArmDistanceMetersY", this.getCurrentArmsDistanceInMeters());
     }

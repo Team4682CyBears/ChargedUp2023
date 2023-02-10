@@ -67,8 +67,8 @@ public class ManualInputInterfaces
    */
   public double getInputArcadeArmY()
   {
-    // use the co drivers left X to represent the horizontal movement
-    return coDriverController.getLeftX();
+    // use the co drivers right X to represent the horizontal movement
+    return coDriverController.getRightX();
   }
 
   /**
@@ -77,9 +77,9 @@ public class ManualInputInterfaces
    */
   public double getInputArcadeArmZ()
   {
-    // use the co drivers left X to represent the vertical movement
+    // use the co drivers right Z to represent the vertical movement
     // and multiply by -1.0 as xbox reports values flipped
-    return -1.0 * coDriverController.getLeftY();
+    return -1.0 * coDriverController.getRightY();
   }
 
   /**

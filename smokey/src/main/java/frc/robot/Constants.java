@@ -47,8 +47,8 @@ public final class Constants {
 
     // *****************************************************************
     // arm constants
-    public static final int HorizontalArmDriveMotorCanId = 13;
-    public static final int VerticalArmDriveMotorCanId = 14;
+    public static final int HorizontalArmDriveMotorCanId = 5;
+    public static final int VerticalArmDriveMotorCanId = 6;
     public static final int VirticalArmMagneticSensor = 0;
     public static final int HorizontalArmMagneticSensor = 1;
 

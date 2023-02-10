@@ -143,7 +143,7 @@ public class RobotContainer {
       // Set up the default command for the arm.
       // Left stick X axis -> horizontal arm in / out movement
       // Left stick Y axis -> vertical arm in / out movement
-      subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultArmCommand(
+      subsystems.getArmSubsystem().setDefaultCommand(new DefaultArmCommand(
         subsystems.getArmSubsystem(),
         () -> subsystems.getManualInputInterfaces().getInputArcadeArmY(),
         () -> subsystems.getManualInputInterfaces().getInputArcadeArmZ()
