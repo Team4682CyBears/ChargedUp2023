@@ -13,12 +13,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
+/**
+ * Class to form a command to move the dual part arm to a y and z point in space.
+ */
 public class ArmToPointCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private final double yValue;
     private final double zValue;
     private boolean done = false;
 
+    /**
+     * Constructor to drive the arm to a specific point in space
+     * @param theArmSubsystem - the arm subsystem
+     * @param yPointMeters - the horizontal 'y point' measured from the extension arm pivot point to a normal from the end of the extension arm
+     * @param zPointMeters - the vertical 'z point' measured from the floor to the end of the extension arm
+     */
     public ArmToPointCommand(ArmSubsystem theArmSubsystem,
                              double yPointMeters,
                              double zPointMeters) {

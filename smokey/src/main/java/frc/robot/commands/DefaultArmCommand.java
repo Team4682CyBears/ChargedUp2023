@@ -15,11 +15,22 @@ import frc.robot.subsystems.ArmSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+/*
+ * Forms a command to move the dual part arm with y and z motor inputs.  
+ * Y motor input for the extension/horizontal arm.
+ * Z motor input for the angle/vertical arm.
+ */
 public class DefaultArmCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private final DoubleSupplier ySupplier;
     private final DoubleSupplier zSupplier;
 
+    /**
+     * The constructor to create a default command for the arm subsystem.
+     * @param theArmSubsystem - the arm subsystem
+     * @param yMotionSupplier - Y motor input for the extension/horizontal arm where negative is retract, postitive is extend.
+     * @param zMotionSupplier - Z motor input for the angle/vertical arm where negative is retract, postitive is extend.
+     */
     public DefaultArmCommand(ArmSubsystem theArmSubsystem,
                              DoubleSupplier yMotionSupplier,
                              DoubleSupplier zMotionSupplier) {

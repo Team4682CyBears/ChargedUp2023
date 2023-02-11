@@ -44,7 +44,6 @@ public class ArmSubsystem extends SubsystemBase
     // TODO - confirm gearbox reduction
     private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 10.0); 
     
-
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
     private static final double maximumVerticalArmExtensionMeters = 0.254; // 10.0 inches
@@ -63,10 +62,8 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMinimumHorizontalArmMeters = 1.1537188; // 45.422 inches
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
-
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 0.7;
-    private static final double neoMotorFindZeroSpeed = 0.3;
+    private static final double neoMotorSpeedReductionFactor = 1.0;
 
     /* *********************************************************************
     MEMBERS
@@ -114,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param horizontalArmSpeed the speed to run the horizontal arm motor at
      * @param verticalArmSpeed the speed to run the vertical arm motor at
      */
-    public void setArmSpeeds(double horizontalArmSpeed, double verticalArmSpeed){
+    public void setArmSpeeds(double horizontalArmSpeed, double verticalArmSpeed) {
       this.inSpeedMode = true;
       this.movementWithinTolerance = false;
       this.requestedHorizontalMotorSpeed = MotorUtils.truncateValue(horizontalArmSpeed, -1.0, 1.0);
@@ -126,7 +123,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param horizontalArmExtension the distance to extend the vertical arm to
      * @param verticalArmExtension the distance to extend the vertical arm to
      */
-    public void setArmExtensions(double horizontalArmExtension, double verticalArmExtension){
+    public void setArmExtensions(double horizontalArmExtension, double verticalArmExtension) {
       this.inSpeedMode = false;
       this.movementWithinTolerance = false;
       this.requestedHorizontalArmExtension = MotorUtils.truncateValue(horizontalArmExtension, minimumHorizontalArmExtensionMeters, maximumHorizontalArmExtensionMeters);
@@ -139,7 +136,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param zPointMeters the z aspect of the arm above the level playing floor in meters
      * @return true if the position is valid and was set, otherwise false
      */
-    public boolean setArmToPointInSpace(double yPointMeters, double zPointMeters){
+    public boolean setArmToPointInSpace(double yPointMeters, double zPointMeters) {
       
       double requestedAngle = Math.atan(zPointMeters/yPointMeters);
       double requestedHorizontalArmLength = yPointMeters/Math.cos(requestedAngle);
@@ -163,8 +160,7 @@ public class ArmSubsystem extends SubsystemBase
      * Method to help indicate when a requested movement is complete
      * @return true when the arms have arrived at their extension distances, else false
      */
-    public boolean isRequestedArmMovementComplete()
-    {
+    public boolean isRequestedArmMovementComplete() {
       return this.inSpeedMode == false &&  this.movementWithinTolerance;
     }
 
@@ -218,7 +214,7 @@ public class ArmSubsystem extends SubsystemBase
 
       }
       // if not in speed mode we assume the caller wants smart motion
-      else{
+      else {
 
         boolean isHorizontalWithinTolerance =  (Math.abs(currentHorizontalExtensionInMeters - this.requestedHorizontalArmExtension) <= toleranceHorizontalArmExtensionMeters);
         boolean isVerticalWithinTolerance =  (Math.abs(currentVerticalExtensionInMeters - this.requestedVerticalArmExtension) <= toleranceVerticalArmExtensionMeters);
@@ -257,7 +253,6 @@ public class ArmSubsystem extends SubsystemBase
             this.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
             ControlType.kSmartMotion);
         }
-
       }
     }
 
@@ -309,8 +304,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current horizontal arms extension in meters
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
-    private double getCurrentHorizontalArmExtensionInMeters()
-    {
+    private double getCurrentHorizontalArmExtensionInMeters() {
       return this.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalEncoder.getPosition());
     }
 
@@ -318,8 +312,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current vertical arms extension in meters
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
-    private double getCurrentVerticalArmExtensionInMeters()
-    {
+    private double getCurrentVerticalArmExtensionInMeters() {
       return this.convertVerticalArmExtensionFromTicksToMeters(this.verticalEncoder.getPosition());
     }
 
@@ -327,8 +320,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current horizontal arm angle measured from floor to arm centerline
      * @return the angle
      */
-    private double getCurrentHorizontalArmAngleRadians()
-    {
+    private double getCurrentHorizontalArmAngleRadians() {
       // need to use arc cos equation for angle given all three sides
       double a = lengthMinimumVerticalArmMeters + this.getCurrentVerticalArmExtensionInMeters();
       double b = lengthHorizontalArmPinDistanceMeters;
@@ -340,8 +332,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current horizontal arm angle measured from floor to arm centerline
      * @return the angle
      */
-    private double getCurrentHorizontalArmAngleDegrees()
-    {
+    private double getCurrentHorizontalArmAngleDegrees() {
       return Units.radiansToDegrees(this.getCurrentHorizontalArmAngleRadians());
     }
 
@@ -349,8 +340,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current arms Z height in meters from the floor
      * @return the height in meters from the floor to the arm tip
      */
-    private double getCurrentArmsHeightInMeters()
-    {
+    private double getCurrentArmsHeightInMeters() {
       return lengthFloorToHorizontalArmPivotMeters + (Math.sin(this.getCurrentHorizontalArmAngleRadians()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters()));
     }
 
@@ -358,8 +348,7 @@ public class ArmSubsystem extends SubsystemBase
      * A method to return the current arms Y distance in meters from the floor
      * @return the height in meters from the floor to the arm tip
      */
-    private double getCurrentArmsDistanceInMeters()
-    {
+    private double getCurrentArmsDistanceInMeters() {
       return Math.cos(this.getCurrentHorizontalArmAngleRadians()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters());
     }
 
@@ -380,8 +369,7 @@ public class ArmSubsystem extends SubsystemBase
     // a method devoted to establishing proper startup of the jaws motors
     // this method sets all of the key settings that will help in motion magic
     private void initializeMotorsSmartMotion() {
-      if(motorsInitalizedForSmartMotion == false)
-      { 
+      if(motorsInitalizedForSmartMotion == false) { 
         // PID coefficients
         kP = 5e-5; 
         kI = 1e-6;
