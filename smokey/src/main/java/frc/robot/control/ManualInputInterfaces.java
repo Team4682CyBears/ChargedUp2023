@@ -33,6 +33,7 @@ import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.TestTrajectories;
+import frc.robot.control.Trajectories;
 
 public class ManualInputInterfaces{
   // sets joystick variables to joysticks
@@ -195,6 +196,7 @@ public class ManualInputInterfaces{
       JoystickButton buttonLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
       JoystickButton buttonRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
       TestTrajectories testTrajectories = new TestTrajectories(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig());
+      Trajectories trajectories = new Trajectories(subsystemCollection.getDriveTrainSubsystem()); 
       
       buttonA.whenReleased(
         new ParallelCommandGroup(
@@ -228,11 +230,19 @@ public class ManualInputInterfaces{
           new ButtonPress("driverController", "kY.whenReleased"))
       );
 
+      /*
       buttonLeftBumper.whenReleased(
         new ParallelCommandGroup(
           new DriveTrajectoryCommand(
             this.subsystemCollection.getDriveTrainSubsystem(),
             testTrajectories.traverseTurn270),
+          new ButtonPress("driverController", "kLeftBumper.whenReleased"))
+      );
+      */
+
+      buttonLeftBumper.whenReleased(
+        new ParallelCommandGroup(
+          new InstantCommand(() -> subsystemCollection.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)),
           new ButtonPress("driverController", "kLeftBumper.whenReleased"))
       );
 
