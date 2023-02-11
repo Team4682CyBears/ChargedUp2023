@@ -21,6 +21,14 @@ public class ProximitySubsystem extends SubsystemBase {
   //Sets the ranging mode to medium (Between 76cm-290cm depending on lighting).
   public void ProximitySubysytem(){
     tofSensor.setRangingMode(RangingMode.Medium, 140);
+    /*EXPERIMENT RESULTS
+    Found that TOF sensor max distance ~ 36in/min distance ~ 1in when using 2.5 by 3 inch black and white box.
+    Found that TOF sensor max distance ~ 40in/min distance ~ 1in when using 3 by 4.7 block of wood.
+    Found that TOF sensor max distance ~ 40in/min distance ~ 0.5in when using 5 by 4 Yellow plastic container.
+    
+    Found that sensor works best when target is plastic and about 3x4.7 inches. 
+    Wood also works nicely and size could probably be sightly adjusted if too large.
+*/
   }
   
 
