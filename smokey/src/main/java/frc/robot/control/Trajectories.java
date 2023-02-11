@@ -27,19 +27,20 @@ public class Trajectories {
         System.out.println("created trajectory config");
 
         this.BluStart = new Pose2d(1.678, 2.748, Rotation2d.fromDegrees(180));
-        Pose2d BluEnd = new Pose2d(6.7, 2.748, Rotation2d.fromDegrees(90));
+        Pose2d BluEnd = new Pose2d(5.81, 2.748, Rotation2d.fromDegrees(90));
         Pose2d BluRamp = new Pose2d(3.922, 2.748, Rotation2d.fromDegrees(90));
-
+ 
         ArrayList<Translation2d> BluUpAndOverWaypoints = new ArrayList<Translation2d>();
-        BluUpAndOverWaypoints.add(new Translation2d(1.769, 4.122));
-        BluUpAndOverWaypoints.add(new Translation2d(3.3, 4.122));
-        BluUpAndOverWaypoints.add(new Translation2d(4.9, 4.122));
+        BluUpAndOverWaypoints.add(new Translation2d(2.1, 4.67));
+        BluUpAndOverWaypoints.add(new Translation2d(3.7, 4.67));
+        BluUpAndOverWaypoints.add(new Translation2d(5.3, 4.67));
         System.out.println(">>>>> Generating Blue up and over");
         this.BluUpAndOverTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluStart, BluUpAndOverWaypoints, BluEnd, config);
 
         ArrayList<Translation2d> BluDownAndUnderWaypoints = new ArrayList<Translation2d>();
-        BluDownAndUnderWaypoints.add(new Translation2d(2.769, 1.374));
-        BluDownAndUnderWaypoints.add(new Translation2d(4.9, 1.374));
+        BluDownAndUnderWaypoints.add(new Translation2d(2.1, .69));
+        BluDownAndUnderWaypoints.add(new Translation2d(3.7, .69));
+        BluDownAndUnderWaypoints.add(new Translation2d(5.3, .69));
         System.out.println(">>>>> Generating Blue down and under");
         this.BluDownAndUnderTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BluStart, BluDownAndUnderWaypoints, BluEnd, config);
         SwerveTrajectoryGenerator.printTrajectory(BluDownAndUnderTrajectory);
