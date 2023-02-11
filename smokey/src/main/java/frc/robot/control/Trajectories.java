@@ -26,7 +26,7 @@ public class Trajectories {
         TrajectoryConfig config = drivetrain.getTrajectoryConfig();
         System.out.println("created trajectory config");
 
-        this.BluStart = new Pose2d(2.007, 2.748, Rotation2d.fromDegrees(180));
+        this.BluStart = new Pose2d(1.678, 2.748, Rotation2d.fromDegrees(180));
         Pose2d BluEnd = new Pose2d(6.7, 2.748, Rotation2d.fromDegrees(90));
         Pose2d BluRamp = new Pose2d(3.922, 2.748, Rotation2d.fromDegrees(90));
 
