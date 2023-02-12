@@ -63,7 +63,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 1.0;
+    private static final double neoMotorSpeedReductionFactor = 0.7;
 
     /* *********************************************************************
     MEMBERS
@@ -79,8 +79,7 @@ public class ArmSubsystem extends SubsystemBase
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
-//    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = verticalArmMageneticSensor;
+    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
 
     private boolean isHorizontalMotorInverted = false;
     private boolean isVerticalMotorInverted = false;
@@ -140,7 +139,11 @@ public class ArmSubsystem extends SubsystemBase
       
       double requestedAngle = Math.atan(zPointMeters/yPointMeters);
       double requestedHorizontalArmLength = yPointMeters/Math.cos(requestedAngle);
-      double requestedVerticalArmLength = Math.tan(requestedAngle) * lengthHorizontalArmPinDistanceMeters;
+      double requestedVerticalArmLength = 
+        Math.sqrt(
+          lengthHorizontalArmPinDistanceMeters * lengthHorizontalArmPinDistanceMeters +
+          lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters * lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters -
+          (2 *lengthHorizontalArmPinDistanceMeters * lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters * Math.cos(requestedAngle)));
 
       double requestedHorizontalArmExtensionMeters = requestedHorizontalArmLength - lengthMinimumHorizontalArmMeters;
       double requestedVerticalArmExtensionMeters = requestedVerticalArmLength - lengthMinimumVerticalArmMeters;
@@ -152,6 +155,14 @@ public class ArmSubsystem extends SubsystemBase
         requestedVerticalArmExtensionMeters <= maximumVerticalArmExtensionMeters) {
           armPointInSpaceValid = true;
           this.setArmExtensions(requestedHorizontalArmExtensionMeters, requestedVerticalArmExtensionMeters);
+      }
+      else {
+        System.out.println("!!!INVALID POSITION REQUESTED!!!");
+        System.out.println("angle radians = " + requestedAngle +
+        "\nhorizontal len = " + requestedHorizontalArmLength +
+        "\nvertical len = " + requestedVerticalArmLength +
+        "\nhorizontal extension = " + requestedHorizontalArmExtensionMeters +
+        "\nvertical extension = " + requestedVerticalArmExtensionMeters);
       }
       return armPointInSpaceValid;
     }
@@ -371,11 +382,11 @@ public class ArmSubsystem extends SubsystemBase
     private void initializeMotorsSmartMotion() {
       if(motorsInitalizedForSmartMotion == false) { 
         // PID coefficients
-        kP = 5e-5; 
-        kI = 1e-6;
-        kD = 0; 
+        kP = 2e-4; 
+        kI = 0;
+        kD = 0;
         kIz = 0; 
-        kFF = 0.000156; 
+        kFF = 0.00001; 
         kMaxOutput = 1; 
         kMinOutput = -1;
         maxRPM = Constants.neoMaximumRevolutionsPerMinute;

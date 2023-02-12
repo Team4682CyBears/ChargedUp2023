@@ -24,6 +24,7 @@ public class DefaultArmCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private final DoubleSupplier ySupplier;
     private final DoubleSupplier zSupplier;
+    private final double inputThreshold = 0.1;
 
     /**
      * The constructor to create a default command for the arm subsystem.
@@ -42,7 +43,15 @@ public class DefaultArmCommand extends CommandBase {
 
     @Override
     public void execute() {
-        this.armSubsystem.setArmSpeeds(ySupplier.getAsDouble(), zSupplier.getAsDouble());
+        double yValue = ySupplier.getAsDouble();
+        double zValue = zSupplier.getAsDouble();
+        if(Math.abs(yValue) < this.inputThreshold) {
+            yValue = 0.0;
+        }
+        if(Math.abs(zValue) < this.inputThreshold) {
+            zValue = 0.0;
+        }
+        this.armSubsystem.setArmSpeeds(yValue, zValue);
     }
 
     @Override

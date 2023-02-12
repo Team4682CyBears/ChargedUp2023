@@ -66,4 +66,17 @@ public final class Constants {
     // input device constants
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
+
+
+    // *******************************************************************
+    public static final double armPresetPositionStowMetersY = 0.1;
+    public static final double armPresetPositionStowMetersZ = 1.23;
+    public static final double armPresetPositionGrabMetersY = 1.00;
+    public static final double armPresetPositionGrabMetersZ = 1.60;
+    public static final double armPresetPositionScoreHighMetersY = 1.10;
+    public static final double armPresetPositionScoreHighMetersZ = 1.78;
+    public static final double armPresetPositionScoreMediumMetersY = 1.00;
+    public static final double armPresetPositionScoreMediumMetersZ = 1.55;
+    public static final double armPresetPositionScoreLowMetersY = 0.65;
+    public static final double armPresetPositionScoreLowMetersZ = 1.04;
 }

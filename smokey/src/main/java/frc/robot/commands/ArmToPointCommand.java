@@ -49,7 +49,9 @@ public class ArmToPointCommand extends CommandBase {
 
     @Override
     public void execute() {
-        done = this.armSubsystem.isRequestedArmMovementComplete();
+        if(!done) {
+            done = this.armSubsystem.isRequestedArmMovementComplete();
+        }
     }
 
     @Override
