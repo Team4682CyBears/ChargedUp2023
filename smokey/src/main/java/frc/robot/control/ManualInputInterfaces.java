@@ -34,11 +34,16 @@ import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.TestTrajectories;
 import frc.robot.control.Trajectories;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.*;
+import frc.robot.commands.AllStopCommand;
+import frc.robot.commands.ArmToPointCommand;
+import frc.robot.commands.ButtonPressCommand;
 
 public class ManualInputInterfaces{
   // sets joystick variables to joysticks
-  private XboxController driverController = new XboxController(Constants.portDriverController); 
-  private XboxController coDriverController = new XboxController(Constants.portCoDriverController); 
+  private CommandXboxController driverController = new CommandXboxController(Constants.portDriverController); 
+  private CommandXboxController coDriverController = new CommandXboxController(Constants.portCoDriverController); 
 
   // subsystems needed for inputs
   private SubsystemCollection subsystemCollection = null;
@@ -75,6 +80,27 @@ public class ManualInputInterfaces{
   }
 
   /**
+   * A method to get the arcade arm Y componet being input from humans
+   * @return - a double value associated with the magnitude of the Y componet
+   */
+  public double getInputArcadeArmY()
+  {
+    // use the co drivers right X to represent the horizontal movement
+    return -1.0 * coDriverController.getLeftY();
+  }
+
+  /**
+   * A method to get the arcade arm Z componet being input from humans
+   * @return - a double value associated with the magnitude of the Z componet
+   */
+  public double getInputArcadeArmZ()
+  {
+    // use the co drivers right Z to represent the vertical movement
+    // and multiply by -1.0 as xbox reports values flipped
+    return -1.0 * coDriverController.getRightY();
+  }
+
+  /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
    */
@@ -96,22 +122,8 @@ public class ManualInputInterfaces{
    */
   private void bindCommandsToDriverXboxButtons(){
     if(InstalledHardware.driverXboxControllerInstalled){
-      // TODO - do we need anything else needed here?
       
       if(subsystemCollection.getDriveTrainSubsystem() != null){
-        // Back button zeros the gyroscope
-        new Button(driverController::getBackButton)
-                // No requirements because we don't need to interrupt anything
-                .whenPressed(subsystemCollection.getNavxSubsystem()::zeroGyroscope);
-        // cancel all commands bound to left trigger
-        BooleanSupplier bs = () -> driverController.getLeftTriggerAxis()>0.1;
-        new Trigger(bs).onTrue(new InstantCommand(CommandScheduler.getInstance()::cancelAll));
-
-        // TODO - we should remove the deprecated button code above when the team decideds on the spec for button type input
-//        new JoystickButton(driverController, XboxController.Button.kBack.value)
-//              // No requirements because we don't need to interrupt anything
-//              .onTrue(new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroGyroscope, subsystemCollection.getDriveTrainSubsystem()));
-
         if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController){
           this.bindBasicDriveToPointButtonsToDriverXboxController();          
         }
@@ -122,6 +134,30 @@ public class ManualInputInterfaces{
           this.bindDriveZeroPositionButtonToDriverXboxController();
         }
       }
+
+      if(subsystemCollection.getNavxSubsystem() != null){
+        // Back button zeros the gyroscope
+        this.driverController.back().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getNavxSubsystem()::zeroGyroscope),
+            new ButtonPressCommand(
+              "driverController.back()",
+              "zero gyroscope")
+            )
+          );
+      }
+
+      // x button press will stop all      
+      this.driverController.x().onTrue(
+        new ParallelCommandGroup(
+          new AllStopCommand(
+            this.subsystemCollection),
+          new ButtonPressCommand(
+            "driverController.x()",
+            "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
+          )
+        );      
     }
   }
 
@@ -289,20 +325,84 @@ public class ManualInputInterfaces{
     Transform2d theTransform = new Transform2d(theTranslation, theRotation);
     return startPos.transformBy(theTransform);
   }
+  
   /**
    * Will attach commands to the Co Driver XBox buttons 
    */
-  private void bindCommandsToCoDriverXboxButtons(){
-    if(InstalledHardware.coDriverXboxControllerInstalled){
-      JoystickButton bumperLeft = new JoystickButton(coDriverController, XboxController.Button.kLeftBumper.value);
-      JoystickButton bumperRight = new JoystickButton(coDriverController, XboxController.Button.kRightBumper.value);
-      JoystickButton buttonY = new JoystickButton(coDriverController, XboxController.Button.kY.value);
-      JoystickButton buttonA = new JoystickButton(coDriverController, XboxController.Button.kA.value);
-      JoystickButton buttonB = new JoystickButton(coDriverController, XboxController.Button.kB.value);
-      JoystickButton buttonStart = new JoystickButton(coDriverController, XboxController.Button.kStart.value);
-      JoystickButton buttonBack = new JoystickButton(coDriverController, XboxController.Button.kBack.value);
-
-      // TODO - when we determine what buttons are for what
+  private void bindCommandsToCoDriverXboxButtons()
+  {
+    if(InstalledHardware.coDriverXboxControllerInstalled)
+    {
+      // right trigger stow preset for arm
+      this.coDriverController.rightTrigger().onTrue(
+        new ParallelCommandGroup(
+          new ArmToPointCommand(
+            this.subsystemCollection.getArmSubsystem(),
+            Constants.armPresetPositionStowMetersY,
+            Constants.armPresetPositionStowMetersZ),
+          new ButtonPressCommand(
+            "coDriverController.rightTrigger()",
+            "arm stow")
+          )
+        );
+      // left trigger grab preset for arm
+      this.coDriverController.leftTrigger().onTrue(
+        new ParallelCommandGroup(
+          new ArmToPointCommand(
+            this.subsystemCollection.getArmSubsystem(),
+            Constants.armPresetPositionGrabMetersY,
+            Constants.armPresetPositionGrabMetersZ),
+          new ButtonPressCommand(
+            "coDriverController.leftTrigger()",
+            "arm grab")
+          )
+        );
+      // y button press will move the arms to high score position
+      this.coDriverController.y().onTrue(
+        new ParallelCommandGroup(
+          new ArmToPointCommand(
+            this.subsystemCollection.getArmSubsystem(),
+            Constants.armPresetPositionScoreHighMetersY,
+            Constants.armPresetPositionScoreHighMetersZ),
+          new ButtonPressCommand(
+            "coDriverController.y()",
+            "arm score high")
+          )
+        );
+        // b button press will move the arms to medium score position
+      this.coDriverController.b().onTrue(
+        new ParallelCommandGroup(
+          new ArmToPointCommand(
+            this.subsystemCollection.getArmSubsystem(),
+            Constants.armPresetPositionScoreMediumMetersY,
+            Constants.armPresetPositionScoreMediumMetersZ),
+          new ButtonPressCommand(
+            "coDriverController.b()",
+            "arm score medium")
+          )
+        );
+      // a button press will drive the arms to low score position
+      this.coDriverController.a().onTrue(
+        new ParallelCommandGroup(
+          new ArmToPointCommand(
+            this.subsystemCollection.getArmSubsystem(),
+            Constants.armPresetPositionScoreLowMetersY,
+            Constants.armPresetPositionScoreLowMetersZ),
+          new ButtonPressCommand(
+            "coDriverController.a()",
+            "arm score low")
+          )
+        );
+      // x button press will stop all
+      this.coDriverController.x().onTrue(
+        new ParallelCommandGroup(
+          new AllStopCommand(
+            this.subsystemCollection),
+          new ButtonPressCommand(
+            "coDriverController.x()",
+            "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
+          )
+        );
     }
   }
 }

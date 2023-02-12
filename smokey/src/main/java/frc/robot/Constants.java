@@ -47,6 +47,14 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-305.5-180.0-117.0); 
 
     // *****************************************************************
+    // arm constants
+    public static final int HorizontalArmDriveMotorCanId = 5;
+    public static final int VerticalArmDriveMotorCanId = 6;
+    public static final int VirticalArmMagneticSensor = 0;
+    public static final int HorizontalArmMagneticSensor = 1;
+
+
+    // *****************************************************************
     // standard stuff constants - motors rotation, etc.
     public static final double DegreesPerRevolution = 360.0;
     // NEO maximum RPM 
@@ -59,9 +67,21 @@ public final class Constants {
     // input device constants
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
+
     //************************************
     // trajectory constants
     public static final double TrajectoryMaxAcceleration = 1;
     public static final double TrajectoryMaxVelocity = 1;
 
+    // *******************************************************************
+    public static final double armPresetPositionStowMetersY = 0.1;
+    public static final double armPresetPositionStowMetersZ = 1.23;
+    public static final double armPresetPositionGrabMetersY = 1.00;
+    public static final double armPresetPositionGrabMetersZ = 1.60;
+    public static final double armPresetPositionScoreHighMetersY = 1.10;
+    public static final double armPresetPositionScoreHighMetersZ = 1.78;
+    public static final double armPresetPositionScoreMediumMetersY = 1.00;
+    public static final double armPresetPositionScoreMediumMetersZ = 1.55;
+    public static final double armPresetPositionScoreLowMetersY = 0.65;
+    public static final double armPresetPositionScoreLowMetersZ = 1.04;
 }
