@@ -60,8 +60,7 @@ public class DriveToPointCommand extends CommandBase
   */
   public DriveToPointCommand(
     DrivetrainSubsystem drivetrainSubsystem,
-    Pose2d targetDestination)
-  {
+    Pose2d targetDestination) {
     this.drivetrain = drivetrainSubsystem;
     this.destinationPosition = targetDestination;
 
@@ -71,8 +70,7 @@ public class DriveToPointCommand extends CommandBase
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
+  public void initialize() {
     // init the positions
     this.startPosition = drivetrain.getRobotPosition();
     this.currentPosition = this.startPosition;
@@ -89,8 +87,7 @@ public class DriveToPointCommand extends CommandBase
     // establish if profile is triangular or trapazoidal
     isTrapazoidalProfile = (totalDistanceMeters > trapazoidalDistanceThresholdMeters);
 
-    if(isTrapazoidalProfile)
-    {
+    if(isTrapazoidalProfile) {
         this.accelerationThresholdDistanceMeters = totalDistanceMeters - trapazoidalDistanceStartThresholdMeters;
         this.decelerationThresholdDistanceMeters = trapazoidalDistanceEndThresholdMeters;
         this.targetMaximumVelocityMetersPerSecond = DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND;
@@ -103,8 +100,7 @@ public class DriveToPointCommand extends CommandBase
             (totalDistanceMeters - trapazoidalDistanceStartThresholdMeters - trapazoidalDistanceEndThresholdMeters) / this.targetMaximumVelocityMetersPerSecond;
         System.out.println("Trapazoidal");
     }
-    else
-    {
+    else {
         this.targetMaximumVelocityMetersPerSecond = (totalDistanceMeters / (0.5*this.accelerationMaximumDurationSeconds + 0.5*this.decelerationMaximumDurationSeconds));
         this.accelerationThresholdDistanceMeters = 0.5 * targetMaximumVelocityMetersPerSecond * this.accelerationMaximumDurationSeconds;
         this.decelerationThresholdDistanceMeters = accelerationThresholdDistanceMeters;
@@ -134,8 +130,7 @@ public class DriveToPointCommand extends CommandBase
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
-  {
+  public void execute() {
     // get current position
     this.currentPosition = drivetrain.getRobotPosition();
     // get recent velocity
@@ -145,10 +140,10 @@ public class DriveToPointCommand extends CommandBase
 
     // establish the resultant velocity
     double targetResultantVelocityVector = this.targetMaximumVelocityMetersPerSecond;
-    if(Math.abs(remainingDistance) <= this.positionToleranceMeters){
+    if(Math.abs(remainingDistance) <= this.positionToleranceMeters) {
         targetResultantVelocityVector = 0.0;
     }
-    else if(remainingDistance > accelerationThresholdDistanceMeters){
+    else if(remainingDistance > accelerationThresholdDistanceMeters) {
         targetResultantVelocityVector = 
             Math.max(recentVelocity + this.accelerationLinearRate, DrivetrainSubsystem.MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND);
     }
@@ -167,10 +162,10 @@ public class DriveToPointCommand extends CommandBase
     this.remainingRotationRadians = this.getRemainingRotationRadians();
     double spinMultiplier = (this.remainingRotationRadians >= 0.0) ? -1.0 : 1.0;
     double targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond;
-    if(Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians){
+    if(Math.abs(remainingRotationRadians) <= this.rotationToleranceRadians) {
         targetSpinRadiansPerSecond = 0.0;
     }
-    else if(this.remainingRotationRadians > this.accelerationThresholdRotationRadians ){
+    else if(this.remainingRotationRadians > this.accelerationThresholdRotationRadians ) {
         targetSpinRadiansPerSecond =
             Math.max(recentAngularVelocity + this.accelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
@@ -180,17 +175,15 @@ public class DriveToPointCommand extends CommandBase
             Math.max(recentAngularVelocity - this.decelerationRotationalRate, DrivetrainSubsystem.MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND) *
             spinMultiplier;
     }
-    else{
+    else {
         targetSpinRadiansPerSecond = this.targetMaximumRotationRadiansPerSecond * spinMultiplier;
     }
 
-    if(!done && (targetResultantVelocityVector != 0.0 || targetSpinRadiansPerSecond != 0.0))
-    {
+    if(!done && (targetResultantVelocityVector != 0.0 || targetSpinRadiansPerSecond != 0.0)) {
         // get transform for current state and final state
         double xVelocity = 0.0;
         double yVelocity = 0.0;
-        if(targetResultantVelocityVector != 0.0)
-        {
+        if(targetResultantVelocityVector != 0.0) {
             // get transform for current state and final state so we can scale the x and y velocity
             Transform2d currentTransform = new Transform2d(this.currentPosition, this.destinationPosition);
             xVelocity = targetResultantVelocityVector * (currentTransform.getX()/remainingDistance);
@@ -198,8 +191,7 @@ public class DriveToPointCommand extends CommandBase
         }
         drivetrain.drive(new ChassisSpeeds(xVelocity, yVelocity, targetSpinRadiansPerSecond));
     }
-    else
-    {
+    else {
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         done = true;
         timer.stop();
@@ -209,10 +201,8 @@ public class DriveToPointCommand extends CommandBase
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
-    if(interrupted)
-    {
+  public void end(boolean interrupted) {
+    if(interrupted) {
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         done = true;      
         timer.stop();
@@ -222,18 +212,15 @@ public class DriveToPointCommand extends CommandBase
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return done;
   }
 
-  private double getRemainingDistanceMeters()
-  {
+  private double getRemainingDistanceMeters() {
     return currentPosition.getTranslation().getDistance(destinationPosition.getTranslation());
   }
 
-  private double getRemainingRotationRadians()
-  {
+  private double getRemainingRotationRadians() {
     return currentPosition.getRotation().getRadians() - destinationPosition.getRotation().getRadians();
   }
 
