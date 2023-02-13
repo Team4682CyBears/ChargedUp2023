@@ -31,7 +31,7 @@ import frc.robot.subsystems.NavxSubsystem;
 public class RobotContainer {
 
   private SubsystemCollection subsystems = new SubsystemCollection();
-  private final AutonomousChooser autonomousChooser = new AutonomousChooser(subsystems);
+  private final AutonomousChooser autonomousChooser; 
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -51,6 +51,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
+
+    this.autonomousChooser = new AutonomousChooser(subsystems);
+
   }
  
   /**
