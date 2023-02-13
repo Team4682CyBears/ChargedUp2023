@@ -1,0 +1,1107 @@
+{
+  "tabPane": [
+    {
+      "title": "SmartDashboard",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "SmartDashboard/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "12,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAndChassisEngaged",
+              "_title": "Angle-Chassis",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "12,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAndJawsEngaged",
+              "_title": "Angle-Jaws",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainMovementDescription",
+              "_title": "Drive Desc."
+            }
+          },
+          "0,1": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageLeftMotorOutput",
+              "_title": "Left Drive Motors",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "Output"
+            }
+          },
+          "0,4": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageRightMotorOutput",
+              "_title": "Right Drive Motors",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/Jaws/JawsApproximageJawsAngle",
+              "_title": "Jaws Angle",
+              "Range/Min": 0.0,
+              "Range/Max": 180.0,
+              "Visuals/Show value": true
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsAverageClimberHeightInInches",
+              "_title": "Tele Arms Height",
+              "Range/Min": 0.0,
+              "Range/Max": 70.0,
+              "Visuals/Show value": true
+            }
+          },
+          "3,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorOutput",
+              "_title": "Jaws Motors",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Visuals/Show value": true
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftArmMotionDescription",
+              "_title": "L. TeleArm Desc."
+            }
+          },
+          "11,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightArmMotionDescription",
+              "_title": "R. TeleArm Desc."
+            }
+          },
+          "5,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/BallStorage/BallStorageDirection",
+              "_title": "Ball Handling"
+            }
+          },
+          "5,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomRevolutionsPerMinute",
+              "_title": "Shooter Botom Motor",
+              "Range/Min": -5700.0,
+              "Range/Max": 5700.0,
+              "Visuals/Show value": true
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterTopRevolutionsPerMinute",
+              "_title": "Shooter Top Motor",
+              "Range/Min": -5700.0,
+              "Range/Max": 5700.0,
+              "Visuals/Show value": true
+            }
+          },
+          "7,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed",
+              "_title": "TeleArm Left Motor",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
+            }
+          },
+          "7,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed",
+              "_title": "TeleArm Right Motor",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Drive Train",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainApproximateLeftTravelDistanceInches",
+              "_title": "Left Travel (in)"
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainApproximateRightTravelDistanceInches",
+              "_title": "Right Travel (in)"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageLeftMotorOutput",
+              "_title": "Left Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageLeftMotorEncoderPosition",
+              "_title": "Left Encoder"
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageRightMotorEncoderPosition",
+              "_title": "Right Encoder"
+            }
+          },
+          "0,3": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageRightMotorOutput",
+              "_title": "Right Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainMovementDescription",
+              "_title": "Drive Train Activity"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Jaws",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/Jaws/JawsApproximageJawsAngle",
+              "_title": "Jaws Angle",
+              "Range/Min": 0.0,
+              "Range/Max": 180.0,
+              "Visuals/Show value": true
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorEncoderPosition",
+              "_title": "Average Encoder Position"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorOutput",
+              "_title": "Jaws Average Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Ball Control",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/BallStorage/BallStorageDirection",
+              "_title": "Ball Activity"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/BallStorage/BottomMotorSpeedSetting",
+              "_title": "Bottom Motor",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "motor speed"
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/BallStorage/TopMotorSpeedSetting",
+              "_title": "Top Motor",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "motor speed"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Telescoping Arms",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftArmMotionDescription",
+              "_title": "Left Activity"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed",
+              "_title": "Left Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightArmMotionDescription",
+              "_title": "Right Activity"
+            }
+          },
+          "0,3": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed",
+              "_title": "Right Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftClimberHeightInInches",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsLeftClimberHeightInInches"
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightClimberHeightInInches",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsRightClimberHeightInInches"
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed"
+            }
+          },
+          "5,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed"
+            }
+          },
+          "6,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftEncoderPosition",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsLeftEncoderPosition"
+            }
+          },
+          "6,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightEncoderPosition",
+              "_title": "LiveWindow/TelescopingArms/TelescopingArmsRightEncoderPosition"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "AngleArms",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "3,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsCurrentAngleArmsAngle",
+              "_title": "Angle Arms Angle",
+              "Range/Min": 0.0,
+              "Range/Max": 180.0,
+              "Visuals/Show value": true
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAverageMotorEncoderPosition",
+              "_title": "Average Encoder Position"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAverageMotorOutput",
+              "_title": "Angle Arms Average Motor Output",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "output"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "LiveWindow",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "LiveWindow/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/Ungrouped",
+              "_title": "Ungrouped",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[0]/Value",
+                  "_title": "DigitalInput[0]/Value",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Differential Drivebase",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DifferentialDrive[1]",
+                  "_title": "DifferentialDrive[1]",
+                  "Wheels/Number of wheels": 4,
+                  "Wheels/Wheel diameter": 80.0,
+                  "Visuals/Show velocity vectors": true
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DoubleSolenoid[0,0]/Value",
+                  "_title": "DoubleSolenoid[0,0]/Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [10]/Value",
+                  "_title": "Talon FX [10]/Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [16]/Value",
+                  "_title": "Talon SRX [16]/Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [9]/Value",
+                  "_title": "Talon FX [9]/Value"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [15]/Value",
+                  "_title": "Talon SRX [15]/Value"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Compressor[0]/Pressure switch",
+                  "_title": "Compressor[0]/Pressure switch",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[4]",
+                  "_title": "navX-Sensor[4]",
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[2]/Value",
+                  "_title": "DigitalInput[2]/Value",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DoubleSolenoid[0,4]/Value",
+                  "_title": "DoubleSolenoid[0,4]/Value"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Compressor[0]/Enabled",
+                  "_title": "Compressor[0]/Enabled",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[1]/Value",
+                  "_title": "DigitalInput[1]/Value",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [5]",
+                  "_title": "LiveWindow/Ungrouped/Talon FX [5]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [15]",
+                  "_title": "LiveWindow/Ungrouped/Talon SRX [15]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [6]",
+                  "_title": "LiveWindow/Ungrouped/Talon FX [6]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [16]",
+                  "_title": "LiveWindow/Ungrouped/Talon SRX [16]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [10]",
+                  "_title": "LiveWindow/Ungrouped/Talon FX [10]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [9]",
+                  "_title": "LiveWindow/Ungrouped/Talon FX [9]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [4]",
+                  "_title": "LiveWindow/Ungrouped/Talon FX [4]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Motor Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon FX [2]",
+                  "_title": "Talon FX [2]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                }
+              ]
+            }
+          },
+          "2,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/DriveTrain",
+              "_title": "DriveTrain",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageRightMotorEncoderPosition",
+                  "_title": "DriveTrainAverageRightMotorEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageRightMotorOutput",
+                  "_title": "DriveTrainAverageRightMotorOutput"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainApproximateLeftTravelDistanceInches",
+                  "_title": "DriveTrainApproximateLeftTravelDistanceInches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageLeftMotorEncoderPosition",
+                  "_title": "DriveTrainAverageLeftMotorEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainApproximateRightTravelDistanceInches",
+                  "_title": "DriveTrainApproximateRightTravelDistanceInches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainAverageLeftMotorOutput",
+                  "_title": "DriveTrainAverageLeftMotorOutput"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/DriveTrain/DriveTrainMovementDescription",
+                  "_title": "DriveTrainMovementDescription"
+                }
+              ]
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/TelescopingArms",
+              "_title": "TelescopingArms",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftMotorSpeed",
+                  "_title": "TelescopingArmsLeftMotorSpeed"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsAverageEncoderPosition",
+                  "_title": "TelescopingArmsAverageEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftArmMotionDescription",
+                  "_title": "TelescopingArmsLeftArmMotionDescription"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightArmMotionDescription",
+                  "_title": "TelescopingArmsRightArmMotionDescription"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightMotorSpeed",
+                  "_title": "TelescopingArmsRightMotorSpeed"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsAverageClimberHeightInInches",
+                  "_title": "TelescopingArmsAverageClimberHeightInInches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftClimberHeightInInches",
+                  "_title": "TelescopingArmsLeftClimberHeightInInches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsLeftEncoderPosition",
+                  "_title": "TelescopingArmsLeftEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightClimberHeightInInches",
+                  "_title": "TelescopingArmsRightClimberHeightInInches"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/TelescopingArms/TelescopingArmsRightEncoderPosition",
+                  "_title": "TelescopingArmsRightEncoderPosition"
+                }
+              ]
+            }
+          },
+          "6,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/BallStorage",
+              "_title": "BallStorage",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/BallStorage/BallInRearPosition",
+                  "_title": "BallInRearPosition",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/BallStorage/BottomMotorSpeedSetting",
+                  "_title": "BottomMotorSpeedSetting"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/BallStorage/BallStorageDirection",
+                  "_title": "BallStorageDirection"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/BallStorage/TopMotorSpeedSetting",
+                  "_title": "TopMotorSpeedSetting"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/BallStorage/OnboardBallCount",
+                  "_title": "OnboardBallCount"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/BallStorage/BallInFrontPosition",
+                  "_title": "BallInFrontPosition",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              ]
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/AngleArms",
+              "_title": "AngleArms",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAverageMotorOutput",
+                  "_title": "AngleArmsAverageMotorOutput"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsAverageMotorEncoderPosition",
+                  "_title": "AngleArmsAverageMotorEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/AngleArms/AngleArmsCurrentAngleArmsAngle",
+                  "_title": "AngleArmsCurrentAngleArmsAngle"
+                }
+              ]
+            }
+          },
+          "12,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/Jaws",
+              "_title": "Jaws",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorEncoderPosition",
+                  "_title": "JawsAverageMotorEncoderPosition"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Jaws/JawsApproximageJawsAngle",
+                  "_title": "JawsApproximageJawsAngle"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Jaws/JawsAverageMotorOutput",
+                  "_title": "JawsAverageMotorOutput"
+                }
+              ]
+            }
+          },
+          "0,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterTopRevolutionsPerMinute",
+              "_title": "Shooter/ShooterTopRevolutionsPerMinute"
+            }
+          },
+          "1,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterIntakeDescription",
+              "_title": "Shooter/ShooterIntakeDescription"
+            }
+          },
+          "2,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomMotorSpeed",
+              "_title": "Shooter/ShooterBottomMotorSpeed"
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterTopMotorSpeed",
+              "_title": "Shooter/ShooterTopMotorSpeed"
+            }
+          },
+          "4,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomRevolutionsPerMinute",
+              "_title": "Shooter/ShooterBottomRevolutionsPerMinute"
+            }
+          },
+          "10,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/Shooter",
+              "_title": "Shooter",
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Shooter/ShooterTopRevolutionsPerMinute",
+                  "_title": "ShooterTopRevolutionsPerMinute"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomRevolutionsPerMinute",
+                  "_title": "ShooterBottomRevolutionsPerMinute"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Shooter/ShooterIntakeDescription",
+                  "_title": "ShooterIntakeDescription"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Shooter/ShooterBottomMotorSpeed",
+                  "_title": "ShooterBottomMotorSpeed"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///LiveWindow/Shooter/ShooterTopMotorSpeed",
+                  "_title": "ShooterTopMotorSpeed"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": 94.0,
+    "y": 1.0,
+    "width": 1293.0,
+    "height": 758.0
+  }
+}
