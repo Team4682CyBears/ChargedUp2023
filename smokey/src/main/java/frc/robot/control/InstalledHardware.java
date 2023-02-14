@@ -35,7 +35,7 @@ public class InstalledHardware
 
     // External Input Hardware
     public static final boolean driverXboxControllerInstalled = true;
-    public static final boolean coDriverXboxControllerInstalled = false;
+    public static final boolean coDriverXboxControllerInstalled = true;
 
     // DriveTrain Related Hardware
     public static final boolean leftFrontDriveInstalled = true;
@@ -48,4 +48,9 @@ public class InstalledHardware
     public static final boolean applyDriveTrajectoryButtonsToDriverXboxController = false;
     public static final boolean applyDriveZeroPositionButtonToDriverXboxController = true;
     public static final boolean applyAutoBalanceButtonToDriverXboxController = true;
+
+    // Arm Related Hardware
+    public static final boolean horizontalArmMotorInstalled = true;
+    public static final boolean verticalArmMotorInstalled = true;
+
 }

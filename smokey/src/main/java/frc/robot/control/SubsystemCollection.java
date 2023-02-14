@@ -17,6 +17,7 @@ public class SubsystemCollection
     private ManualInputInterfaces manualInput = null;
 
     // declaring and init subsystems  
+    private ArmSubsystem armSubsystem = null;
     private DrivetrainSubsystem driveTrainSubsystem = null;
     private NavxSubsystem navxSubsystem = null;
 
@@ -24,6 +25,9 @@ public class SubsystemCollection
      * Default constructor
      */
     public SubsystemCollection() {}
+
+    public ArmSubsystem getArmSubsystem() { return armSubsystem; }
+    public void setArmSubsystem(ArmSubsystem value) { armSubsystem = value; }
 
     public DrivetrainSubsystem getDriveTrainSubsystem() { return driveTrainSubsystem; }
     public void setDriveTrainSubsystem(DrivetrainSubsystem value) { driveTrainSubsystem = value; }

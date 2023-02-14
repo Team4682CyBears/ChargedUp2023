@@ -12,11 +12,13 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
 
@@ -29,7 +31,7 @@ import frc.robot.subsystems.NavxSubsystem;
 public class RobotContainer {
 
   private SubsystemCollection subsystems = new SubsystemCollection();
-  private final AutonomousChooser autonomousChooser = new AutonomousChooser(subsystems);
+  private final AutonomousChooser autonomousChooser; 
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,12 +44,16 @@ public class RobotContainer {
     // init the various subsystems
     this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
+    this.initializeArmSubsystem();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();
 
     // Configure the button bindings
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
+
+    this.autonomousChooser = new AutonomousChooser(subsystems);
+
   }
  
   /**
@@ -126,6 +132,32 @@ public class RobotContainer {
     }
   }
   
+  /**
+   * A method to init the arm
+   */
+  private void initializeArmSubsystem() {
+    if(InstalledHardware.verticalArmMotorInstalled && 
+      InstalledHardware.horizontalArmMotorInstalled)
+    {
+      // The robot's subsystems and commands are defined here...
+      subsystems.setArmSubsystem(new ArmSubsystem());
+      System.out.println("SUCCESS: initializeArm");
+
+      // Set up the default command for the arm.
+      // Left stick X axis -> horizontal arm in / out movement
+      // Left stick Y axis -> vertical arm in / out movement
+      subsystems.getArmSubsystem().setDefaultCommand(new DefaultArmCommand(
+        subsystems.getArmSubsystem(),
+        () -> subsystems.getManualInputInterfaces().getInputArcadeArmY(),
+        () -> subsystems.getManualInputInterfaces().getInputArcadeArmZ()
+      ));
+    }
+    else
+    {
+      System.out.println("FAIL: initializeArm");
+    }
+  }
+
   /**
    * A method to calculate the initial position of the robot
    */

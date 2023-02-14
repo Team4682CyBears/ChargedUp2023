@@ -48,7 +48,7 @@ public class DriveTrajectoryCommand extends CommandBase{
   */
   public DriveTrajectoryCommand(
     DrivetrainSubsystem drivetrainSubsystem,
-    Trajectory plan){
+    Trajectory plan) {
     this.drivetrain = drivetrainSubsystem;
     this.movementPlan = plan;
 
@@ -67,7 +67,7 @@ public class DriveTrajectoryCommand extends CommandBase{
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize(){
+  public void initialize() {
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     expectedDuration = movementPlan.getTotalTimeSeconds();
     this.finalPosition = movementPlan.sample(expectedDuration).poseMeters;
@@ -78,13 +78,13 @@ public class DriveTrajectoryCommand extends CommandBase{
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute(){
-    if(timer.get() > expectedDuration && this.isDeltaReasonable()){
+  public void execute() {
+    if(timer.get() > expectedDuration && this.isDeltaReasonable()) {
         drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         timer.stop();
         done = true;
     }
-    else{
+    else {
         double currentElapsedTimeInSeconds = timer.get();
         Pose2d currentLocation = drivetrain.getRobotPosition();
         Trajectory.State targetState = movementPlan.sample(currentElapsedTimeInSeconds);
@@ -100,10 +100,10 @@ public class DriveTrajectoryCommand extends CommandBase{
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     timer.stop();
-    if(interrupted){
+    if(interrupted) {
       done = true;      
     }
     System.out.println("Movement Complete: expected duration (seconds) == " + this.expectedDuration + " actual duration (seconds) == " + timer.get());
@@ -111,16 +111,16 @@ public class DriveTrajectoryCommand extends CommandBase{
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished(){
+  public boolean isFinished() {
     return done;
   }
 
-  private boolean isDeltaReasonable(){
+  private boolean isDeltaReasonable() {
     Pose2d currentPosition = this.drivetrain.getRobotPosition();
     Transform2d delta = new Transform2d(currentPosition, this.finalPosition);
     if( abs(delta.getX()) <= this.overTimeDelta.getX() &&
         abs(delta.getY()) <= this.overTimeDelta.getY() &&
-        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians())){
+        abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians())) {
       System.out.println("isDeltaReasonable == true ...........");
       return true;
     }
