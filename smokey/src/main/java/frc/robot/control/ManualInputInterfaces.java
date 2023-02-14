@@ -235,9 +235,12 @@ public class ManualInputInterfaces {
     // traverse backward arc trajectory
     this.driverController.b().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseBackwardArc),
+        new SequentialCommandGroup(
+          new InstantCommand(() -> subsystemCollection.getDriveTrainSubsystem()
+          .setRobotPosition(testTrajectories.traverseBackwardArcStartPosition)),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseBackwardArc)),
         new ButtonPressCommand(
           "driverController.b()",
           "testTrajectories.traverseBackwardArc")).withTimeout(10.0)
