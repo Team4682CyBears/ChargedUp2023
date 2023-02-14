@@ -97,7 +97,7 @@ public class TestTrajectories {
     
       private Trajectory buildTraverseBackwardArc(){
         System.out.println(">>>>>>>>>>>>>>>> Building Traverse Backward Arc");
-        Pose2d start = this.traverseBackwardArcStartPosition
+        Pose2d start = this.traverseBackwardArcStartPosition;
         Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
     
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
