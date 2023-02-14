@@ -12,6 +12,7 @@ package frc.robot.control;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -116,9 +117,6 @@ public class ManualInputInterfaces {
         }
         if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController){
           this.bindDriveTrajectoryButtonsToDriverXboxController();
-        }
-        if(InstalledHardware.applyDriveZeroPositionButtonToDriverXboxController){
-          this.bindDriveZeroPositionButtonToDriverXboxController();
         }
       }
 
@@ -225,9 +223,11 @@ public class ManualInputInterfaces {
     // traverse forward arc trajectory
     this.driverController.a().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseForwardArc),
+        new SequentialCommandGroup(
+          new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseForwardArc)),
         new ButtonPressCommand(
           "driverController.a()",
           "testTrajectories.traverseForwardArc")).withTimeout(10.0)
@@ -235,9 +235,12 @@ public class ManualInputInterfaces {
     // traverse backward arc trajectory
     this.driverController.b().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseBackwardArc),
+        new SequentialCommandGroup(
+          new InstantCommand(() -> subsystemCollection.getDriveTrainSubsystem()
+          .setRobotPosition(testTrajectories.traverseBackwardArcStartPosition)),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseBackwardArc)),
         new ButtonPressCommand(
           "driverController.b()",
           "testTrajectories.traverseBackwardArc")).withTimeout(10.0)
@@ -245,9 +248,11 @@ public class ManualInputInterfaces {
     // traverse simple forward trajectory
     this.driverController.x().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseSimpleForward),
+        new SequentialCommandGroup(
+          new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseSimpleForward)),
         new ButtonPressCommand(
           "driverController.x()",
           "testTrajectories.traverseSimpleForward")).withTimeout(10.0)
@@ -255,58 +260,39 @@ public class ManualInputInterfaces {
     // traverse simple left trajectory
     this.driverController.y().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseSimpleLeft),
+        new SequentialCommandGroup(
+          new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseSimpleLeft)),
         new ButtonPressCommand(
           "driverController.y()",
           "testTrajectories.traverseSimpleLeft")).withTimeout(10.0)
     );
     // traverse turn 270 trajectory
-    /*
     this.driverController.leftBumper().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.traverseTurn270),
+        new SequentialCommandGroup(
+          new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.traverseTurn270)),
         new ButtonPressCommand(
           "driverController.leftBumper()",
           "testTrajectories.traverseTurn270")).withTimeout(10.0)
     );
-    */
-    // traverse trajectories.BluStart
-    this.driverController.leftBumper().onTrue(
-      new ParallelCommandGroup(
-        new InstantCommand(() -> subsystemCollection.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)),
-        new ButtonPressCommand(
-          "driverController.leftBumper()",
-          "trajectories.BluStart")).withTimeout(10.0)
-    );
     // traverse testTrajectories.turn90
     this.driverController.rightBumper().onTrue(
       new ParallelCommandGroup(
-        new DriveTrajectoryCommand(
-          this.subsystemCollection.getDriveTrainSubsystem(),
-          testTrajectories.turn90),
+        new SequentialCommandGroup(
+          new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
+          new DriveTrajectoryCommand(
+            this.subsystemCollection.getDriveTrainSubsystem(),
+            testTrajectories.turn90)),
         new ButtonPressCommand(
           "driverController.rightBumper()",
           "trajectories.BluStart")).withTimeout(10.0)
     );
-  }
-
-  /**
-   * A method that will bind zero button to driver controller
-   */
-  private void bindDriveZeroPositionButtonToDriverXboxController() {
-    // start button will zero the robot position
-    this.driverController.start().onTrue(
-      new ParallelCommandGroup(
-        new InstantCommand(subsystemCollection.getDriveTrainSubsystem()::zeroRobotPosition),
-        new ButtonPressCommand(
-          "driverController.start()",
-          "zero robot position")
-        )
-      );
   }
 
   /**

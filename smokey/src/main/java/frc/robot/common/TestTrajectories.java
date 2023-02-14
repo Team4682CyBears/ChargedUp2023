@@ -28,6 +28,7 @@ public class TestTrajectories {
     public Trajectory turn90;
     public Trajectory traverseForwardArc;
     public Trajectory traverseBackwardArc;
+    public Pose2d traverseBackwardArcStartPosition = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
     private TrajectoryConfig config; 
 
     /**
@@ -84,7 +85,7 @@ public class TestTrajectories {
       private Trajectory buildTraverseForwardArc(){
         System.out.println(">>>>>>>>>>>>>>>> Building Traverse Forward Arc");
         Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-        Pose2d end = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
+        Pose2d end = this.traverseBackwardArcStartPosition;
     
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
         interiorWaypoints.add(new Translation2d(0.5, 0.25));
@@ -96,7 +97,7 @@ public class TestTrajectories {
     
       private Trajectory buildTraverseBackwardArc(){
         System.out.println(">>>>>>>>>>>>>>>> Building Traverse Backward Arc");
-        Pose2d start = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
+        Pose2d start = this.traverseBackwardArcStartPosition;
         Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
     
         ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
