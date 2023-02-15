@@ -34,13 +34,13 @@ public class StabilizerSubsystem extends SubsystemBase{
      * No argument constructor for the BallHandler subsystem.
     */
     public StabilizerSubsystem() {
-        CommandScheduler.getInstance().registerSubsystem(this);
         this.intitalizeStabilizerState();
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     /**
-     * Method to obtain if the ball arm is in the retracted position.
-     * @return boolean true if ball arm is retracted, otherwise false.
+     * Method to obtain if the stabilizer is in the retracted position.
+     * @return boolean true if stabilizer is retracted, otherwise false.
      */
     public boolean isDeployed()
     {
@@ -48,8 +48,8 @@ public class StabilizerSubsystem extends SubsystemBase{
     }
 
     /**
-     * Method to obtain if the ball arm is in the retracted position.
-     * @return boolean true if ball arm is retracted, otherwise false.
+     * Method to obtain if the stabilizer is in the retracted position.
+     * @return boolean true if stabilizer is retracted, otherwise false.
      */
     public boolean isRetracted()
     {
@@ -57,7 +57,7 @@ public class StabilizerSubsystem extends SubsystemBase{
     }
 
     /**
-     * Method to move the arm into a deployed (upward) position
+     * Method to move the stabilizer into a deployed (downward) position
      */
     public void deployPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kForward);
@@ -65,7 +65,7 @@ public class StabilizerSubsystem extends SubsystemBase{
     }
 
     /**
-     * Method to move the arm into a retracted (downward) position
+     * Method to move the stabilizer into a retracted (upward) position
      */
     public void retractPosition(){
         this.solenoid.set(DoubleSolenoid.Value.kReverse);
