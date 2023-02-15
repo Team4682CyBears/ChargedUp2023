@@ -9,11 +9,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.lang.Math;
-import java.util.ArrayList;
 
 /**
  * Implements a command to perform a single step of an auto balancing routine. 
- * Intended to be called in a loop as AutoBalanceStepCommand.repeatedly().until(navxsubsystem.isLevel())
  */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
@@ -50,7 +48,6 @@ public class AutoBalanceStepCommand extends CommandBase{
   @Override
   public void initialize() {
     System.out.println("initializaing auto balance step command");
-    //Translation2d angleOfSteepestAscent = QuaternionUtils.getAngleOfSteepestAscent(navxsubsystem.getQuaterion());
     Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     xVelocity = velocityVec.getX();
@@ -67,20 +64,23 @@ public class AutoBalanceStepCommand extends CommandBase{
   @Override
   public void execute()
   {
-    // drive along the vector of steepest ascent
-    drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
+
     // drive time interval followed by wait time interval
     if (driveTimer.hasElapsed(this.driveDurationSecondsValue))
     {
       drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
       waitTimer.start();
     }
-    if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
+    else if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       System.out.println("auto balance step command: completed one cycle");
       System.out.println("RecentPitches " + navxsubsystem.getRecentPitches());
       System.out.println("RecentRolls " + navxsubsystem.getRecentRolls());
       done = true;
+    }
+    // drive along the vector of steepest ascent
+    else {
+      drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
     }
   }
 
