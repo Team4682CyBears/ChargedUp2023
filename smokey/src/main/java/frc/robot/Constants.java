@@ -73,6 +73,10 @@ public final class Constants {
     public static final double TrajectoryMaxAcceleration = 1;
     public static final double TrajectoryMaxVelocity = 1;
 
+    //*************************************** 
+    //For auto constants
+    public static final double snoutDepth = 5.25;
+
     // *******************************************************************
     public static final double armPresetPositionStowMetersY = 0.1;
     public static final double armPresetPositionStowMetersZ = 1.23;

@@ -275,13 +275,6 @@ public class ManualInputInterfaces {
     );
     */
     // traverse trajectories.BluStart
-    this.driverController.leftBumper().onTrue(
-      new ParallelCommandGroup(
-        new InstantCommand(() -> subsystemCollection.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)),
-        new ButtonPressCommand(
-          "driverController.leftBumper()",
-          "trajectories.BluStart")).withTimeout(10.0)
-    );
     // traverse testTrajectories.turn90
     this.driverController.rightBumper().onTrue(
       new ParallelCommandGroup(
