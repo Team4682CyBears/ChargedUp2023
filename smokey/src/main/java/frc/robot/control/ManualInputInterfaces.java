@@ -22,9 +22,12 @@ import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.common.TestTrajectories;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToPointCommand;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.ButtonPressCommand;
 
 public class ManualInputInterfaces {
@@ -65,10 +68,6 @@ public class ManualInputInterfaces {
    */
   public double getInputSpinDriveX(){
     return driverController.getRightX();
-  }
-
-  public boolean getRightBumper(){
-    return driverController.getRightBumperPressed();
   }
 
   /**
@@ -115,7 +114,10 @@ public class ManualInputInterfaces {
   private void bindCommandsToDriverXboxButtons(){
     if(InstalledHardware.driverXboxControllerInstalled){
       
-      if(subsystemCollection.getDriveTrainSubsystem() != null){
+      DrivetrainSubsystem localDrive = subsystemCollection.getDriveTrainSubsystem();
+      NavxSubsystem localNavex = subsystemCollection.getNavxSubsystem();
+
+      if(localDrive != null){
         if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController){
           this.bindBasicDriveToPointButtonsToDriverXboxController();
         }
@@ -124,8 +126,8 @@ public class ManualInputInterfaces {
         }
       }
 
-      if(subsystemCollection.getNavxSubsystem() != null){
-        // Back button zeros the gyroscope
+      if(localNavex != null){
+        // Back button zeros the gyroscope (as in zero yaw)
         this.driverController.back().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
@@ -135,6 +137,18 @@ public class ManualInputInterfaces {
               "zero gyroscope")
             )
           );
+      }
+
+      if(localDrive != null && localNavex != null){
+        // bind the b button to auto balance
+          this.driverController.b().onTrue(
+            new ParallelCommandGroup(
+              new AutoBalanceCommand(localDrive, localNavex).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel),
+              new ButtonPressCommand(
+                "driverController.b()",
+                "auto balance")
+              )
+            );
       }
 
       // x button press will stop all      
