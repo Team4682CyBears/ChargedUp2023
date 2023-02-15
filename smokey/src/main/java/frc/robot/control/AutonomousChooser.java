@@ -37,6 +37,7 @@ public class AutonomousChooser {
     private SubsystemCollection subsystems;
     private final SendableChooser<AutonomousMode> autonomousModeChooser = new SendableChooser<>();
     private final SendableChooser<AutonomousMode> balanceChooser = new SendableChooser<>();
+    private final SendableChooser<AutonomousMode> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
 
     /**
@@ -56,8 +57,13 @@ public class AutonomousChooser {
         balanceChooser.setDefaultOption("Do Balance", AutonomousMode.DO_BALANCE);
         balanceChooser.addOption("Do NOT Balance", AutonomousMode.DO_NOT_BALANCE);
 
+        scoreHeight.addOption("Score High", AutonomousMode.SCORE_HIGH);
+        scoreHeight.addOption("Score Middle", AutonomousMode.SCORE_MIDDLE);
+        scoreHeight.addOption("Score Low", AutonomousMode.SCORE_LOW);
+
         SmartDashboard.putData(autonomousModeChooser);
         SmartDashboard.putData(balanceChooser);
+        SmartDashboard.putData(scoreHeight);
     }
     
     /**
@@ -73,7 +79,7 @@ public class AutonomousChooser {
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node1Position)));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
-        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new MoveArmToScoring(getScoringHeight()));
         command.addCommands(new ManipulatePickerCommand(false));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
         command.addCommands(new MoveArmToStowed());
@@ -91,7 +97,7 @@ public class AutonomousChooser {
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node9Position)));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
-        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new MoveArmToScoring(getScoringHeight()));
         command.addCommands(new ManipulatePickerCommand(false));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
         command.addCommands(new MoveArmToStowed());
@@ -109,7 +115,7 @@ public class AutonomousChooser {
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node5Position)));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
-        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new MoveArmToScoring(getScoringHeight()));
         command.addCommands(new ManipulatePickerCommand(false));
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
         command.addCommands(new MoveArmToStowed());
@@ -156,11 +162,25 @@ public class AutonomousChooser {
         return DoTheBalance;
     }
 
+    public int getScoringHeight(){
+        switch (scoreHeight.getSelected()) {
+            default : case SCORE_HIGH :
+                return 3;
+            case SCORE_MIDDLE :
+                return 2;
+            case SCORE_LOW :
+                return 1;
+        }
+    }
+
     private enum AutonomousMode {
         LEFT_PATH,
         RIGHT_PATH,
         MIDDLE_PATH,
         DO_BALANCE,
-        DO_NOT_BALANCE
+        DO_NOT_BALANCE,
+        SCORE_HIGH,
+        SCORE_MIDDLE,
+        SCORE_LOW
     }
 }
