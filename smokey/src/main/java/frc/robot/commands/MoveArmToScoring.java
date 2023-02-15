@@ -18,7 +18,7 @@ public class MoveArmToScoring extends CommandBase {
      * Constructor to cause all subsystems to halt movements
      * @param collection - the collection of subsystems
      */
-    public MoveArmToScoring(Enum postition) {
+    public MoveArmToScoring(int postition) {
     }
 
     @Override

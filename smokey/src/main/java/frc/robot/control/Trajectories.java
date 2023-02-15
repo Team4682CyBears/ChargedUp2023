@@ -14,6 +14,7 @@ public class Trajectories {
     public Pose2d Node1Position;
     public Pose2d Node5Position;
     public Pose2d Node9Position;
+    public Pose2d End;
     public static Trajectory LeftTrajectory;
     public static Trajectory RightTrajectory;
     public static Trajectory MiddleTrajectory;
@@ -28,7 +29,7 @@ public class Trajectories {
         this.Node5Position = new Pose2d(1.678, 2.748, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(0, 0, Rotation2d.fromDegrees(180));
 
-        Pose2d End = new Pose2d(5.81, 2.748, Rotation2d.fromDegrees(90));
+        this.End = new Pose2d(5.81, 2.748, Rotation2d.fromDegrees(90));
         Pose2d Ramp = new Pose2d(3.922, 2.748, Rotation2d.fromDegrees(90));
  
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -53,8 +54,7 @@ public class Trajectories {
         ArrayList<Pose2d> OntoRampWaypoints = new ArrayList<Pose2d>();
         OntoRampWaypoints.add(End);
         OntoRampWaypoints.add(Ramp);
-        this.OntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(OntoRampWaypoints, config);
-*/
+        this.OntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(OntoRampWaypoints, config);    
     }
 
 

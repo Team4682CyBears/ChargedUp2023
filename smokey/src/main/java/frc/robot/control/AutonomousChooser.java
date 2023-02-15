@@ -22,10 +22,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 //import edu.wpi.first.math.geometry.Pose2d;
 //import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.commands.ManipulatePickerCommand;
+import frc.robot.commands.MoveArmToScoring;
+import frc.robot.commands.MoveArmToStowed;
 import frc.robot.control.Trajectories;
+import edu.wpi.first.math.util.Units;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -33,6 +36,7 @@ import frc.robot.control.Trajectories;
 public class AutonomousChooser {
     private SubsystemCollection subsystems;
     private final SendableChooser<AutonomousMode> autonomousModeChooser = new SendableChooser<>();
+    private final SendableChooser<AutonomousMode> balanceChooser = new SendableChooser<>();
     private Trajectories trajectories;
 
     /**
@@ -45,16 +49,15 @@ public class AutonomousChooser {
         this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
         System.out.println(">>>> finished creating auto trajectories");
         
+        autonomousModeChooser.addOption("Node 1 Routine", AutonomousMode.LEFT_PATH);
+        autonomousModeChooser.addOption("Node 5 Routine", AutonomousMode.MIDDLE_PATH);
+        autonomousModeChooser.addOption("Node 9 Routine", AutonomousMode.RIGHT_PATH);
 
-        autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
-        autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
-        autonomousModeChooser.addOption("Test Auto To A Position", AutonomousMode.TEST_AUTO_DRIVE_TO_POSITION);
-        autonomousModeChooser.addOption("Test Auto Blue Up and Over", AutonomousMode.TEST_BLUE_UP_AND_OVER);
-        autonomousModeChooser.addOption("Test Auto Blue Down and Under", AutonomousMode.TEST_BLUE_DOWN_AND_UNDER);
-        autonomousModeChooser.addOption("Test Auto Blue Across Ramp", AutonomousMode.TEST_BLUE_ACROSS_RAMP);
-        
+        balanceChooser.setDefaultOption("Do Balance", AutonomousMode.DO_BALANCE);
+        balanceChooser.addOption("Do NOT Balance", AutonomousMode.DO_NOT_BALANCE);
 
         SmartDashboard.putData(autonomousModeChooser);
+        SmartDashboard.putData(balanceChooser);
     }
     
     /**
@@ -65,80 +68,58 @@ public class AutonomousChooser {
         return autonomousModeChooser;
     }
 
-    /**
-     * A method to get the TestAutoForward command
-     * @return command
-     */
-    public Command getTestAutoForward() {
+    public Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-
         resetRobotPose(command);
-
-        // drive forward and then turn clockwise
-        command.addCommands(driveSegment(1., 0, 0, 1.0));
-        command.addCommands(driveSegment(0, 0, 0.5, 2.0));
-
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node1Position)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new ManipulatePickerCommand(false));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToStowed());
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.LeftTrajectory));
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.End)));
+        if (getDoBalance()) {
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
+        //Autobalance Command HERE <----------------------------- LOOK DO THIS NOW NOW NOW NOW NOW NOW
+        }
         return command;
     }
 
-    /**
-     * A method to get the TestAutoBackward command
-     * @return command
-     */
-    public Command getTestAutoBackward() {
+    public Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-
         resetRobotPose(command);
-
-        // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(-1., 0, 0, 1.0));
-        command.addCommands(driveSegment(0, 0, -0.5, 2.0));
-
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node9Position)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new ManipulatePickerCommand(false));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToStowed());
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.RightTrajectory));
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.End)));
+        if (getDoBalance()) {
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
+        //Autobalance Command HERE <----------------------------- LOOK DO THIS NOW NOW NOW NOW NOW NOW
+        }
         return command;
     }
 
-    /**
-     * A method to get the create a DriveToPointCommand using the current position as a starting point
-     * @return command
-     */
-    public Command getTestAutoToPosition() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command);
-
-        Pose2d currentPosition = subsystems.getDriveTrainSubsystem().getRobotPosition();
-        Pose2d destinationPosition = currentPosition.plus(new Transform2d(new Translation2d(1.5, 0.5), Rotation2d.fromDegrees(180.0)));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), destinationPosition));
-
-        return command;
-    }    
-
-    public Command getBlueUpAndOver() {
+    public Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluUpAndOverTrajectory));
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node5Position)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(-5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToScoring(3));
+        command.addCommands(new ManipulatePickerCommand(false));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(new Transform2d(new Translation2d(Units.inchesToMeters(5.25), 0), new Rotation2d(0.0)))));
+        command.addCommands(new MoveArmToStowed());
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.MiddleTrajectory));
+        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.End)));
+        if (getDoBalance()) {
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
+        //Autobalance Command HERE <----------------------------- LOOK DO THIS NOW NOW NOW NOW NOW NOW
+        }
         return command;
-    }
-    
-    public Command getBlueDownAndUnder() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluDownAndUnderTrajectory));
-        return command;
-    }   
-
-    public Command getBluAcrossRamp() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluAcrossRampTrajectory));
-        return command;
-    }   
-
-    private Command driveSegment(double x, double y, double rot, double durationSeconds) {
-        return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), x, y, rot, durationSeconds);
     }
     
     private void resetRobotPose(SequentialCommandGroup command) {
@@ -154,28 +135,32 @@ public class AutonomousChooser {
      */
     public Command getCommand() {
         switch (autonomousModeChooser.getSelected()) {
-            case TEST_AUTO_FORWARD :
-                return this.getTestAutoForward();
-            case TEST_AUTO_BACKWARD :
-                return this.getTestAutoBackward();
-            case TEST_AUTO_DRIVE_TO_POSITION :
-                return this.getTestAutoToPosition();
-            case TEST_BLUE_UP_AND_OVER :
-                return this.getBlueUpAndOver();
-            case TEST_BLUE_DOWN_AND_UNDER :
-                return this.getBlueDownAndUnder();
-            case TEST_BLUE_ACROSS_RAMP :
-                return this.getBluAcrossRamp();
+            case LEFT_PATH :
+                return this.getLeftRoutine();
+            case RIGHT_PATH :
+                return this.getRightRoutine();
+            case MIDDLE_PATH :
+                return this.getMiddleRoutine();
         }
         return new InstantCommand();
     }
 
+    public boolean getDoBalance(){
+        Boolean DoTheBalance;
+        switch (balanceChooser.getSelected()) {
+            default : case DO_BALANCE :
+                DoTheBalance = true;
+            case DO_NOT_BALANCE :
+                DoTheBalance = false;
+        }
+        return DoTheBalance;
+    }
+
     private enum AutonomousMode {
-        TEST_AUTO_FORWARD,
-        TEST_AUTO_BACKWARD,
-        TEST_AUTO_DRIVE_TO_POSITION, 
-        TEST_BLUE_UP_AND_OVER,
-        TEST_BLUE_DOWN_AND_UNDER, 
-        TEST_BLUE_ACROSS_RAMP
+        LEFT_PATH,
+        RIGHT_PATH,
+        MIDDLE_PATH,
+        DO_BALANCE,
+        DO_NOT_BALANCE
     }
 }
