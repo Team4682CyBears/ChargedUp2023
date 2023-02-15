@@ -51,4 +51,7 @@ public class InstalledHardware
     public static final boolean horizontalArmMotorInstalled = true;
     public static final boolean verticalArmMotorInstalled = true;
 
+    // Arm Related Hardware
+    public static final boolean grabberPneumaticsInstalled = false;
+    public static final boolean stablizerPneumaticsInstalled = false;
 }
