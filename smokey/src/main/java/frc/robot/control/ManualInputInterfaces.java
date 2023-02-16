@@ -160,7 +160,54 @@ public class ManualInputInterfaces {
             "driverController.x()",
             "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
           )
-        );      
+      );
+
+      if(subsystemCollection.getDriveTrainSubsystem() != null){
+        // left bumper press will decrement power factor  
+        this.driverController.leftBumper().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::decrementPowerReductionFactor),
+            new ButtonPressCommand(
+              "driverController.leftBumper()",
+              "decrement power factor")
+            )
+          );
+        // right bumper press will increment power factor  
+        this.driverController.rightBumper().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::incrementPowerReductionFactor),
+            new ButtonPressCommand(
+              "driverController.rightBumper()",
+              "increment power factor")
+            )
+          );
+      }
+
+      if(subsystemCollection.getStabilizerSubsystem() != null) {
+        // dpad down press will deploy the stablizer      
+        this.driverController.povDown().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getStabilizerSubsystem()::deployPosition),
+            new ButtonPressCommand(
+              "driverController.povDown()",
+              "deploy stablizer")
+            )
+          );
+        // dpad up press will retract the stablizer
+        this.driverController.povUp().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getStabilizerSubsystem()::retractPosition),
+            new ButtonPressCommand(
+              "driverController.povUp()",
+              "retract stablizer")
+            )
+          );
+      }
+      
     }
   }
 
@@ -405,6 +452,33 @@ public class ManualInputInterfaces {
             "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
           )
         );
+
+        if(subsystemCollection.getGrabberSubsystem() != null){
+          // left bumper press will close the grabber  
+          this.coDriverController.leftBumper().onTrue(
+            new ParallelCommandGroup(
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::deployHorizontalPosition),
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::deployVerticalPosition),
+              new ButtonPressCommand(
+              "coDriverController.leftBumper()",
+              "close the grabber")
+            )
+          );
+          // right bumper press will open the grabber  
+          this.coDriverController.rightBumper().onTrue(
+            new ParallelCommandGroup(
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::retractHorizontalPosition),
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::retractVerticalPosition),
+              new ButtonPressCommand(
+              "coDriverController.rightBumper()",
+              "open the grabber")
+            )
+          );
+        }
     }
   }
 }

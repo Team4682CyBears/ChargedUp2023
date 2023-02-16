@@ -19,7 +19,9 @@ public class SubsystemCollection
     // declaring and init subsystems  
     private ArmSubsystem armSubsystem = null;
     private DrivetrainSubsystem driveTrainSubsystem = null;
+    private GrabberSubsystem grabberSubsystem = null;
     private NavxSubsystem navxSubsystem = null;
+    private StabilizerSubsystem stabilizerSubsystem = null;
 
     /**
      * Default constructor
@@ -32,8 +34,14 @@ public class SubsystemCollection
     public DrivetrainSubsystem getDriveTrainSubsystem() { return driveTrainSubsystem; }
     public void setDriveTrainSubsystem(DrivetrainSubsystem value) { driveTrainSubsystem = value; }
 
+    public GrabberSubsystem getGrabberSubsystem() { return grabberSubsystem; }
+    public void setGrabberSubsystem(GrabberSubsystem value) { grabberSubsystem = value; }
+
     public NavxSubsystem getNavxSubsystem() { return navxSubsystem; }
     public void setNavxSubsystem(NavxSubsystem value) { navxSubsystem = value; }
+
+    public StabilizerSubsystem getStabilizerSubsystem() { return stabilizerSubsystem; }
+    public void setStabilizerSubsystem(StabilizerSubsystem value) { stabilizerSubsystem = value; }
 
     public ManualInputInterfaces getManualInputInterfaces() { return manualInput; }
     public void setManualInputInterfaces(ManualInputInterfaces value) { manualInput = value; }
