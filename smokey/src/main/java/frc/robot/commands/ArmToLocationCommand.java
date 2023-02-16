@@ -2,7 +2,7 @@
 // Bishop Blanchet Robotics
 // Home of the Cybears
 // FRC - Charged Up - 2023
-// File: ArmToLocation.java
+// File: ArmToLocationCommand.java
 // Intent: Forms a command to move the dual part arm to defined 'named' spot in space.
 // ************************************************************
 
