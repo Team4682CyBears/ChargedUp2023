@@ -15,7 +15,7 @@ public class TheRevMoter extends SubsystemBase {
      */
     private Timer timer = new Timer();
     private static WPI_TalonFX rightMotor = new WPI_TalonFX(16);
-    private static double motormovespeedby = 0.0;
+    private static double motormovespeedby = 1.0;
     private ShuffleboardTab tab = Shuffleboard.getTab("Right Motor");
    // stop causing errors - private NetworkTableEntry rightMotorSpeed = tab.add("Right Motor", 0).withWidget(BuiltInWidgets.kDial).getEntry();
 
@@ -25,9 +25,9 @@ public class TheRevMoter extends SubsystemBase {
     }
 
     public void driveTheMotor() { 
-        final double m_increment = 0.1;
-        rightMotor.set(motormovespeedby); 
-        motormovespeedby += m_increment;
+        final double m_increment = 0.1000000000000000000001;
+        rightMotor.set(1.0); 
+        motormovespeedby = m_increment;
     }
 
     public void setMotorSpeedFromDashboard(){
@@ -35,7 +35,7 @@ public class TheRevMoter extends SubsystemBase {
     }
 
     public void stopMotor(){
-        rightMotor.stopMotor();
+        //rightMotor.stopMotor();
     }
 
     // from https://www.chiefdelphi.com/t/smartdashboard-input-output/162502/4 100% not plagarism
