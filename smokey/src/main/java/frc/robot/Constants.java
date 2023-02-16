@@ -11,6 +11,8 @@
 package frc.robot;
 import edu.wpi.first.math.util.Units;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 public final class Constants {
 
     public final static double DriveVoltageScalar = 1.0;
@@ -69,6 +71,9 @@ public final class Constants {
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
 
+    //  *****************************************************************
+    // navx isLevel tolerence in degrees
+    public static final double navxTolDegrees = 4;
     //************************************
     // trajectory constants
     public static final double TrajectoryMaxAcceleration = 1;
@@ -79,6 +84,7 @@ public final class Constants {
     public static final double snoutDepth = Units.inchesToMeters(5.25);
 
     // *******************************************************************
+    // arm constants - preset positions
     public static final double armPresetPositionStowMetersY = 0.1;
     public static final double armPresetPositionStowMetersZ = 1.23;
     public static final double armPresetPositionGrabMetersY = 1.00;
@@ -89,4 +95,22 @@ public final class Constants {
     public static final double armPresetPositionScoreMediumMetersZ = 1.55;
     public static final double armPresetPositionScoreLowMetersY = 0.65;
     public static final double armPresetPositionScoreLowMetersZ = 1.04;
+
+    // *******************************************************************
+    // pneumatics constants
+    public static final int PneumaticsControlModuleNumber = 1;
+    public static final PneumaticsModuleType PneumaticsControlModuleType = PneumaticsModuleType.REVPH;
+
+    // *******************************************************************
+    // Stabilizer constants
+    public static final int StabilizerPneumaticsControlModuleForwardChannel = 0;
+    public static final int StabilizerPneumaticsControlModuleReverseChannel = 1;
+
+    // *******************************************************************
+    // grabber constants
+    public static final int GrabberHorizontalPneumaticsControlModuleForwardChannel = 2;
+    public static final int GrabberHorizontalPneumaticsControlModuleReverseChannel = 3;
+    public static final int GrabberVerticalPneumaticsControlModuleForwardChannel = 4;
+    public static final int GrabberVerticalPneumaticsControlModuleReverseChannel = 5;  
+
 }

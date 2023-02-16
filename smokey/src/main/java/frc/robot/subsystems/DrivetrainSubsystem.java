@@ -96,6 +96,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+  private final double maximumSpeedReductionFactor = 1.0;
+  private final double defaultSpeedReductionFactor = 1.0;
+  private double speedReductionFactor = defaultSpeedReductionFactor;
+  private double speedReductionFactorIncrement = 0.1;
+
   public DrivetrainSubsystem(SubsystemCollection collection) {
     currentCollection = collection;
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -164,7 +169,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
-    chassisSpeeds = updatedChassisSpeeds;
+    this.chassisSpeeds = updatedChassisSpeeds;
   }
 
   /**
@@ -275,10 +280,45 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
     // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
-    frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-    frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-    backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-    backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+    frontLeftModule.set(
+      states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[0].angle.getRadians());
+    frontRightModule.set(
+      states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[1].angle.getRadians());
+    backLeftModule.set(
+      states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[2].angle.getRadians());
+    backRightModule.set(
+      states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[3].angle.getRadians());
+  }
+
+  /**
+   * Method to increment the power reduction factor
+   */
+  public void incrementPowerReductionFactor() {
+    speedReductionFactor = MotorUtils.truncateValue(
+      speedReductionFactor + speedReductionFactorIncrement,
+      speedReductionFactorIncrement,
+      maximumSpeedReductionFactor);
+  }
+
+  /**
+   * Method to decrement the power reduction factor
+   */
+  public void decrementPowerReductionFactor() {
+    speedReductionFactor = MotorUtils.truncateValue(
+      speedReductionFactor - speedReductionFactorIncrement,
+      speedReductionFactorIncrement,
+      maximumSpeedReductionFactor);
+  }
+
+  /**
+   * Method to reset the power reduction factor
+   */
+  public void resetPowerReductionFactor() {
+    speedReductionFactor = defaultSpeedReductionFactor;
   }
 
   /**
