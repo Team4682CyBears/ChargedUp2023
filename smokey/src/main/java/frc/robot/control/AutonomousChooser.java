@@ -42,8 +42,8 @@ public class AutonomousChooser {
     private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
     
-    private Transform2d intoNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth * -1, 0), new Rotation2d(0.0));
-    private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(0.0));
+    private Transform2d intoNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth * -1, 0), new Rotation2d(180.0));
+    private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(180.0));
 
     /**
      * Constructor for AutonomousChooser
