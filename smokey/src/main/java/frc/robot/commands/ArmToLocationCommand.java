@@ -1,16 +1,26 @@
-package frc.robot.commands;
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: ArmToLocation.java
+// Intent: Forms a command to move the dual part arm to defined 'named' spot in space.
+// ************************************************************
 
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
+
+package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 
+public class ArmToLocationCommand extends ArmToPointCommand {
 
-public class ArmToLocation extends ArmToPointCommand {
-
-    
-   
-
-    public ArmToLocation(ArmSubsystem arm, ArmLocation location) {
+    /**
+     * A command capable to push the arm to a point in space based on the points 'well known name'
+     * @param arm - the arm subsystem that should be in use
+     * @param location - the enum 'named' location to drive the arm to in space
+     */
+    public ArmToLocationCommand(ArmSubsystem arm, ArmLocation location) {
         super(arm, 0.0, 0.0);
         
         switch(location){
@@ -43,18 +53,18 @@ public class ArmToLocation extends ArmToPointCommand {
                 super.setYValue(Constants.armPresetPositionStowMetersY);
                 super.setZValue(Constants.armPresetPositionStowMetersZ);
                 break;
-
-
-        }
-        
+        }        
     }
 
-    enum ArmLocation{
+
+    /**
+     * The preset spots the arm should normally be driven to
+     */
+    public enum ArmLocation{
         ARM_STOW,
         ARM_GRAB,
         ARM_LOW_SCORE,
         ARM_MED_SCORE,
         ARM_HIGH_SCORE,
-    }
-    
+    }    
 }
