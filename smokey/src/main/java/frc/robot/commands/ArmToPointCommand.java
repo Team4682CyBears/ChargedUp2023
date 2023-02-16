@@ -18,16 +18,9 @@ import frc.robot.subsystems.ArmSubsystem;
  */
 public class ArmToPointCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
-    protected final double yValue;
-    protected final double zValue;
+    private double yValue;
+    private double zValue;
     private boolean done = false;
-    public Object yvalue;
-
-    public void setYValue(double armpresetpositionstowmetersY) {
-    }
-
-    public void setZValue(double armpresetpositionstowmetersZ) {
-    }
 
     /**
      * Constructor to drive the arm to a specific point in space
@@ -42,6 +35,22 @@ public class ArmToPointCommand extends CommandBase {
         this.yValue = yPointMeters;
         this.zValue = zPointMeters;
         addRequirements(this.armSubsystem);
+    }
+
+    /**
+     * Protected method to allow sub classes to update the y position in meters
+     * @param armPositionInMetersY - y position in meters
+     */
+    protected void setYValue(double armPositionInMetersY) {
+        yValue = armPositionInMetersY;
+    }    
+
+    /**
+     * Protected method to allow sub classes to update the z position in meters
+     * @param armPositionInMetersZ - z position in meters
+     */
+    protected void setZValue(double armPositionInMetersZ) {
+        zValue = armPositionInMetersZ;
     }
 
     @Override
