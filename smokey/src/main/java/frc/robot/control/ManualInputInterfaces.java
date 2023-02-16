@@ -465,7 +465,7 @@ public class ManualInputInterfaces {
                 subsystemCollection.getPickerSubsystem(), false),
               new ButtonPressCommand(
               "coDriverController.leftBumper()",
-              "close the grabber")
+              "close the picker")
             )
           );
           // right bumper press will open the picker  
@@ -475,7 +475,7 @@ public class ManualInputInterfaces {
                 subsystemCollection.getPickerSubsystem(), true),
               new ButtonPressCommand(
               "coDriverController.rightBumper()",
-              "open the grabber")
+              "open the picker")
             )
           );
         }
