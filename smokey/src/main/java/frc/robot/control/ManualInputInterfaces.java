@@ -22,9 +22,12 @@ import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.common.TestTrajectories;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToPointCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
 
 public class ManualInputInterfaces {
@@ -111,17 +114,20 @@ public class ManualInputInterfaces {
   private void bindCommandsToDriverXboxButtons(){
     if(InstalledHardware.driverXboxControllerInstalled){
       
-      if(subsystemCollection.getDriveTrainSubsystem() != null){
+      DrivetrainSubsystem localDrive = subsystemCollection.getDriveTrainSubsystem();
+      NavxSubsystem localNavex = subsystemCollection.getNavxSubsystem();
+
+      if(localDrive != null){
         if(InstalledHardware.applyBasicDriveToPointButtonsToDriverXboxController){
-          this.bindBasicDriveToPointButtonsToDriverXboxController();          
+          this.bindBasicDriveToPointButtonsToDriverXboxController();
         }
         if(InstalledHardware.applyDriveTrajectoryButtonsToDriverXboxController){
           this.bindDriveTrajectoryButtonsToDriverXboxController();
         }
       }
 
-      if(subsystemCollection.getNavxSubsystem() != null){
-        // Back button zeros the gyroscope
+      if(localNavex != null){
+        // Back button zeros the gyroscope (as in zero yaw)
         this.driverController.back().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
@@ -133,6 +139,18 @@ public class ManualInputInterfaces {
           );
       }
 
+      if(localDrive != null && localNavex != null){
+        // bind the b button to auto balance
+          this.driverController.b().onTrue(
+            new ParallelCommandGroup(
+              new AutoBalanceStepCommand(localDrive, localNavex).repeatedly().until(subsystemCollection.getNavxSubsystem()::isLevel),
+              new ButtonPressCommand(
+                "driverController.b()",
+                "auto balance")
+              )
+            );
+      }
+
       // x button press will stop all      
       this.driverController.x().onTrue(
         new ParallelCommandGroup(
@@ -142,7 +160,54 @@ public class ManualInputInterfaces {
             "driverController.x()",
             "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
           )
-        );      
+      );
+
+      if(subsystemCollection.getDriveTrainSubsystem() != null){
+        // left bumper press will decrement power factor  
+        this.driverController.leftBumper().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::decrementPowerReductionFactor),
+            new ButtonPressCommand(
+              "driverController.leftBumper()",
+              "decrement power factor")
+            )
+          );
+        // right bumper press will increment power factor  
+        this.driverController.rightBumper().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::incrementPowerReductionFactor),
+            new ButtonPressCommand(
+              "driverController.rightBumper()",
+              "increment power factor")
+            )
+          );
+      }
+
+      if(subsystemCollection.getStabilizerSubsystem() != null) {
+        // dpad down press will deploy the stablizer      
+        this.driverController.povDown().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getStabilizerSubsystem()::deployPosition),
+            new ButtonPressCommand(
+              "driverController.povDown()",
+              "deploy stablizer")
+            )
+          );
+        // dpad up press will retract the stablizer
+        this.driverController.povUp().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getStabilizerSubsystem()::retractPosition),
+            new ButtonPressCommand(
+              "driverController.povUp()",
+              "retract stablizer")
+            )
+          );
+      }
+      
     }
   }
 
@@ -387,6 +452,33 @@ public class ManualInputInterfaces {
             "!!!!!!!!!!!!!!!!!!!! ALL STOP !!!!!!!!!!!!!!!!!!!!!")
           )
         );
+
+        if(subsystemCollection.getGrabberSubsystem() != null){
+          // left bumper press will close the grabber  
+          this.coDriverController.leftBumper().onTrue(
+            new ParallelCommandGroup(
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::deployHorizontalPosition),
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::deployVerticalPosition),
+              new ButtonPressCommand(
+              "coDriverController.leftBumper()",
+              "close the grabber")
+            )
+          );
+          // right bumper press will open the grabber  
+          this.coDriverController.rightBumper().onTrue(
+            new ParallelCommandGroup(
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::retractHorizontalPosition),
+              new InstantCommand(
+                subsystemCollection.getGrabberSubsystem()::retractVerticalPosition),
+              new ButtonPressCommand(
+              "coDriverController.rightBumper()",
+              "open the grabber")
+            )
+          );
+        }
     }
   }
 }

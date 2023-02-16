@@ -10,17 +10,32 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.commands.AutoBalanceStepCommand;
+import frc.robot.common.EulerAngle;
+import frc.robot.common.VectorUtils;
+import java.util.ArrayList;
+import java.lang.Math;
+import java.lang.StrictMath;
+
+import java.lang.Math;
 
 public class NavxSubsystem extends SubsystemBase {
 
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  public final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+
+  // store yaw/pitch history
+  private static int LevelListMaxSize = 20;
+  private ArrayList<Float> RecentRolls = new ArrayList<Float>();
+  private ArrayList<Float> RecentPitches = new ArrayList<Float>();
 
   /** Creates a new NavX. */
   public NavxSubsystem() {}
@@ -30,7 +45,84 @@ public class NavxSubsystem extends SubsystemBase {
    * 'forwards' direction.
    */
   public void zeroGyroscope() {
-        swerveNavx.zeroYaw();
+    if(swerveNavx.isCalibrating()){
+      // From the NavX Docs: This method has no effect if the sensor is currently calibrating
+      System.out.println("WARNING: Gyro is calibrating. Zeroing gyro has no effect while it is calibrating.");
+    }
+    swerveNavx.zeroYaw();
+  }
+
+  private void storeRoll(){
+    this.RecentRolls.add(this.swerveNavx.getRoll());
+    while(this.RecentRolls.size() > LevelListMaxSize)
+    {
+      RecentRolls.remove(0);
+    }
+  }
+  private void storePitch(){
+    RecentPitches.add(swerveNavx.getPitch());
+    while(RecentPitches.size() > LevelListMaxSize)
+    {
+      RecentPitches.remove(0);
+    }
+  }
+
+  /**
+   * Determines if the navx is level.  
+   * @return true if level, false otherwise
+   */
+  public boolean isLevel() {
+   return areAllLevel(RecentPitches) && areAllLevel(RecentRolls);
+  }
+
+  /**
+   * A method to get the quaternion representation of the navx pose. 
+   * @return quaternion
+   */
+  public Quaternion getQuaterion() {
+    Quaternion q = new Quaternion(swerveNavx.getQuaternionW(), swerveNavx.getQuaternionX(), swerveNavx.getQuaternionY(),swerveNavx.getQuaternionZ());
+    return (q);
+  }
+
+  /**
+   * returns navx euler angle (pitch, roll, yaw) in degrees
+   * @return EulerAngle
+   */
+  public EulerAngle getEulerAngle(){
+    return new EulerAngle(
+      swerveNavx.getPitch(), 
+      swerveNavx.getRoll(), 
+      swerveNavx.getYaw());
+  }
+
+  private boolean areAllLevel(ArrayList<Float> recentAngles){
+    boolean levelChecker = true;
+    for(int i = 0; i < LevelListMaxSize; i++){
+      if (Math.abs(recentAngles.get(i))>=Constants.navxTolDegrees){
+        levelChecker = false;
+      }
+    }
+    System.out.println("Is Level? " + levelChecker);
+    return levelChecker;
+  }
+
+  public ArrayList<Float> getRecentPitches(){
+    return RecentPitches;
+  }
+
+  public ArrayList<Float> getRecentRolls(){
+    return RecentRolls;
+  }
+
+  /**
+   * a method to print relevant state of the navx
+   */
+  public void printState(){
+    System.out.println("**** NavX State ****");
+    System.out.println("Quaternion ------>" + this.getQuaterion());
+    System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
+    System.out.println("Is the robot level? -------->" + this.isLevel());
+    System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
   }
 
   /**
@@ -70,6 +162,8 @@ public class NavxSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    storePitch();
+    storeRoll();
   }
 
   @Override

@@ -20,7 +20,9 @@ import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
+import frc.robot.subsystems.StabilizerSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,6 +47,8 @@ public class RobotContainer {
     this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
+    this.initializeGrabberSubsystem();
+    this.initializeStablizerSubsystem();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();
@@ -157,6 +161,36 @@ public class RobotContainer {
       System.out.println("FAIL: initializeArm");
     }
   }
+
+  /**
+   * A method to init the grabber
+   */
+  private void initializeGrabberSubsystem() {
+    if(InstalledHardware.grabberPneumaticsInstalled)
+    {
+      subsystems.setGrabberSubsystem(new GrabberSubsystem());
+      System.out.println("SUCCESS: initializeGrabber");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeGrabber");
+    }
+  }
+
+  /**
+   * A method to init the stablizer
+   */
+  private void initializeStablizerSubsystem() {
+    if(InstalledHardware.stablizerPneumaticsInstalled)
+    {
+      subsystems.setStabilizerSubsystem(new StabilizerSubsystem());
+      System.out.println("SUCCESS: initializeStablizer");
+    }
+    else
+    {
+      System.out.println("FAIL: initializeStablizer");
+    }
+  }  
 
   /**
    * A method to calculate the initial position of the robot
