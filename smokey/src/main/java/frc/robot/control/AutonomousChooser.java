@@ -10,27 +10,20 @@
 
 package frc.robot.control;
 
-import javax.print.attribute.standard.RequestingUserName;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
-//import edu.wpi.first.math.geometry.Pose2d;
-//import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
-import frc.robot.commands.MoveArmToScoring;
-import frc.robot.commands.MoveArmToStowed;
-import frc.robot.control.Trajectories;
-import edu.wpi.first.math.util.Units;
+import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -89,11 +82,17 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
+
+        // TODO - seems like these two can be parallel
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)));
-        command.addCommands(new MoveArmToScoring(scoreHeight.getSelected()));
-        command.addCommands(new ManipulatePickerCommand(false));
+        command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+
+        command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
+
+        // TODO - seems like these two can be parallel
         command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition));
-        command.addCommands(new MoveArmToStowed());
+        command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW));
+
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
     }

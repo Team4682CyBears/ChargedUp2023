@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
@@ -456,26 +457,22 @@ public class ManualInputInterfaces {
           )
         );
 
-        if(subsystemCollection.getGrabberSubsystem() != null){
-          // left bumper press will close the grabber  
+        if(subsystemCollection.getPickerSubsystem() != null){
+          // left bumper press will close the picker  
           this.coDriverController.leftBumper().onTrue(
             new ParallelCommandGroup(
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::deployHorizontalPosition),
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::deployVerticalPosition),
+              new ManipulatePickerCommand(
+                subsystemCollection.getPickerSubsystem(), false),
               new ButtonPressCommand(
               "coDriverController.leftBumper()",
               "close the grabber")
             )
           );
-          // right bumper press will open the grabber  
+          // right bumper press will open the picker  
           this.coDriverController.rightBumper().onTrue(
             new ParallelCommandGroup(
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::retractHorizontalPosition),
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::retractVerticalPosition),
+              new ManipulatePickerCommand(
+                subsystemCollection.getPickerSubsystem(), true),
               new ButtonPressCommand(
               "coDriverController.rightBumper()",
               "open the grabber")

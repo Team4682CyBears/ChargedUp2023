@@ -107,10 +107,10 @@ public final class Constants {
     public static final int StabilizerPneumaticsControlModuleReverseChannel = 1;
 
     // *******************************************************************
-    // grabber constants
-    public static final int GrabberHorizontalPneumaticsControlModuleForwardChannel = 2;
-    public static final int GrabberHorizontalPneumaticsControlModuleReverseChannel = 3;
-    public static final int GrabberVerticalPneumaticsControlModuleForwardChannel = 4;
-    public static final int GrabberVerticalPneumaticsControlModuleReverseChannel = 5;  
+    // picker constants
+    public static final int PickerHorizontalPneumaticsControlModuleForwardChannel = 2;
+    public static final int PickerHorizontalPneumaticsControlModuleReverseChannel = 3;
+    public static final int PickerVerticalPneumaticsControlModuleForwardChannel = 4;
+    public static final int PickerVerticalPneumaticsControlModuleReverseChannel = 5;  
 
 }

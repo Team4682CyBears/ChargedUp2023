@@ -20,7 +20,7 @@ import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 
@@ -47,7 +47,7 @@ public class RobotContainer {
     this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
-    this.initializeGrabberSubsystem();
+    this.initializePickerSubsystem();
     this.initializeStablizerSubsystem();
 
     // calculate and update the current position of the robot
@@ -163,17 +163,17 @@ public class RobotContainer {
   }
 
   /**
-   * A method to init the grabber
+   * A method to init the picker
    */
-  private void initializeGrabberSubsystem() {
-    if(InstalledHardware.grabberPneumaticsInstalled)
+  private void initializePickerSubsystem() {
+    if(InstalledHardware.pickerPneumaticsInstalled)
     {
-      subsystems.setGrabberSubsystem(new GrabberSubsystem());
-      System.out.println("SUCCESS: initializeGrabber");
+      subsystems.setPickerSubsystem(new PickerSubsystem());
+      System.out.println("SUCCESS: initializePicker");
     }
     else
     {
-      System.out.println("FAIL: initializeGrabber");
+      System.out.println("FAIL: initializePicker");
     }
   }
 

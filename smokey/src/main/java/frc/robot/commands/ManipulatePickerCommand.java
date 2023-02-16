@@ -11,14 +11,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.PickerSubsystem;
 
 public class ManipulatePickerCommand extends CommandBase {
 
+    private PickerSubsystem thePicker = null;
+    private boolean isPickerOpen = true;
+
     /**
-     * Constructor to cause all subsystems to halt movements
-     * @param collection - the collection of subsystems
+     * Constructor to open or close the picker
+     * @param grabber - the picker subsystems
+     * @param isOpen - if true the grabber will be moved to the open position, else it is moved to the closed position
      */
-    public ManipulatePickerCommand(Boolean isOpen) {
+    public ManipulatePickerCommand(PickerSubsystem picker, boolean isOpen) {
+        thePicker = picker;
+        isPickerOpen = isOpen;
+        addRequirements(thePicker);
     }
 
     @Override
@@ -27,6 +35,14 @@ public class ManipulatePickerCommand extends CommandBase {
 
     @Override
     public void execute() {
+        if(isPickerOpen) {
+            thePicker.retractHorizontalPosition();
+            thePicker.retractVerticalPosition();
+        }
+        else {
+            thePicker.deployHorizontalPosition();
+            thePicker.deployHorizontalPosition();
+        }
     }
 
     @Override
