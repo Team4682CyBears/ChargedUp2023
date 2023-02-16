@@ -43,7 +43,7 @@ public class AutonomousChooser {
     private Trajectories trajectories;
     
     private Transform2d intoNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth * -1, 0), new Rotation2d(180.0));
-    private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(180.0));
+    //private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(180.0));
 
     /**
      * Constructor for AutonomousChooser
@@ -89,10 +89,10 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(intoNodeTransform)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)));
         command.addCommands(new MoveArmToScoring(scoreHeight.getSelected()));
         command.addCommands(new ManipulatePickerCommand(false));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(outOfNodeTransform)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition));
         command.addCommands(new MoveArmToStowed());
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
