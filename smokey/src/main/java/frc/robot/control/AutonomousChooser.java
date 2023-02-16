@@ -52,6 +52,7 @@ public class AutonomousChooser {
         AutonomousPathChooser.addOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
         AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
         AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
+        AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
 
         balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
         balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
@@ -74,12 +75,11 @@ public class AutonomousChooser {
     }
 
     /**
-     * Builds a command list for use in auto routines
-     * @param NodePosition starting position of robot corrosponding to the node. Nodes are numbered from left to right 1- 9 from the drivers perspective
-     * @param Trajectory trajectory to follow out of the community
-     * @return command
+     * Builds a command list for use in auto routines.  This is the first part of the routine that scores the game piece. 
+     * @param NodePosition
+     * @return
      */
-    public Command getAutoRoutine (Pose2d NodePosition, Trajectory Trajectory){
+    public Command getScoreRoutine(Pose2d NodePosition){
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
@@ -93,7 +93,18 @@ public class AutonomousChooser {
         command.addCommands(new ParallelCommandGroup(
             new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
             new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
-
+        return command;
+    }
+    
+    /**
+     * Builds a command list for use in auto routines
+     * @param NodePosition starting position of robot corrosponding to the node. Nodes are numbered from left to right 1- 9 from the drivers perspective
+     * @param Trajectory trajectory to follow out of the community
+     * @return command
+     */
+    public Command getAutoRoutine (Pose2d NodePosition, Trajectory Trajectory){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreRoutine(NodePosition));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
     }
@@ -153,6 +164,8 @@ public class AutonomousChooser {
                 return this.getRightRoutine();
             case MIDDLE_PATH :
                 return this.getMiddleRoutine();
+            case TEST_NODE5_SCORE_ROUTINE:
+                return this.getScoreRoutine(trajectories.Node5Position);
         }
         return new InstantCommand();
     }
@@ -161,6 +174,7 @@ public class AutonomousChooser {
         LEFT_PATH,
         RIGHT_PATH,
         MIDDLE_PATH,
+        TEST_NODE5_SCORE_ROUTINE
     }
 
     private enum AutonomousBalance {
