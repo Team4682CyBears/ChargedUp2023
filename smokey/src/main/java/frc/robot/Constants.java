@@ -9,6 +9,7 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
+import edu.wpi.first.math.util.Units;
 
 public final class Constants {
 
@@ -75,7 +76,7 @@ public final class Constants {
 
     //*************************************** 
     //For auto constants
-    public static final double snoutDepth = 5.25;
+    public static final double snoutDepth = Units.inchesToMeters(5.25);
 
     // *******************************************************************
     public static final double armPresetPositionStowMetersY = 0.1;

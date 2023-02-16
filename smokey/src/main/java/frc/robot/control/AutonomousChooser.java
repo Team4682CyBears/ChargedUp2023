@@ -42,8 +42,9 @@ public class AutonomousChooser {
     private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
     
-    private Transform2d IntoNodeTransform = new Transform2d(new Translation2d(Units.inchesToMeters(Constants.snoutDepth * -1), 0), new Rotation2d(0.0));
-    private Transform2d OutOfNodeTransform = new Transform2d(new Translation2d(Units.inchesToMeters(Constants.snoutDepth), 0), new Rotation2d(0.0));
+    private Transform2d intoNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth * -1, 0), new Rotation2d(0.0));
+    private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(0.0));
+
     /**
      * Constructor for AutonomousChooser
      * @param subsystems - the SubsystemCollection
@@ -88,13 +89,12 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(IntoNodeTransform)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(intoNodeTransform)));
         command.addCommands(new MoveArmToScoring(scoreHeight.getSelected()));
         command.addCommands(new ManipulatePickerCommand(false));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(OutOfNodeTransform)));
+        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), subsystems.getDriveTrainSubsystem().getRobotPosition().plus(outOfNodeTransform)));
         command.addCommands(new MoveArmToStowed());
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.End)));
         return command;
     }
 
@@ -105,7 +105,6 @@ public class AutonomousChooser {
      */
     public Command getBalanceRoutine (Enum DoBalance){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
             //Autobalance Command HERE <----------------------------- LOOK DO THIS NOW NOW NOW NOW NOW NOW
@@ -115,7 +114,6 @@ public class AutonomousChooser {
 
     public Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
         command.addCommands(getAutoRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
@@ -123,7 +121,6 @@ public class AutonomousChooser {
 
     public Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
         command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.RightTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
@@ -131,7 +128,6 @@ public class AutonomousChooser {
 
     public Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
         command.addCommands(getAutoRoutine(trajectories.Node9Position, trajectories.MiddleTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
