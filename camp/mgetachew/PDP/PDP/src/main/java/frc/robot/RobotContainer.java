@@ -7,8 +7,19 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.control.PortSpy;
+import frc.robot.subsystems.PowerDistributionPanelWatcher;
 import frc.robot.subsystems.SmartDash;
+import frc.robot.subsystems.TheRevMoter;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import frc.robot.Constants;
+
+import javax.swing.plaf.synth.Region;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,12 +32,16 @@ public class RobotContainer {
   private final SmartDash m_exampleSubsystem = new SmartDash();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  public TheRevMoter rightMotor = new TheRevMoter();
+  private PowerDistributionPanelWatcher pdpWatcher = new PowerDistributionPanelWatcher(ModuleType.kCTRE);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    pdpWatcher.add(new PortSpy(3, Constants.motorcurrentlimit, new InstantCommand(rightMotor::stopMotor, rightMotor)));
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by

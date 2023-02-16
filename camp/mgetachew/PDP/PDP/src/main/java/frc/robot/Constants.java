@@ -17,5 +17,5 @@ package frc.robot;
  * @param <PowerDistribution>
  */
 public final class Constants{
-   private static int motorcurrentlimit = 5;
+   public static double motorcurrentlimit = 5.0;
 }

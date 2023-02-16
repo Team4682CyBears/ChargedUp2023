@@ -5,24 +5,29 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 
 
-public class TheRevMoter {
+public class TheRevMoter extends SubsystemBase {
     /**
      *
      */
+    private Timer timer = new Timer();
     private static WPI_TalonFX rightMotor = new WPI_TalonFX(16);
     private static double motormovespeedby = 0.0;
     private ShuffleboardTab tab = Shuffleboard.getTab("Right Motor");
    // stop causing errors - private NetworkTableEntry rightMotorSpeed = tab.add("Right Motor", 0).withWidget(BuiltInWidgets.kDial).getEntry();
 
-    private TheRevMoter() {
+    public TheRevMoter() {
         // put the default value
 
     }
 
-    public static void driveTheMotor() { 
+    public void driveTheMotor() { 
+        final double m_increment = 0.1;
         rightMotor.set(motormovespeedby); 
+        motormovespeedby += m_increment;
     }
 
     public void setMotorSpeedFromDashboard(){
@@ -34,7 +39,7 @@ public class TheRevMoter {
     }
 
     // from https://www.chiefdelphi.com/t/smartdashboard-input-output/162502/4 100% not plagarism
-    private static double createSmartDashboardNumber(String key, double defValue) {
+    private double createSmartDashboardNumber(String key, double defValue) {
 
         // See if already on dashboard, and if so, fetch current value
         double value = SmartDashboard.getNumber(key, defValue);

@@ -37,5 +37,3 @@ public class PowerDistributionPanelWatcher extends SubsystemBase {
         return current > currentLimit;
     }
 }
-
-
