@@ -18,9 +18,16 @@ import frc.robot.subsystems.ArmSubsystem;
  */
 public class ArmToPointCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
-    private final double yValue;
-    private final double zValue;
+    protected final double yValue;
+    protected final double zValue;
     private boolean done = false;
+    public Object yvalue;
+
+    public void setYValue(double armpresetpositionstowmetersY) {
+    }
+
+    public void setZValue(double armpresetpositionstowmetersZ) {
+    }
 
     /**
      * Constructor to drive the arm to a specific point in space
@@ -66,4 +73,8 @@ public class ArmToPointCommand extends CommandBase {
     public boolean isFinished(){
         return done;
     }
+
+    
+
+    
 }
