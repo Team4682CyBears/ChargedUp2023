@@ -68,6 +68,9 @@ public final class Constants {
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
 
+    //  *****************************************************************
+    // navx isLevel tolerence in degrees
+    public static final double navxTolDegrees = 4;
     //************************************
     // trajectory constants
     public static final double TrajectoryMaxAcceleration = 1;
