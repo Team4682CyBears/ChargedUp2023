@@ -20,8 +20,8 @@ public class ManipulatePickerCommand extends CommandBase {
 
     /**
      * Constructor to open or close the picker
-     * @param grabber - the picker subsystems
-     * @param isOpen - if true the grabber will be moved to the open position, else it is moved to the closed position
+     * @param picker - the picker subsystems
+     * @param isOpen - if true the picker will be moved to the open position, else it is moved to the closed position
      */
     public ManipulatePickerCommand(PickerSubsystem picker, boolean isOpen) {
         thePicker = picker;
