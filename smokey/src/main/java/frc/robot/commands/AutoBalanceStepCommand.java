@@ -12,6 +12,8 @@ import java.lang.Math;
 
 /**
  * Implements a command to perform a single step of an auto balancing routine. 
+ * Intended to be called in a loop like this:
+ * AutoBalanceStepCommand(drive, navx).repeatedly().until(navx::isLevel)
  */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();

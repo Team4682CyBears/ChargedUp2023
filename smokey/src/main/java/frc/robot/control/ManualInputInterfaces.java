@@ -284,7 +284,6 @@ public class ManualInputInterfaces {
   private void bindDriveTrajectoryButtonsToDriverXboxController() {
     // trajectories
     TestTrajectories testTrajectories = new TestTrajectories(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig());
-    Trajectories trajectories = new Trajectories(subsystemCollection.getDriveTrainSubsystem()); 
 
     // traverse forward arc trajectory
     this.driverController.a().onTrue(
@@ -348,9 +347,6 @@ public class ManualInputInterfaces {
           "testTrajectories.traverseTurn270")).withTimeout(10.0)
     );
 
-    // TODO - asher which one?
-    // traverse trajectories.BluStart
-    // traverse testTrajectories.turn90
     this.driverController.rightBumper().onTrue(
       new ParallelCommandGroup(
         new SequentialCommandGroup(
@@ -360,7 +356,7 @@ public class ManualInputInterfaces {
             testTrajectories.turn90)),
         new ButtonPressCommand(
           "driverController.rightBumper()",
-          "trajectories.BluStart")).withTimeout(10.0)
+          "testTrajectories.turn90")).withTimeout(10.0)
     );
   }
 

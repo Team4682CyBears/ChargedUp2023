@@ -15,9 +15,9 @@ public class Trajectories {
     public Pose2d Node5Position;
     public Pose2d Node9Position;
     public Pose2d TrajectoryEndPosition;
-    public static Trajectory LeftTrajectory;
-    public static Trajectory RightTrajectory;
-    public static Trajectory MiddleTrajectory;
+    public Trajectory LeftTrajectory;
+    public Trajectory RightTrajectory;
+    public Trajectory MiddleTrajectory;
     public Trajectory OntoRampTrajectory;
     
     public Trajectories(DrivetrainSubsystem drivetrain){

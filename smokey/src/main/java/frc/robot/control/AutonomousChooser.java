@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
@@ -83,15 +84,15 @@ public class AutonomousChooser {
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
 
-        // TODO - seems like these two can be parallel
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)));
-        command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+        command.addCommands(new ParallelCommandGroup(
+            new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)),
+            new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
         command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
 
-        // TODO - seems like these two can be parallel
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition));
-        command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW));
+        command.addCommands(new ParallelCommandGroup(
+            new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
+            new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
 
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
@@ -106,7 +107,8 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
-            //Autobalance Command HERE <----------------------------- LOOK DO THIS NOW NOW NOW NOW NOW NOW
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem(), subsystems.getNavxSubsystem())
+            .repeatedly().until(subsystems.getNavxSubsystem()::isLevel));
         }
         return command;
     }
