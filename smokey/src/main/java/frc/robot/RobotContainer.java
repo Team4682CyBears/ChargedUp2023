@@ -54,7 +54,9 @@ public class RobotContainer {
     this.calculateAndUpdateRobotPosition();
 
     // Configure the button bindings
+    System.out.println(">>>> Initializing button bindings.");
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
+    System.out.println(">>>> Finished initializing button bindings.");
 
     this.autonomousChooser = new AutonomousChooser(subsystems);
 
@@ -206,6 +208,7 @@ public class RobotContainer {
     if(subsystems.getDriveTrainSubsystem() != null)
     {
       subsystems.getDriveTrainSubsystem().setRobotPosition(initialRobotPosition);
+      System.out.println(">>>> Initialized Robot Position. ");
     }
   }
 
