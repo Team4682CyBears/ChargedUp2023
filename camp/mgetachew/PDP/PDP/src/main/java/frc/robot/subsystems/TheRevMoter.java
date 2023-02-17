@@ -41,6 +41,7 @@ public class TheRevMoter extends SubsystemBase {
     }
 
     public void stopMotor(){
+        //hi
         //rightMotor.stopMotor();
     }
 
