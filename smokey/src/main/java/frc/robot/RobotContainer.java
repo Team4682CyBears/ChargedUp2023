@@ -40,15 +40,15 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    // init the input system 
-    this.initializeManualInputInterfaces();
-
     // init the various subsystems
     this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
     this.initializePickerSubsystem();
     this.initializeStablizerSubsystem();
+
+    // init the input system 
+    this.initializeManualInputInterfaces();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();

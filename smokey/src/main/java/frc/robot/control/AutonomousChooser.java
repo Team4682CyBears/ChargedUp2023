@@ -52,7 +52,7 @@ public class AutonomousChooser {
         this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
         System.out.println(">>>> finished creating auto trajectories");
         
-        AutonomousPathChooser.addOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
+        AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
         AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
         AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
         AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
@@ -60,7 +60,7 @@ public class AutonomousChooser {
         balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
         balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
 
-        scoreHeight.addOption("Score High", ScoringPosition.SCORE_HIGH);
+        scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
         scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
         scoreHeight.addOption("Score Low", ScoringPosition.SCORE_LOW);
 
@@ -99,19 +99,21 @@ public class AutonomousChooser {
 
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition),
+            subsystems.getDriveTrainSubsystem()));
 
         command.addCommands(new ParallelCommandGroup(
             //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)),
-            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory),
-            new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory)));
+            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
-        command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
+        //command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
 
         command.addCommands(new ParallelCommandGroup(
             //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
-            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory),
-            new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory)));
+            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
         return command;
     }
     
@@ -167,7 +169,9 @@ public class AutonomousChooser {
     private void resetRobotPose(SequentialCommandGroup command) {
         // TODO this is where we would set the starting robot position. 
         // just zeroing the gyro for now
-        command.addCommands(new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope()));
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
+            subsystems.getNavxSubsystem()));
     }
 
     /**

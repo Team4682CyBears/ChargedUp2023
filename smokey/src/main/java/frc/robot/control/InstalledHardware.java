@@ -44,8 +44,8 @@ public class InstalledHardware
     public static final boolean rightRearDriveInstalled = true;
 
     // Controller button install control
-    public static final boolean applyBasicDriveToPointButtonsToDriverXboxController = false;
-    public static final boolean applyDriveTrajectoryButtonsToDriverXboxController = true;
+    public static final boolean applyBasicDriveToPointButtonsToDriverXboxController = true;
+    public static final boolean applyDriveTrajectoryButtonsToDriverXboxController = false;
 
     // Arm Related Hardware
     public static final boolean horizontalArmMotorInstalled = true;

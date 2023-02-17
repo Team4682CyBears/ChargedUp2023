@@ -23,7 +23,6 @@ public class Trajectories {
     public Trajectories(DrivetrainSubsystem drivetrain){
 
         TrajectoryConfig config = drivetrain.getTrajectoryConfig();
-        System.out.println("created trajectory config");
 
         this.Node1Position = new Pose2d(1.678, 5.084, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
@@ -43,13 +42,11 @@ public class Trajectories {
         RightWaypoints.add(new Translation2d(3.7, .69));
         RightWaypoints.add(new Translation2d(5.3, .69));
         this.RightTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node9Position, RightWaypoints, TrajectoryEndPosition, config);
-        SwerveTrajectoryGenerator.printTrajectory(RightTrajectory);
         
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(Node5Position);
         MiddleWaypoints.add(TrajectoryEndPosition);
         this.MiddleTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
-        SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectory);
         
         ArrayList<Pose2d> OntoRampWaypoints = new ArrayList<Pose2d>();
         OntoRampWaypoints.add(TrajectoryEndPosition);
