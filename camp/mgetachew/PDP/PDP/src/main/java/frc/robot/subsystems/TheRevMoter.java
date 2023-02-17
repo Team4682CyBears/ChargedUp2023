@@ -28,13 +28,10 @@ public class TheRevMoter extends SubsystemBase {
 
     }
 
-    public void robotInit() { 
-        final double m_increment = 0.5;
-        double motormovespeedby = 0.0;
-        
-        for (int i = 0; i < 10; i++) {
-          motormovespeedby = motormovespeedby + m_increment;
-          rightMotor.set(ControlMode.PercentOutput, motormovespeedby);
+    public void driveTheMotor() { 
+        final double m_increment = 0.1000000000000000000001;
+        rightMotor.set(1.0); 
+        motormovespeedby = m_increment;
     }
 }
     
