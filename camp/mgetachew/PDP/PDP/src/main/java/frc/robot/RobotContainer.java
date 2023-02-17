@@ -33,14 +33,14 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   public TheRevMoter rightMotor = new TheRevMoter();
-  private PowerDistributionPanelWatcher pdpWatcher = new PowerDistributionPanelWatcher(ModuleType.kCTRE);
+ // private PowerDistributionPanelWatcher pdpWatcher = new PowerDistributionPanelWatcher(ModuleType.kCTRE);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    configureButtonBindings();
+/*    configureButtonBindings();
     pdpWatcher.add(new PortSpy(3, Constants.motorcurrentlimit, new InstantCommand(rightMotor::stopMotor, rightMotor)));
-  }
+  */}
 
 
   /**

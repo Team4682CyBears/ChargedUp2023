@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.TheRevMoter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,6 +16,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  TheRevMoter theRevMoter;
+
+
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -25,9 +31,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    theRevMoter = new TheRevMoter();
+    theRevMoter.robotInit();
   }
 
   /**

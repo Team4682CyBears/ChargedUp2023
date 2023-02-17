@@ -3,7 +3,7 @@ package frc.robot.control;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PortSpy {
-    private int portToWatch = -1;
+ /*   private int portToWatch = -1;
     private double currentLimit = 0.0;
     CommandBase action = null;
 
@@ -33,5 +33,5 @@ public class PortSpy {
     public CommandBase getAction() {
         return this.action;
     }
-
+*/
 }
