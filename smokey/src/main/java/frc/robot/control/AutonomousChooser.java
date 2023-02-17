@@ -10,6 +10,8 @@
 
 package frc.robot.control;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -25,6 +27,7 @@ import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
+import frc.robot.common.SwerveTrajectoryGenerator;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -80,18 +83,34 @@ public class AutonomousChooser {
      * @return
      */
     public Command getScoreRoutine(Pose2d NodePosition){
+        ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
+        IntoNodeWaypoints.add(NodePosition);
+        IntoNodeWaypoints.add(NodePosition.plus(intoNodeTransform));
+        Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
+            IntoNodeWaypoints, 
+            subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+
+        ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
+        OutOfNodeWaypoints.add(NodePosition.plus(intoNodeTransform));
+        OutOfNodeWaypoints.add(NodePosition);
+        Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
+            OutOfNodeWaypoints, 
+            subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+
         SequentialCommandGroup command = new SequentialCommandGroup();
         resetRobotPose(command);
         command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition)));
 
         command.addCommands(new ParallelCommandGroup(
-            new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)),
+            //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)),
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory),
             new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
         command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
 
         command.addCommands(new ParallelCommandGroup(
-            new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
+            //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory),
             new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
         return command;
     }
@@ -144,7 +163,7 @@ public class AutonomousChooser {
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
     }
-    
+
     private void resetRobotPose(SequentialCommandGroup command) {
         // TODO this is where we would set the starting robot position. 
         // just zeroing the gyro for now
