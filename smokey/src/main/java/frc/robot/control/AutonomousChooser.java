@@ -28,6 +28,7 @@ import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.common.SwerveTrajectoryGenerator;
+import frc.robot.common.VectorUtils;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
@@ -39,8 +40,8 @@ public class AutonomousChooser {
     private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
     
-    private Transform2d intoNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth * -1, 0), new Rotation2d(0.0));
-    //private Transform2d outOfNodeTransform = new Transform2d(new Translation2d(Constants.snoutDepth, 0), new Rotation2d(0.0));
+    //Robot to travel in the negative x direction
+    private Translation2d intoNodeTranslation = new Translation2d(-1 * Constants.snoutDepth, 0);
 
     /**
      * Constructor for AutonomousChooser
@@ -85,13 +86,13 @@ public class AutonomousChooser {
     public Command getScoreRoutine(Pose2d NodePosition){
         ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
         IntoNodeWaypoints.add(NodePosition);
-        IntoNodeWaypoints.add(NodePosition.plus(intoNodeTransform));
+        IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             IntoNodeWaypoints, 
             subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
 
         ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
-        OutOfNodeWaypoints.add(NodePosition.plus(intoNodeTransform));
+        OutOfNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         OutOfNodeWaypoints.add(NodePosition);
         Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             OutOfNodeWaypoints, 

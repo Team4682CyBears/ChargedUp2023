@@ -43,10 +43,18 @@ public class Trajectories {
         RightWaypoints.add(new Translation2d(5.3, .69));
         this.RightTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node9Position, RightWaypoints, TrajectoryEndPosition, config);
         
+        // need rotation by 90 degrees before driving over the ramp.  Need to do this with 2 trajectories. 
+        Pose2d Node5RotatedPosition = new Pose2d(Node5Position.getTranslation(), Rotation2d.fromDegrees(90));
+        ArrayList<Pose2d> RotationWaypoints = new ArrayList<>();
+        RotationWaypoints.add(Node5Position);
+        RotationWaypoints.add(Node5RotatedPosition);
+        Trajectory RotationTrajectory = SwerveTrajectoryGenerator.generateTrajectory(RotationWaypoints, config);
+
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
-        MiddleWaypoints.add(Node5Position);
+        MiddleWaypoints.add(Node5RotatedPosition);
         MiddleWaypoints.add(TrajectoryEndPosition);
-        this.MiddleTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        Trajectory TranslationTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        this.MiddleTrajectory = RotationTrajectory.concatenate(TranslationTrajectory);
         
         ArrayList<Pose2d> OntoRampWaypoints = new ArrayList<Pose2d>();
         OntoRampWaypoints.add(TrajectoryEndPosition);
