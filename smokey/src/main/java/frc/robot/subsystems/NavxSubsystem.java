@@ -52,7 +52,7 @@ public class NavxSubsystem extends SubsystemBase {
     swerveNavx.zeroYaw();
   }
 
-  public void setYawOffset​(double adjustment){
+  public void setYawOffset(double adjustment){
     swerveNavx.setAngleAdjustment(adjustment);
   }
 
