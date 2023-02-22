@@ -107,6 +107,8 @@ public class AutonomousChooser {
 
         SequentialCommandGroup command = new SequentialCommandGroup();
         setRobotPose(command, NodePosition);
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Begin Driving Trajectory from: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
         command.addCommands(new ParallelCommandGroup(
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory)));
             //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
@@ -179,6 +181,8 @@ public class AutonomousChooser {
         command.addCommands(
             new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
             subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to : " + pose)));
     }
 
     /**

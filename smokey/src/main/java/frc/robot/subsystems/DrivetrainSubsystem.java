@@ -260,6 +260,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void setRobotPosition(Pose2d updatedPosition)
   {
+    //TOD this didn't work to fix the problem of the robot not getting correct initial position.  
+    // try to debug why not.  
     try{
       theLock.lock();
       // initialize the odometry goo
