@@ -49,25 +49,30 @@ public class AutonomousChooser {
      */
     public AutonomousChooser(SubsystemCollection subsystems) {
         this.subsystems = subsystems;
-        System.out.println(">>>> creating auto trajectories");
-        this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
-        System.out.println(">>>> finished creating auto trajectories");
-        
-        AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
-        AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
-        AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
-        AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
-
-        balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
-        balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
-
-        scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
-        scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
-        scoreHeight.addOption("Score Low", ScoringPosition.SCORE_LOW);
-
-        SmartDashboard.putData(AutonomousPathChooser);
-        SmartDashboard.putData(balanceChooser);
-        SmartDashboard.putData(scoreHeight);
+        if(this.subsystems.getDriveTrainSubsystem() != null){
+            System.out.println(">>>> creating auto trajectories");
+            this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
+            System.out.println(">>>> finished creating auto trajectories");
+            
+            AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
+            AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
+            AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
+            AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
+    
+            balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
+            balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
+    
+            scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
+            scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
+            scoreHeight.addOption("Score Low", ScoringPosition.SCORE_LOW);
+    
+            SmartDashboard.putData(AutonomousPathChooser);
+            SmartDashboard.putData(balanceChooser);
+            SmartDashboard.putData(scoreHeight);
+        }
+        else {
+            System.out.println(">>>> NO auto trajectories because no drive train subsystem");
+        }
     }
     
     /**
