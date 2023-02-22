@@ -23,6 +23,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DriveTrajectoryCommand extends CommandBase{
@@ -38,7 +39,7 @@ public class DriveTrajectoryCommand extends CommandBase{
   private HolonomicDriveController controller;
 
   private Pose2d finalPosition = null;
-  private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
+  private Pose2d overTimeDelta = Constants.TrajectoryPoseTol;
 
   /** 
   * Creates a new driveCommand. 

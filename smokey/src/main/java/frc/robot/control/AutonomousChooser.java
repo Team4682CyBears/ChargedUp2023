@@ -41,7 +41,9 @@ public class AutonomousChooser {
     private Trajectories trajectories;
     
     //Robot to travel in the negative x direction
-    private Translation2d intoNodeTranslation = new Translation2d(-1 * Constants.snoutDepth, 0);
+    //want to make sure snout is deelply engaged in the node, so overdrive by tolerence amount
+    private Translation2d intoNodeTranslation = new Translation2d(
+        -1 * (Constants.snoutDepth + Constants.TrajectoryPoseTol.getX()), 0);
 
     /**
      * Constructor for AutonomousChooser
@@ -104,20 +106,14 @@ public class AutonomousChooser {
             subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
 
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(
-            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(NodePosition),
-            subsystems.getDriveTrainSubsystem()));
-
+        setRobotPose(command, NodePosition);
         command.addCommands(new ParallelCommandGroup(
-            //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition.plus(intoNodeTransform)),
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory)));
             //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
         //command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
 
         command.addCommands(new ParallelCommandGroup(
-            //new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), NodePosition),
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory)));
             //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
         return command;
@@ -173,11 +169,19 @@ public class AutonomousChooser {
     }
 
     private void resetRobotPose(SequentialCommandGroup command) {
-        // TODO this is where we would set the starting robot position. 
-        // just zeroing the gyro for now
         command.addCommands(
             new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
             subsystems.getNavxSubsystem()));
+    }
+
+    private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
+        // set yaw to the starting rotation so that field orientation ends up correct after auto
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getNavxSubsystem().setYawOffset​(pose.getRotation().getDegrees()),
+            subsystems.getNavxSubsystem()));
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
+            subsystems.getDriveTrainSubsystem()));
     }
 
     /**
