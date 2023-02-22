@@ -382,66 +382,68 @@ public class ManualInputInterfaces {
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      // right trigger stow preset for arm
-      this.coDriverController.rightTrigger().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionStowMetersY,
-            Constants.armPresetPositionStowMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.rightTrigger()",
-            "arm stow")
-          )
-        );
-      // left trigger grab preset for arm
-      this.coDriverController.leftTrigger().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.leftTrigger()",
-            "arm grab")
-          )
-        );
-      // y button press will move the arms to high score position
-      this.coDriverController.y().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreHighMetersY,
-            Constants.armPresetPositionScoreHighMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.y()",
-            "arm score high")
-          )
-        );
-        // b button press will move the arms to medium score position
-      this.coDriverController.b().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreMediumMetersY,
-            Constants.armPresetPositionScoreMediumMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.b()",
-            "arm score medium")
-          )
-        );
-      // a button press will drive the arms to low score position
-      this.coDriverController.a().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreLowMetersY,
-            Constants.armPresetPositionScoreLowMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.a()",
-            "arm score low")
-          )
-        );
+      if(subsystemCollection.getPickerSubsystem() != null){
+        // right trigger stow preset for arm
+        this.coDriverController.rightTrigger().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionStowMetersY,
+              Constants.armPresetPositionStowMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.rightTrigger()",
+              "arm stow")
+            )
+          );
+        // left trigger grab preset for arm
+        this.coDriverController.leftTrigger().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionGrabMetersY,
+              Constants.armPresetPositionGrabMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.leftTrigger()",
+              "arm grab")
+            )
+          );
+        // y button press will move the arms to high score position
+        this.coDriverController.y().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreHighMetersY,
+              Constants.armPresetPositionScoreHighMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.y()",
+              "arm score high")
+            )
+          );
+          // b button press will move the arms to medium score position
+        this.coDriverController.b().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreMediumMetersY,
+              Constants.armPresetPositionScoreMediumMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.b()",
+              "arm score medium")
+            )
+          );
+        // a button press will drive the arms to low score position
+        this.coDriverController.a().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreLowMetersY,
+              Constants.armPresetPositionScoreLowMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.a()",
+              "arm score low")
+            )
+          );
+      }
       // x button press will stop all
       this.coDriverController.x().onTrue(
         new ParallelCommandGroup(
