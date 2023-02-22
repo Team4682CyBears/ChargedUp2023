@@ -168,13 +168,10 @@ public class AutonomousChooser {
         return command;
     }
 
-    private void resetRobotPose(SequentialCommandGroup command) {
+    private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
         command.addCommands(
             new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
             subsystems.getNavxSubsystem()));
-    }
-
-    private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
         // set yaw to the starting rotation so that field orientation ends up correct after auto
         command.addCommands(
             new InstantCommand(() -> subsystems.getNavxSubsystem().setYawOffset(pose.getRotation().getDegrees()),
