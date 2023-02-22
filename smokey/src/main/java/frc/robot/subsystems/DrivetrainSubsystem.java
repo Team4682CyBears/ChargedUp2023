@@ -38,6 +38,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * The maximum voltage that will be delivered to the drive motors.
@@ -70,6 +73,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private static final int CommandSchedulerPeriodMilliseconds = 20;
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
+
+  private static final Lock theLock = new ReentrantLock();
 
   private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           // Front left
@@ -255,9 +260,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void setRobotPosition(Pose2d updatedPosition)
   {
-    // initialize the odometry goo
-    currentPosition = updatedPosition;
-    this.initializeSwerveOdometry(currentPosition);
+    try{
+      theLock.lock();
+      // initialize the odometry goo
+      currentPosition = updatedPosition;
+      this.initializeSwerveOdometry(currentPosition);
+    }
+    finally {
+      theLock.unlock();
+    }
   }
 
   public void zeroRobotPosition()
@@ -421,22 +432,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private void refreshRobotPosition() {
     // Update the position of the robot
     Rotation2d angle = this.getGyroAngle();
-    SwerveModulePosition[] positions = this.getSwerveModulePositions();
-    currentPosition = swerveOdometry.update(
-      angle,
-      positions);
+    SwerveModulePosition[] positions = null;
+    try{
+      theLock.lock();
+      positions = this.getSwerveModulePositions();
+      currentPosition = swerveOdometry.update(
+        angle,
+        positions);
+    }
+    finally {
+      theLock.unlock();
+    }
 
     SmartDashboard.putNumber("RobotFieldHeadingDegrees", currentPosition.getRotation().getDegrees());
     SmartDashboard.putNumber("RobotFieldXCoordinateMeters", currentPosition.getX());
     SmartDashboard.putNumber("RobotFieldYCoordinateMeters", currentPosition.getY());
-    SmartDashboard.putNumber("FrontLeftAngleDegrees", positions[0].angle.getDegrees());
-    SmartDashboard.putNumber("FrontLeftDistanceMeters", positions[0].distanceMeters);
-    SmartDashboard.putNumber("FrontRightAngleDegrees", positions[1].angle.getDegrees());
-    SmartDashboard.putNumber("FrontRightDistanceMeters", positions[1].distanceMeters);
-    SmartDashboard.putNumber("BackLeftAngleDegrees", positions[2].angle.getDegrees());
-    SmartDashboard.putNumber("BackLeftDistanceMeters", positions[2].distanceMeters);
-    SmartDashboard.putNumber("BackRightAngleDegrees", positions[3].angle.getDegrees());
-    SmartDashboard.putNumber("BackRightDistanceMeters", positions[3].distanceMeters);
+    if(positions != null){
+      SmartDashboard.putNumber("FrontLeftAngleDegrees", positions[0].angle.getDegrees());
+      SmartDashboard.putNumber("FrontLeftDistanceMeters", positions[0].distanceMeters);
+      SmartDashboard.putNumber("FrontRightAngleDegrees", positions[1].angle.getDegrees());
+      SmartDashboard.putNumber("FrontRightDistanceMeters", positions[1].distanceMeters);
+      SmartDashboard.putNumber("BackLeftAngleDegrees", positions[2].angle.getDegrees());
+      SmartDashboard.putNumber("BackLeftDistanceMeters", positions[2].distanceMeters);
+      SmartDashboard.putNumber("BackRightAngleDegrees", positions[3].angle.getDegrees());
+      SmartDashboard.putNumber("BackRightDistanceMeters", positions[3].distanceMeters);
+    }
   }
 
   /**
