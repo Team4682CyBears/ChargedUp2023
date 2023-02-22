@@ -9,6 +9,8 @@
 // ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
 
 package frc.robot;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -78,6 +80,9 @@ public final class Constants {
     // trajectory constants
     public static final double TrajectoryMaxAcceleration = 1;
     public static final double TrajectoryMaxVelocity = 1;
+    // tolerence on trajectory locations
+    // TODO test tightening up these values
+    public static final Pose2d TrajectoryPoseTol = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
 
     //*************************************** 
     //For auto constants
