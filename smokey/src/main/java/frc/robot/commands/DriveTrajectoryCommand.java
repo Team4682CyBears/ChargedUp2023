@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -75,6 +76,17 @@ public class DriveTrajectoryCommand extends CommandBase{
     timer.reset();
     timer.start();
     done = false;
+
+    // TODO remove this code once setting robot position is debugged
+    //Check robot position vs. trajecgtory starting position and abort if they are not close:
+    Pose2d currentLocation = drivetrain.getRobotPosition();
+    Pose2d targetPose = movementPlan.sample(0.0).poseMeters;
+    Translation2d deltaLocation = currentLocation.getTranslation().minus(targetPose.getTranslation());
+    if (abs(deltaLocation.getNorm())>0.5){
+      System.out.println("ERROR: ABORTING TRAJECTORY: Current position " + currentLocation + " is too far from trajectory starting position " + targetPose);
+      done = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
