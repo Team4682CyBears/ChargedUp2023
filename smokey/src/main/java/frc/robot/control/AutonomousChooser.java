@@ -185,6 +185,32 @@ public class AutonomousChooser {
             () -> System.out.println("Setting Robot Position to : " + pose)));
     }
 
+    private Command getTestRobotPositionRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node1Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node1Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node5Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node5Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node9Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node9Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        return command;
+    }
+
     /**
      * A method to return the chosen auto command
      * @param subsystems - the SubsystemCollection
@@ -200,6 +226,8 @@ public class AutonomousChooser {
                 return this.getMiddleRoutine();
             case TEST_NODE5_SCORE_ROUTINE:
                 return this.getScoreRoutine(trajectories.Node5Position);
+            case TEST_SET_ROBOT_POSITION:
+                return this.getTestRobotPositionRoutine();
         }
         return new InstantCommand();
     }
@@ -208,7 +236,8 @@ public class AutonomousChooser {
         LEFT_PATH,
         RIGHT_PATH,
         MIDDLE_PATH,
-        TEST_NODE5_SCORE_ROUTINE
+        TEST_NODE5_SCORE_ROUTINE,
+        TEST_SET_ROBOT_POSITION
     }
 
     private enum AutonomousBalance {
