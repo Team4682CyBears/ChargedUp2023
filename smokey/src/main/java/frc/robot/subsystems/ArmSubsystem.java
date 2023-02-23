@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = 0.254; // 10.0 inches
+    private static final double maximumVerticalArmExtensionMeters = 0.210; // stubby arm // 0.254; // 10.0 inches
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = 0.9439402; // 78.5" - 41.337" == 37.163 inches
