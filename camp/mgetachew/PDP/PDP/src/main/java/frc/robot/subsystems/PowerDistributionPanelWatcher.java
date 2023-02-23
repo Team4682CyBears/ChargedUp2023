@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.control.PortSpy;
 
 public class PowerDistributionPanelWatcher extends SubsystemBase {
- /*   private static PowerDistribution distroPannel;
+   private static PowerDistribution distroPannel;
     private ArrayList<PortSpy> myList = new ArrayList<PortSpy>();
 
     public PowerDistributionPanelWatcher(ModuleType type) {
@@ -35,5 +35,5 @@ public class PowerDistributionPanelWatcher extends SubsystemBase {
     private boolean checkLimit(int port, double currentLimit){
         double current = distroPannel.getCurrent(port);
         return current > currentLimit;
-    }*/
+    }
 }
