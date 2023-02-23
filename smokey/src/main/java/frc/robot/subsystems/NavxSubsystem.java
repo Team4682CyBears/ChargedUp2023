@@ -52,10 +52,6 @@ public class NavxSubsystem extends SubsystemBase {
     swerveNavx.zeroYaw();
   }
 
-  public void setYawOffset(double adjustment){
-    swerveNavx.setAngleAdjustment(adjustment);
-  }
-
   private void storeRoll(){
     this.RecentRolls.add(this.swerveNavx.getRoll());
     while(this.RecentRolls.size() > LevelListMaxSize)

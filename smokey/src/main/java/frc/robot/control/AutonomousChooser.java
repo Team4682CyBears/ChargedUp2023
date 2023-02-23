@@ -175,10 +175,7 @@ public class AutonomousChooser {
         command.addCommands(
             new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
             subsystems.getNavxSubsystem()));
-        // set yaw to the starting rotation so that field orientation ends up correct after auto
-        command.addCommands(
-            new InstantCommand(() -> subsystems.getNavxSubsystem().setYawOffset(pose.getRotation().getDegrees()),
-            subsystems.getNavxSubsystem()));
+        // TODO need to set yaw to the starting rotation here so that field orientation ends up correct after auto
         command.addCommands(
             new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
             subsystems.getDriveTrainSubsystem()));
