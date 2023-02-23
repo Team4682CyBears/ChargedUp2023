@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.common.VectorUtils;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
@@ -15,14 +14,12 @@ import java.lang.Math;
 public class AutoBalanceCommand extends CommandBase{
   private double targetVelocity = 0.3;
 
-  NavxSubsystem navxsubsystem = null; 
-  DrivetrainSubsystem drivetrainsubsystem = null;
+  private DrivetrainSubsystem drivetrainsubsystem = null;
 
   /**
    * Constructor for auto balance command.
    */
-  public AutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
-    this.navxsubsystem = navxsubsystem;
+  public AutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem) {
     this.drivetrainsubsystem = drivetrainSubsystem;
 
     // do not need to add Navx as a requirement because it is read-only
@@ -41,7 +38,7 @@ public class AutoBalanceCommand extends CommandBase{
   { 
     // Not sure if it's too computationally expensive to read the NavX on every time tick.  
     // If this costs too much, could read on every Nth time through the loop   
-    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
+    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     drivetrainsubsystem.drive(new ChassisSpeeds(velocityVec.getX(), velocityVec.getY(), 0.0d));
   }
@@ -57,7 +54,7 @@ public class AutoBalanceCommand extends CommandBase{
   @Override
   public boolean isFinished()
   {
-    return navxsubsystem.isLevel();
+    return this.drivetrainsubsystem.isLevel();
   }
 
   /**

@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.common.VectorUtils;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.NavxSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,18 +27,15 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double driveDurationSecondsValue = 0.25;  
   private double velocityValue = 0.4;
 
-
-  NavxSubsystem navxsubsystem = null; 
-  DrivetrainSubsystem drivetrainsubsystem = null;
+  private DrivetrainSubsystem drivetrainsubsystem = null;
 
   /**
    * A constructor for auto balance step command
    * @param drivetrainSubsystem
    * @param navxsubsystem
    */
-  public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem, NavxSubsystem navxsubsystem) {
+  public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem) {
     System.out.println("constructing auto balance step command");
-    this.navxsubsystem = navxsubsystem;
     this.drivetrainsubsystem = drivetrainSubsystem;
 
     // do not need to add Navx as a requirement because it is read-only
@@ -50,7 +46,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   @Override
   public void initialize() {
     System.out.println("initializaing auto balance step command");
-    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(navxsubsystem.getEulerAngle());
+    Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     xVelocity = velocityVec.getX();
     yVelocity = velocityVec.getY();
@@ -81,8 +77,8 @@ public class AutoBalanceStepCommand extends CommandBase{
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       System.out.println("auto balance step command: completed one cycle");
-      System.out.println("RecentPitches " + navxsubsystem.getRecentPitches());
-      System.out.println("RecentRolls " + navxsubsystem.getRecentRolls());
+      System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
+      System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
       done = true;
     }
   }
@@ -115,6 +111,5 @@ public class AutoBalanceStepCommand extends CommandBase{
     double h = Math.sqrt(Math.pow(vec.getX(), 2) + Math.pow(vec.getY(), 2));
     return new Translation2d((vec.getX()/h) * velocityValue, (vec.getY()/h) * velocityValue);
   }
-
 
 }
