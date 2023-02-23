@@ -106,6 +106,10 @@ public final class Constants {
     public static final int GrabberHorizontalPneumaticsControlModuleForwardChannel = 2;
     public static final int GrabberHorizontalPneumaticsControlModuleReverseChannel = 3;
     public static final int GrabberVerticalPneumaticsControlModuleForwardChannel = 4;
-    public static final int GrabberVerticalPneumaticsControlModuleReverseChannel = 5;  
+    public static final int GrabberVerticalPneumaticsControlModuleReverseChannel = 5; 
+    
+    // ********************************************************************
+    //Controller Constants
+    public final static int rumbleTime = 1;
 
 }
