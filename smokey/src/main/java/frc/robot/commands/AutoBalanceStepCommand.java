@@ -73,16 +73,17 @@ public class AutoBalanceStepCommand extends CommandBase{
       drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
       waitTimer.start();
     }
-    else if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
+    // drive along the vector of steepest ascent
+    else {
+      drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
+    }
+
+    if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       System.out.println("auto balance step command: completed one cycle");
       System.out.println("RecentPitches " + navxsubsystem.getRecentPitches());
       System.out.println("RecentRolls " + navxsubsystem.getRecentRolls());
       done = true;
-    }
-    // drive along the vector of steepest ascent
-    else {
-      drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
     }
   }
 
