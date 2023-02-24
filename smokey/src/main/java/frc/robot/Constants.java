@@ -115,6 +115,10 @@ public final class Constants {
     public static final int PickerHorizontalPneumaticsControlModuleForwardChannel = 2;
     public static final int PickerHorizontalPneumaticsControlModuleReverseChannel = 3;
     public static final int PickerVerticalPneumaticsControlModuleForwardChannel = 4;
-    public static final int PickerVerticalPneumaticsControlModuleReverseChannel = 5;  
+    public static final int PickerVerticalPneumaticsControlModuleReverseChannel = 5; 
+    
+    // ********************************************************************
+    //Controller Constants
+    public final static double rumbleTimeSeconds = 1.0;
 
 }
