@@ -12,6 +12,8 @@ import java.lang.Math;
 
 /**
  * Implements a command to perform a single step of an auto balancing routine. 
+ * Intended to be called in a loop like this:
+ * AutoBalanceStepCommand(drive, navx).repeatedly().until(navx::isLevel)
  */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
@@ -71,16 +73,17 @@ public class AutoBalanceStepCommand extends CommandBase{
       drivetrainsubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
       waitTimer.start();
     }
-    else if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
+    // drive along the vector of steepest ascent
+    else {
+      drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
+    }
+
+    if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       System.out.println("auto balance step command: completed one cycle");
       System.out.println("RecentPitches " + navxsubsystem.getRecentPitches());
       System.out.println("RecentRolls " + navxsubsystem.getRecentRolls());
       done = true;
-    }
-    // drive along the vector of steepest ascent
-    else {
-      drivetrainsubsystem.drive(new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
     }
   }
 

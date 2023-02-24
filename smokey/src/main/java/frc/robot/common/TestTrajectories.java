@@ -49,13 +49,11 @@ public class TestTrajectories {
         waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
         waypoints.add(new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0)));
     
-        System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Forward");
         Trajectory t = SwerveTrajectoryGenerator.generateTrajectory(waypoints, config); 
         return t;
       }
     
       private Trajectory buildTraverseSimpleLeft(){
-        System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Simple Right");
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
         waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)));
         waypoints.add(new Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)));
@@ -64,7 +62,6 @@ public class TestTrajectories {
       }
     
       private Trajectory buildTraverseTurn270(){
-        System.out.println(">>>>>>>>>>>>>>>> Generating Traverse Turn 270");
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
         waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
         waypoints.add(new Pose2d(0.5, 0.0, Rotation2d.fromDegrees(-90)));
@@ -74,7 +71,6 @@ public class TestTrajectories {
     
       // Test purely rotational trajectory.  
       private Trajectory buildTurn90(){
-        System.out.println(">>>>>>>>>>>>>>>> Generating Turn 90");
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
         waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
         waypoints.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90)));
@@ -83,7 +79,6 @@ public class TestTrajectories {
       }
     
       private Trajectory buildTraverseForwardArc(){
-        System.out.println(">>>>>>>>>>>>>>>> Building Traverse Forward Arc");
         Pose2d start = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
         Pose2d end = this.traverseBackwardArcStartPosition;
     
@@ -96,7 +91,6 @@ public class TestTrajectories {
       }
     
       private Trajectory buildTraverseBackwardArc(){
-        System.out.println(">>>>>>>>>>>>>>>> Building Traverse Backward Arc");
         Pose2d start = this.traverseBackwardArcStartPosition;
         Pose2d end = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
     

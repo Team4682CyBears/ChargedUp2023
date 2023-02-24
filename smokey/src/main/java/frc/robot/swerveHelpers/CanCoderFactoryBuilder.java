@@ -16,8 +16,6 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
-import com.swervedrivespecialties.swervelib.AbsoluteEncoderFactory;
 import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
 import com.swervedrivespecialties.swervelib.ctre.CtreUtils;
 
@@ -56,6 +54,8 @@ public class CanCoderFactoryBuilder {
 
     private static class EncoderImplementation implements AbsoluteEncoder {
         private final CANCoder encoder;
+        // start out with a general error that is cleared upon first successful reading
+        private ErrorCode encoderStatus = ErrorCode.GENERAL_ERROR; 
 
         private EncoderImplementation(CANCoder encoder) {
             this.encoder = encoder;
@@ -67,16 +67,21 @@ public class CanCoderFactoryBuilder {
             // check error condition in case getAbsolutePosition failed
             // This will be non-zero (zero is ErrorCode.OK) if the frame was not received.
             // https://www.chiefdelphi.com/t/official-sds-mk3-mk4-code/397109/99
-            ErrorCode returnVal = encoder.getLastError();
-            if(returnVal != ErrorCode.OK){
-                System.out.println("WARNING: Reading absolute encoder position failed.");
-            };
+            encoderStatus = encoder.getLastError();
+            if(encoderStatus != ErrorCode.OK){
+                System.out.println("ERROR: Reading absolute encoder position failed.");
+            }
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
             }
 
             return angle;
+        }
+
+        @Override
+        public ErrorCode getLastError(){
+            return encoderStatus;
         }
     }
 

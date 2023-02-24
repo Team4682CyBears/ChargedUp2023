@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.NavxSubsystem;
@@ -283,7 +284,6 @@ public class ManualInputInterfaces {
   private void bindDriveTrajectoryButtonsToDriverXboxController() {
     // trajectories
     TestTrajectories testTrajectories = new TestTrajectories(subsystemCollection.getDriveTrainSubsystem().getTrajectoryConfig());
-    Trajectories trajectories = new Trajectories(subsystemCollection.getDriveTrainSubsystem()); 
 
     // traverse forward arc trajectory
     this.driverController.a().onTrue(
@@ -346,7 +346,7 @@ public class ManualInputInterfaces {
           "driverController.leftBumper()",
           "testTrajectories.traverseTurn270")).withTimeout(10.0)
     );
-    // traverse testTrajectories.turn90
+
     this.driverController.rightBumper().onTrue(
       new ParallelCommandGroup(
         new SequentialCommandGroup(
@@ -356,7 +356,7 @@ public class ManualInputInterfaces {
             testTrajectories.turn90)),
         new ButtonPressCommand(
           "driverController.rightBumper()",
-          "trajectories.BluStart")).withTimeout(10.0)
+          "testTrajectories.turn90")).withTimeout(10.0)
     );
   }
 
@@ -382,66 +382,68 @@ public class ManualInputInterfaces {
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      // right trigger stow preset for arm
-      this.coDriverController.rightTrigger().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionStowMetersY,
-            Constants.armPresetPositionStowMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.rightTrigger()",
-            "arm stow")
-          )
-        );
-      // left trigger grab preset for arm
-      this.coDriverController.leftTrigger().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.leftTrigger()",
-            "arm grab")
-          )
-        );
-      // y button press will move the arms to high score position
-      this.coDriverController.y().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreHighMetersY,
-            Constants.armPresetPositionScoreHighMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.y()",
-            "arm score high")
-          )
-        );
-        // b button press will move the arms to medium score position
-      this.coDriverController.b().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreMediumMetersY,
-            Constants.armPresetPositionScoreMediumMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.b()",
-            "arm score medium")
-          )
-        );
-      // a button press will drive the arms to low score position
-      this.coDriverController.a().onTrue(
-        new ParallelCommandGroup(
-          new ArmToPointCommand(
-            this.subsystemCollection.getArmSubsystem(),
-            Constants.armPresetPositionScoreLowMetersY,
-            Constants.armPresetPositionScoreLowMetersZ),
-          new ButtonPressCommand(
-            "coDriverController.a()",
-            "arm score low")
-          )
-        );
+      if(subsystemCollection.getPickerSubsystem() != null){
+        // right trigger stow preset for arm
+        this.coDriverController.rightTrigger().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionStowMetersY,
+              Constants.armPresetPositionStowMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.rightTrigger()",
+              "arm stow")
+            )
+          );
+        // left trigger grab preset for arm
+        this.coDriverController.leftTrigger().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionGrabMetersY,
+              Constants.armPresetPositionGrabMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.leftTrigger()",
+              "arm grab")
+            )
+          );
+        // y button press will move the arms to high score position
+        this.coDriverController.y().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreHighMetersY,
+              Constants.armPresetPositionScoreHighMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.y()",
+              "arm score high")
+            )
+          );
+          // b button press will move the arms to medium score position
+        this.coDriverController.b().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreMediumMetersY,
+              Constants.armPresetPositionScoreMediumMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.b()",
+              "arm score medium")
+            )
+          );
+        // a button press will drive the arms to low score position
+        this.coDriverController.a().onTrue(
+          new ParallelCommandGroup(
+            new ArmToPointCommand(
+              this.subsystemCollection.getArmSubsystem(),
+              Constants.armPresetPositionScoreLowMetersY,
+              Constants.armPresetPositionScoreLowMetersZ),
+            new ButtonPressCommand(
+              "coDriverController.a()",
+              "arm score low")
+            )
+          );
+      }
       // x button press will stop all
       this.coDriverController.x().onTrue(
         new ParallelCommandGroup(
@@ -453,29 +455,25 @@ public class ManualInputInterfaces {
           )
         );
 
-        if(subsystemCollection.getGrabberSubsystem() != null){
-          // left bumper press will close the grabber  
+        if(subsystemCollection.getPickerSubsystem() != null){
+          // left bumper press will close the picker  
           this.coDriverController.leftBumper().onTrue(
             new ParallelCommandGroup(
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::deployHorizontalPosition),
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::deployVerticalPosition),
+              new ManipulatePickerCommand(
+                subsystemCollection.getPickerSubsystem(), false),
               new ButtonPressCommand(
               "coDriverController.leftBumper()",
-              "close the grabber")
+              "close the picker")
             )
           );
-          // right bumper press will open the grabber  
+          // right bumper press will open the picker  
           this.coDriverController.rightBumper().onTrue(
             new ParallelCommandGroup(
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::retractHorizontalPosition),
-              new InstantCommand(
-                subsystemCollection.getGrabberSubsystem()::retractVerticalPosition),
+              new ManipulatePickerCommand(
+                subsystemCollection.getPickerSubsystem(), true),
               new ButtonPressCommand(
               "coDriverController.rightBumper()",
-              "open the grabber")
+              "open the picker")
             )
           );
         }

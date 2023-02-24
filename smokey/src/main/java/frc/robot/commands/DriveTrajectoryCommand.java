@@ -17,12 +17,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DriveTrajectoryCommand extends CommandBase{
@@ -38,7 +40,7 @@ public class DriveTrajectoryCommand extends CommandBase{
   private HolonomicDriveController controller;
 
   private Pose2d finalPosition = null;
-  private Pose2d overTimeDelta = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
+  private Pose2d overTimeDelta = Constants.TrajectoryPoseTol;
 
   /** 
   * Creates a new driveCommand. 
@@ -74,6 +76,17 @@ public class DriveTrajectoryCommand extends CommandBase{
     timer.reset();
     timer.start();
     done = false;
+
+    // TODO remove this code once setting robot position is debugged
+    //Check robot position vs. trajecgtory starting position and abort if they are not close:
+    Pose2d currentLocation = drivetrain.getRobotPosition();
+    Pose2d targetPose = movementPlan.sample(0.0).poseMeters;
+    Translation2d deltaLocation = currentLocation.getTranslation().minus(targetPose.getTranslation());
+    if (abs(deltaLocation.getNorm())>0.5){
+      System.out.println("ERROR: ABORTING TRAJECTORY: Current position " + currentLocation + " is too far from trajectory starting position " + targetPose);
+      done = true;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

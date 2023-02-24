@@ -10,30 +10,40 @@
 
 package frc.robot.control;
 
-import javax.print.attribute.standard.RequestingUserName;
+import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-//import edu.wpi.first.math.geometry.Pose2d;
-//import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.commands.DriveTimeCommand;
+import frc.robot.Constants;
+import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
-import frc.robot.control.Trajectories;
+import frc.robot.commands.ManipulatePickerCommand;
+import frc.robot.commands.ArmToLocationCommand.ArmLocation;
+import frc.robot.common.SwerveTrajectoryGenerator;
+import frc.robot.common.VectorUtils;
 
 /**
  * A class for choosing different auto mode routines from shuffleboard
  */
 public class AutonomousChooser {
     private SubsystemCollection subsystems;
-    private final SendableChooser<AutonomousMode> autonomousModeChooser = new SendableChooser<>();
+    private final SendableChooser<AutonomousPath> AutonomousPathChooser = new SendableChooser<>();
+    private final SendableChooser<AutonomousBalance> balanceChooser = new SendableChooser<>();
+    private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
+    
+    //Robot to travel in the negative x direction
+    //want to make sure snout is deelply engaged in the node, so overdrive by tolerence amount
+    private Translation2d intoNodeTranslation = new Translation2d(
+        -1 * (Constants.snoutDepth + Constants.TrajectoryPoseTol.getX()), 0);
 
     /**
      * Constructor for AutonomousChooser
@@ -41,110 +51,162 @@ public class AutonomousChooser {
      */
     public AutonomousChooser(SubsystemCollection subsystems) {
         this.subsystems = subsystems;
-        System.out.println(">>>> creating auto trajectories");
-        this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
-        System.out.println(">>>> finished creating auto trajectories");
-        
-
-        autonomousModeChooser.setDefaultOption("Test Auto Forward", AutonomousMode.TEST_AUTO_FORWARD);
-        autonomousModeChooser.addOption("Test Auto Backward", AutonomousMode.TEST_AUTO_BACKWARD);
-        autonomousModeChooser.addOption("Test Auto To A Position", AutonomousMode.TEST_AUTO_DRIVE_TO_POSITION);
-        autonomousModeChooser.addOption("Test Auto Blue Up and Over", AutonomousMode.TEST_BLUE_UP_AND_OVER);
-        autonomousModeChooser.addOption("Test Auto Blue Down and Under", AutonomousMode.TEST_BLUE_DOWN_AND_UNDER);
-        autonomousModeChooser.addOption("Test Auto Blue Across Ramp", AutonomousMode.TEST_BLUE_ACROSS_RAMP);
-        
-
-        SmartDashboard.putData(autonomousModeChooser);
+        if(this.subsystems.getDriveTrainSubsystem() != null){
+            System.out.println(">>>> creating auto trajectories");
+            this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
+            System.out.println(">>>> finished creating auto trajectories");
+            
+            AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
+            AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
+            AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
+            AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
+            AutonomousPathChooser.addOption("Test Setting Robot Position", AutonomousPath.TEST_SET_ROBOT_POSITION);
+    
+            balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
+            balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
+    
+            scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
+            scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
+            scoreHeight.addOption("Score Low", ScoringPosition.SCORE_LOW);
+    
+            SmartDashboard.putData(AutonomousPathChooser);
+            SmartDashboard.putData(balanceChooser);
+            SmartDashboard.putData(scoreHeight);
+        }
+        else {
+            System.out.println(">>>> NO auto trajectories because no drive train subsystem");
+        }
     }
     
     /**
-     * A method to return the autonomousModeChooser
-     * @return autonomousModeChooser
+     * A method to return the AutonomousPathChooser
+     * @return AutonomousPathChooser
      */
-    public SendableChooser<AutonomousMode> getModeChooser() {
-        return autonomousModeChooser;
+    public SendableChooser<AutonomousPath> getModeChooser() {
+        return AutonomousPathChooser;
     }
 
     /**
-     * A method to get the TestAutoForward command
-     * @return command
+     * Builds a command list for use in auto routines.  This is the first part of the routine that scores the game piece. 
+     * @param NodePosition
+     * @return
      */
-    public Command getTestAutoForward() {
+    public Command getScoreRoutine(Pose2d NodePosition){
+        ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
+        IntoNodeWaypoints.add(NodePosition);
+        IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
+        Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
+            IntoNodeWaypoints, 
+            subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+
+        ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
+        OutOfNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
+        OutOfNodeWaypoints.add(NodePosition);
+        Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
+            OutOfNodeWaypoints, 
+            subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+
         SequentialCommandGroup command = new SequentialCommandGroup();
+        setRobotPose(command, NodePosition);
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Begin Driving Trajectory from: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        command.addCommands(new ParallelCommandGroup(
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory)));
+            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
-        resetRobotPose(command);
+        //command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
 
-        // drive forward and then turn clockwise
-        command.addCommands(driveSegment(1., 0, 0, 1.0));
-        command.addCommands(driveSegment(0, 0, 0.5, 2.0));
-
-        return command;
-    }
-
-    /**
-     * A method to get the TestAutoBackward command
-     * @return command
-     */
-    public Command getTestAutoBackward() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command);
-
-        // drive backward and then turn counterclockwise
-        command.addCommands(driveSegment(-1., 0, 0, 1.0));
-        command.addCommands(driveSegment(0, 0, -0.5, 2.0));
-
-        return command;
-    }
-
-    /**
-     * A method to get the create a DriveToPointCommand using the current position as a starting point
-     * @return command
-     */
-    public Command getTestAutoToPosition() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command);
-
-        Pose2d currentPosition = subsystems.getDriveTrainSubsystem().getRobotPosition();
-        Pose2d destinationPosition = currentPosition.plus(new Transform2d(new Translation2d(1.5, 0.5), Rotation2d.fromDegrees(180.0)));
-        command.addCommands(new DriveToPointCommand(subsystems.getDriveTrainSubsystem(), destinationPosition));
-
-        return command;
-    }    
-
-    public Command getBlueUpAndOver() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluUpAndOverTrajectory));
+        command.addCommands(new ParallelCommandGroup(
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory)));
+            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
         return command;
     }
     
-    public Command getBlueDownAndUnder() {
+    /**
+     * Builds a command list for use in auto routines
+     * @param NodePosition starting position of robot corrosponding to the node. Nodes are numbered from left to right 1- 9 from the drivers perspective
+     * @param Trajectory trajectory to follow out of the community
+     * @return command
+     */
+    public Command getAutoRoutine (Pose2d NodePosition, Trajectory Trajectory){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluDownAndUnderTrajectory));
+        command.addCommands(getScoreRoutine(NodePosition));
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
-    }   
-
-    public Command getBluAcrossRamp() {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        resetRobotPose(command);
-        command.addCommands(new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.BluStart)));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BluAcrossRampTrajectory));
-        return command;
-    }   
-
-    private Command driveSegment(double x, double y, double rot, double durationSeconds) {
-        return new DriveTimeCommand(subsystems.getDriveTrainSubsystem(), x, y, rot, durationSeconds);
     }
-    
-    private void resetRobotPose(SequentialCommandGroup command) {
-        // TODO this is where we would set the starting robot position. 
-        // just zeroing the gyro for now
-        command.addCommands(new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope()));
+
+    /**
+     * Builds a command list for the balance routine, or will not if we toggle it so
+     * @param DoBalance the enum for wether the balance routine should be run
+     * @return
+     */
+    public Command getBalanceRoutine (AutonomousBalance DoBalance){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        if (DoBalance == AutonomousBalance.DO_BALANCE){
+            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem(), subsystems.getNavxSubsystem())
+            .repeatedly().until(subsystems.getNavxSubsystem()::isLevel));
+        }
+        return command;
+    }
+
+    public Command getLeftRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    public Command getRightRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node9Position, trajectories.RightTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    public Command getMiddleRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
+            subsystems.getNavxSubsystem()));
+        // TODO need to set yaw to the starting rotation here so that field orientation ends up correct after auto
+        command.addCommands(
+            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to : " + pose)));
+    }
+
+    private Command getTestRobotPositionRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node1Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node1Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node5Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node5Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Setting Robot Position to: " + trajectories.Node9Position)));
+        command.addCommands(new InstantCommand(
+            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node9Position),
+            subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new InstantCommand(
+            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
+        return command;
     }
 
     /**
@@ -153,29 +215,37 @@ public class AutonomousChooser {
      * @return command
      */
     public Command getCommand() {
-        switch (autonomousModeChooser.getSelected()) {
-            case TEST_AUTO_FORWARD :
-                return this.getTestAutoForward();
-            case TEST_AUTO_BACKWARD :
-                return this.getTestAutoBackward();
-            case TEST_AUTO_DRIVE_TO_POSITION :
-                return this.getTestAutoToPosition();
-            case TEST_BLUE_UP_AND_OVER :
-                return this.getBlueUpAndOver();
-            case TEST_BLUE_DOWN_AND_UNDER :
-                return this.getBlueDownAndUnder();
-            case TEST_BLUE_ACROSS_RAMP :
-                return this.getBluAcrossRamp();
+        switch (AutonomousPathChooser.getSelected()) {
+            case LEFT_PATH :
+                return this.getLeftRoutine();
+            case RIGHT_PATH :
+                return this.getRightRoutine();
+            case MIDDLE_PATH :
+                return this.getMiddleRoutine();
+            case TEST_NODE5_SCORE_ROUTINE:
+                return this.getScoreRoutine(trajectories.Node5Position);
+            case TEST_SET_ROBOT_POSITION:
+                return this.getTestRobotPositionRoutine();
         }
         return new InstantCommand();
     }
 
-    private enum AutonomousMode {
-        TEST_AUTO_FORWARD,
-        TEST_AUTO_BACKWARD,
-        TEST_AUTO_DRIVE_TO_POSITION, 
-        TEST_BLUE_UP_AND_OVER,
-        TEST_BLUE_DOWN_AND_UNDER, 
-        TEST_BLUE_ACROSS_RAMP
+    private enum AutonomousPath {
+        LEFT_PATH,
+        RIGHT_PATH,
+        MIDDLE_PATH,
+        TEST_NODE5_SCORE_ROUTINE,
+        TEST_SET_ROBOT_POSITION
+    }
+
+    private enum AutonomousBalance {
+        DO_BALANCE,
+        DO_NOT_BALANCE
+    }
+
+    private enum ScoringPosition {
+        SCORE_HIGH,
+        SCORE_MIDDLE,
+        SCORE_LOW
     }
 }
