@@ -14,6 +14,7 @@ public class Trajectories {
     public Pose2d Node1Position;
     public Pose2d Node5Position;
     public Pose2d Node9Position;
+    public Pose2d InfrontOfRampPosition;
     public Pose2d TrajectoryEndPosition;
     public Trajectory LeftTrajectory;
     public Trajectory RightTrajectory;
@@ -28,6 +29,7 @@ public class Trajectories {
         this.Node1Position = new Pose2d(1.678, 5.084, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.416, Rotation2d.fromDegrees(180));
+        this.InfrontOfRampPosition = new Pose2d(2.5, 2.75, Rotation2d.fromDegrees(180));
 
         this.TrajectoryEndPosition = new Pose2d(5.81, 2.748, Rotation2d.fromDegrees(90));
         Pose2d Ramp = new Pose2d(3.922, 2.748, Rotation2d.fromDegrees(90));
@@ -62,12 +64,16 @@ public class Trajectories {
         OntoRampWaypoints.add(Ramp);
         this.OntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(OntoRampWaypoints, config);    
 
-        ArrayList<Pose2d> DirectToRampWaypoints = new ArrayList<Pose2d>();
-        DirectToRampWaypoints.add(Node5Position);
-        DirectToRampWaypoints.add(Ramp);
-        this.DirectToRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(DirectToRampWaypoints, config);
+        ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
+        InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
+        InfrontToOntoRampWaypoints.add(Ramp);
+        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, config);
+
+        ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
+        Node5ToFrontOfRampWaypoints.add(Node5RotatedPosition);
+        Node5ToFrontOfRampWaypoints.add(InfrontOfRampPosition);
+        Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, config);
+        
+        this.DirectToRampTrajectory = RotationTrajectory.concatenate(Node5ToFrontOfRampTrajectory).concatenate(InfrontToOntoRampTrajectory);
     }
-
-
-    
 }   
