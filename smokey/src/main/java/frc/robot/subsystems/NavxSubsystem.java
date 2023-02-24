@@ -17,13 +17,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
 import java.util.ArrayList;
-import java.lang.Math;
-import java.lang.StrictMath;
-
 import java.lang.Math;
 
 public class NavxSubsystem extends SubsystemBase {

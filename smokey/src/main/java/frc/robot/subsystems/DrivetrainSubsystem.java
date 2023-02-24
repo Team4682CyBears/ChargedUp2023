@@ -15,7 +15,6 @@ import java.util.*;
 import static frc.robot.Constants.*;
 
 import frc.robot.Constants;
-import frc.robot.common.DebugUtils;
 import frc.robot.common.MotorUtils;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
