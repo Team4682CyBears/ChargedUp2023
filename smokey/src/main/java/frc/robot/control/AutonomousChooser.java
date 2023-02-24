@@ -43,7 +43,7 @@ public class AutonomousChooser {
     //Robot to travel in the negative x direction
     //want to make sure snout is deelply engaged in the node, so overdrive by tolerence amount
     private Translation2d intoNodeTranslation = new Translation2d(
-        -1 * (Constants.snoutDepth + Constants.TrajectoryPoseTol.getX()), 0);
+        -1 * (Constants.snoutDepthMeters + Constants.TrajectoryPoseTol.getX()), 0);
 
     /**
      * Constructor for AutonomousChooser
@@ -150,21 +150,21 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getLeftRoutine(){
+    private Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
     }
 
-    public Command getRightRoutine(){
+    private Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node9Position, trajectories.RightTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
     }
 
-    public Command getMiddleRoutine(){
+    private Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
