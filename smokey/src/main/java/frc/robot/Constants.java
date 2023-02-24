@@ -119,6 +119,6 @@ public final class Constants {
     
     // ********************************************************************
     //Controller Constants
-    public final static int rumbleTime = 1;
+    public final static double rumbleTimeSeconds = 1.0;
 
 }

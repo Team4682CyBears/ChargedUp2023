@@ -38,7 +38,7 @@ public class RumbleCommand extends CommandBase{
     @Override
     public void execute() {
         controller.setRumble(RumbleType.kBothRumble, 1.0);
-        if (timer.hasElapsed(Constants.rumbleTime))
+        if (timer.hasElapsed(Constants.rumbleTimeSeconds))
           {
             done = true;
           }
