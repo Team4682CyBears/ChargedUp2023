@@ -25,7 +25,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double waitDurationSecondsValue = .5;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.25;  
-  private double velocityValue = 0.4;
+  private double velocityValue = 0.6;
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
 
