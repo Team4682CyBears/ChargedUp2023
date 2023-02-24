@@ -20,7 +20,6 @@ public class SubsystemCollection
     private ArmSubsystem armSubsystem = null;
     private DrivetrainSubsystem driveTrainSubsystem = null;
     private PickerSubsystem pickerSubsystem = null;
-    private NavxSubsystem navxSubsystem = null;
     private StabilizerSubsystem stabilizerSubsystem = null;
 
     /**
@@ -36,9 +35,6 @@ public class SubsystemCollection
 
     public PickerSubsystem getPickerSubsystem() { return pickerSubsystem; }
     public void setPickerSubsystem(PickerSubsystem value) { pickerSubsystem = value; }
-
-    public NavxSubsystem getNavxSubsystem() { return navxSubsystem; }
-    public void setNavxSubsystem(NavxSubsystem value) { navxSubsystem = value; }
 
     public StabilizerSubsystem getStabilizerSubsystem() { return stabilizerSubsystem; }
     public void setStabilizerSubsystem(StabilizerSubsystem value) { stabilizerSubsystem = value; }

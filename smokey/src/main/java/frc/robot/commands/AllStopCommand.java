@@ -32,8 +32,11 @@ public class AllStopCommand extends CommandBase {
         if(this.subsystems.getDriveTrainSubsystem() != null) {
             addRequirements(this.subsystems.getDriveTrainSubsystem());
         }
-        if(this.subsystems.getNavxSubsystem() != null) {
-            addRequirements(this.subsystems.getNavxSubsystem());
+        if(this.subsystems.getPickerSubsystem() != null) {
+            addRequirements(this.subsystems.getPickerSubsystem());
+        }
+        if(this.subsystems.getStabilizerSubsystem() != null) {
+            addRequirements(this.subsystems.getStabilizerSubsystem());
         }
     }
 
@@ -48,6 +51,13 @@ public class AllStopCommand extends CommandBase {
         }
         if(this.subsystems.getDriveTrainSubsystem() != null) {
             this.subsystems.getDriveTrainSubsystem().drive(new ChassisSpeeds(0.0,0.0,0.0));
+        }
+        if(this.subsystems.getPickerSubsystem() != null) {
+            this.subsystems.getPickerSubsystem().retractHorizontalPosition();
+            this.subsystems.getPickerSubsystem().retractVerticalPosition();
+        }
+        if(this.subsystems.getStabilizerSubsystem() != null) {
+            this.subsystems.getStabilizerSubsystem().retractPosition();
         }
     }
 

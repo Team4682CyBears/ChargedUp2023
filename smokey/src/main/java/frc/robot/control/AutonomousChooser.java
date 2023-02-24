@@ -144,8 +144,8 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem(), subsystems.getNavxSubsystem())
-            .repeatedly().until(subsystems.getNavxSubsystem()::isLevel));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem())
+            .repeatedly().until(subsystems.getDriveTrainSubsystem()::isLevel));
         }
         return command;
     }
@@ -173,8 +173,8 @@ public class AutonomousChooser {
 
     private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
         command.addCommands(
-            new InstantCommand(() -> subsystems.getNavxSubsystem().zeroGyroscope(),
-            subsystems.getNavxSubsystem()));
+            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().zeroGyroscope(),
+            subsystems.getDriveTrainSubsystem()));
         // TODO need to set yaw to the starting rotation here so that field orientation ends up correct after auto
         command.addCommands(
             new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
