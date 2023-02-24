@@ -19,6 +19,7 @@ public class Trajectories {
     public Trajectory RightTrajectory;
     public Trajectory MiddleTrajectory;
     public Trajectory OntoRampTrajectory;
+    public Trajectory DirectToRampTrajectory;
     
     public Trajectories(DrivetrainSubsystem drivetrain){
 
@@ -60,6 +61,11 @@ public class Trajectories {
         OntoRampWaypoints.add(TrajectoryEndPosition);
         OntoRampWaypoints.add(Ramp);
         this.OntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(OntoRampWaypoints, config);    
+
+        ArrayList<Pose2d> DirectToRampWaypoints = new ArrayList<Pose2d>();
+        DirectToRampWaypoints.add(Node5Position);
+        DirectToRampWaypoints.add(Ramp);
+        this.DirectToRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(DirectToRampWaypoints, config);
     }
 
 
