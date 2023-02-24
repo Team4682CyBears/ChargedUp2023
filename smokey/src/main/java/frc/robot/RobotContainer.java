@@ -21,7 +21,6 @@ import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
-import frc.robot.subsystems.NavxSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 
 /**
@@ -41,7 +40,6 @@ public class RobotContainer {
   public RobotContainer() {
 
     // init the various subsystems
-    this.initializeNavxSubsystem();
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
     this.initializePickerSubsystem();
@@ -91,21 +89,6 @@ public class RobotContainer {
   }
 
   /**
-   * A method to init the navx
-   */
-  private void initializeNavxSubsystem() {
-    if(InstalledHardware.navxInstalled)
-    {
-      subsystems.setNavxSubsystem(new NavxSubsystem());
-      System.out.println("SUCCESS: initializeNavx");
-    }
-    else
-    {
-      System.out.println("FAIL: initializeNavx");
-    }
-  }
-
-  /**
    * A method to init the drive train
    */
   private void initializeDrivetrainSubsystem() {
@@ -113,10 +96,10 @@ public class RobotContainer {
       InstalledHardware.leftRearDriveInstalled && 
       InstalledHardware.rightFrontDriveInstalled &&
       InstalledHardware.rightRearDriveInstalled &&
-      subsystems.getNavxSubsystem() != null)
+      InstalledHardware.navxInstalled)
     {
       // The robot's subsystems and commands are defined here...
-      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem(subsystems));
+      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
       System.out.println("SUCCESS: initializeDrivetrain");
 
       // Set up the default command for the drivetrain.
@@ -126,7 +109,6 @@ public class RobotContainer {
       // Right stick X axis -> rotation
       subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
         subsystems.getDriveTrainSubsystem(),
-        subsystems.getNavxSubsystem(),
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND

@@ -25,6 +25,10 @@ public class Trajectories {
     public Trajectories(DrivetrainSubsystem drivetrain){
 
         TrajectoryConfig config = drivetrain.getTrajectoryConfig();
+        // trajectory config with a fast starting velocity for ramp driving. 
+        // have to get a new config so that changes to this one don't affect the original
+        TrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
+        fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.5); // half max speed
 
         this.Node1Position = new Pose2d(1.678, 5.084, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));

@@ -11,13 +11,19 @@
 package frc.robot.subsystems;
 
 import java.util.*;
+import java.lang.Math;
+import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static frc.robot.Constants.*;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import frc.robot.Constants;
-import frc.robot.common.DebugUtils;
+import frc.robot.common.EulerAngle;
+import frc.robot.common.VectorUtils;
 import frc.robot.common.MotorUtils;
-import frc.robot.control.SubsystemCollection;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
@@ -26,6 +32,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -35,11 +42,9 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   /**
@@ -87,6 +92,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
           new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
 
+  // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
+  // cause the angle reading to increase until it wraps back over to zero.
+  private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+
+  // store yaw/pitch history
+  private static final int LevelListMaxSize = 20;
+  private ArrayList<Float> RecentRolls = new ArrayList<Float>();
+  private ArrayList<Float> RecentPitches = new ArrayList<Float>();
+
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule frontLeftModule;
   private final SwerveModule frontRightModule;
@@ -94,10 +108,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final SwerveModule backRightModule;
 
   private SwerveDriveOdometry swerveOdometry = null;
-  private SubsystemCollection currentCollection = null;
   private Pose2d currentPosition = new Pose2d();
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
-  private TrajectoryConfig trajectoryConfig;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -106,8 +118,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double speedReductionFactor = defaultSpeedReductionFactor;
   private double speedReductionFactorIncrement = 0.1;
 
-  public DrivetrainSubsystem(SubsystemCollection collection) {
-    currentCollection = collection;
+  /**
+   * Constructor for this DrivetrainSubsystem
+   */
+  public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     frontLeftModule = SwerveModuleHelper.createFalcon500(
@@ -160,13 +174,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
+  }
 
-    // setup default TrajectoryConfig
-    this.trajectoryConfig =  new TrajectoryConfig(
-    MAX_VELOCITY_METERS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    trajectoryConfig.setReversed(false);
-    trajectoryConfig.setKinematics(swerveKinematics);
+  /**
+   * Method to decrement the power reduction factor
+   */
+  public void decrementPowerReductionFactor() {
+    speedReductionFactor = MotorUtils.truncateValue(
+      speedReductionFactor - speedReductionFactorIncrement,
+      speedReductionFactorIncrement,
+      maximumSpeedReductionFactor);
   }
 
   /**
@@ -175,6 +192,64 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds updatedChassisSpeeds) {
     this.chassisSpeeds = updatedChassisSpeeds;
+  }
+
+  /**
+   * returns navx euler angle (pitch, roll, yaw) in degrees
+   * @return EulerAngle
+   */
+  public EulerAngle getEulerAngle(){
+    return new EulerAngle(
+      swerveNavx.getPitch(), 
+      swerveNavx.getRoll(), 
+      swerveNavx.getYaw());
+  }
+
+  /**
+   * Obtains the current gyroscope's rotation about the Z axis when looking down at the robot where positive is measured in the 
+   * counter-clockwise direction.
+   * 
+   * Notes: 
+   * According to https://pdocs.kauailabs.com/navx-mxp/wp-content/uploads/2020/09/navx2-mxp_robotics_navigation_sensor_user_guide-8.pdf
+   * NavX .getYaw() is -180 to 180 where positive is clockwise looking at the sensor from above
+   * According to https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
+   * positive rotations are measured in the counter-clockwise looking at the robot from above
+   * these two pieces of information imply the yaw should be inverted (or multiplied by -1.0)
+   * @return A Rotation2d that describes the current orentation of the robot.
+   */
+  public Rotation2d getGyroscopeRotation() {
+
+    // TODO - we need to have someone determine if our existing (NavX v1) setup will make use of the
+    // 'getFusedHeading' or if it uses the 'getYaw' method (e.g., if isMagnetometerCalibrated() or not)
+    // to run this test all we need is for someone to comment out the System.out.println lines of code below
+
+    if (swerveNavx.isMagnetometerCalibrated()) {
+
+      // TODO - test this!!
+      // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
+
+      // We will only get valid fused headings if the magnetometer is calibrated
+      return Rotation2d.fromDegrees(swerveNavx.getFusedHeading());
+    }
+
+    // TODO - test this!!
+    // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
+
+    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+    return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw());
+  }
+  
+  /**
+  * A method to get the quaternion representation of the navx pose. 
+  * @return quaternion
+  */
+  public Quaternion getQuaterion() {
+    Quaternion q = new Quaternion(
+    swerveNavx.getQuaternionW(),
+    swerveNavx.getQuaternionX(),
+    swerveNavx.getQuaternionY(),
+    swerveNavx.getQuaternionZ());
+    return (q);
   }
 
   /**
@@ -253,31 +328,56 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     return sumOfAccelerations/countOfDeltas;
   }
-  
+
+   /**
+    * A method to obtain the recent pitches 
+    * @return a listing of recent pitches
+    */
+   public ArrayList<Float> getRecentPitches(){
+     return RecentPitches;
+   }
+ 
+   /**
+    * A method to obtain the recent rolls 
+    * @return a listing of recent rolls
+    */
+    public ArrayList<Float> getRecentRolls(){
+     return RecentRolls;
+   }
+ 
   /**
-   * A method to set the current position of the robot
-   * @param updatedPosition - the new position of the robot
+  * Function to obtain the TrajectoryConfig
+  * returns a new trajectory config so that when customization are made downstream
+  * they do not affect other trajectories
+  * @return a TrajectoryConfig in use within the drive train subsystem
+  */
+  public TrajectoryConfig getTrajectoryConfig() {
+    return new TrajectoryConfig(
+    MAX_VELOCITY_METERS_PER_SECOND,
+    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED).setReversed(false).setKinematics(swerveKinematics);
+    }
+
+  /**
+   * Method to increment the power reduction factor
    */
-  public void setRobotPosition(Pose2d updatedPosition)
-  {
-    //TOD this didn't work to fix the problem of the robot not getting correct initial position.  
-    // try to debug why not.  
-    try{
-      theLock.lock();
-      // initialize the odometry goo
-      currentPosition = updatedPosition;
-      this.initializeSwerveOdometry(currentPosition);
-    }
-    finally {
-      theLock.unlock();
-    }
+  public void incrementPowerReductionFactor() {
+    speedReductionFactor = MotorUtils.truncateValue(
+      speedReductionFactor + speedReductionFactorIncrement,
+      speedReductionFactorIncrement,
+      maximumSpeedReductionFactor);
   }
 
-  public void zeroRobotPosition()
-  {
-    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+  /**
+   * Determines if the navx is level.  
+   * @return true if level, false otherwise
+   */
+  public boolean isLevel() {
+    return this.areAllLevel(RecentPitches) && this.areAllLevel(RecentRolls);
   }
 
+  /**
+   * Perodic for this subsystem - very important for it to run every scheduler cycle - 50Hz
+   */
   @Override
   public void periodic() {
 
@@ -285,6 +385,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.refreshRobotPosition();
     // store the recalculated position
     this.storeUpdatedPosition();
+    // store navx info
+    this.storePitch();
+    this.storeRoll();    
 
     // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
     // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
@@ -308,25 +411,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * Method to increment the power reduction factor
+   * a method to print relevant state of the navx
    */
-  public void incrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor + speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
+  public void printState(){
+    System.out.println("**** NavX State ****");
+    System.out.println("Quaternion ------>" + this.getQuaterion());
+    System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
+    System.out.println("Is the robot level? -------->" + this.isLevel());
+    System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
   }
-
-  /**
-   * Method to decrement the power reduction factor
-   */
-  public void decrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor - speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
-  }
-
+ 
   /**
    * Method to reset the power reduction factor
    */
@@ -335,35 +429,58 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * Method used to initialize the Odometry for the robot 
-   * @param currentRobotPosition - the centroid of the robot using the proper game coordinate system, see:
-   * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
+   * A method to set the current position of the robot
+   * @param updatedPosition - the new position of the robot
    */
-  private void initializeSwerveOdometry(Pose2d currentRobotPosition) {
-    frontLeftModule.setDriveDistance(0.0);
-    frontRightModule.setDriveDistance(0.0);
-    backLeftModule.setDriveDistance(0.0);
-    backRightModule.setDriveDistance(0.0);
-    swerveOdometry = new SwerveDriveOdometry(
-        swerveKinematics,
-        this.getGyroAngle(),
-        this.getSwerveModulePositions(),
-        currentRobotPosition); 
+  public void setRobotPosition(Pose2d updatedPosition)
+  {
+    //TOD this didn't work to fix the problem of the robot not getting correct initial position.  
+    // try to debug why not.  
+    try{
+      theLock.lock();
+      // initialize the odometry goo
+      currentPosition = updatedPosition;
+      this.initializeSwerveOdometry(currentPosition);
+    }
+    finally {
+      theLock.unlock();
+    }
   }
 
   /**
-   * A method to attempt to more safely obtain the navx subsystem based gyro rotation (yaw)
-   * @return the Rotation2d of the Gyroscope
+   * A method to zero the current position
    */
-  private Rotation2d getGyroAngle() {
-    if(currentCollection != null && currentCollection.getNavxSubsystem() != null){
-        return currentCollection.getNavxSubsystem().getGyroscopeRotation();
+  public void zeroRobotPosition()
+  {
+    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+  }
+
+  /**
+   * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
+   * 'forwards' direction.
+   */
+  public void zeroGyroscope() {
+    if(swerveNavx.isCalibrating()){
+      // From the NavX Docs: This method has no effect if the sensor is currently calibrating
+      System.out.println("WARNING: Gyro is calibrating. Zeroing gyro has no effect while it is calibrating.");
     }
-    else{
-        // TODO - we may want to throw in the future here as this is very important to our robot now
-        System.out.println("!!!!!!!!!!!!!!!!!!!! NAVX IS MISSING. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        return new Rotation2d();
+    swerveNavx.zeroYaw();
+  }
+
+  /**
+   * Determine if recent navx is all level
+   * @param recentAngles the recent set of angles recorded by navx 
+   * @return true if the robot has been recently level
+   */
+  private boolean areAllLevel(ArrayList<Float> recentAngles){
+    boolean levelChecker = true;
+    for(int i = 0; i < LevelListMaxSize; i++){
+      if (Math.abs(recentAngles.get(i))>=Constants.navxTolDegrees){
+        levelChecker = false;
+      }
     }
+    System.out.println("Is Level? " + levelChecker);
+    return levelChecker;
   }
 
   /**
@@ -376,8 +493,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param rotationMax
    * @return clamped chassisSpeeds
    */
-  public ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds, 
-  double translationMin, double translationMax, double rotationMin, double rotationMax){
+  private ChassisSpeeds clampChassisSpeeds(
+    ChassisSpeeds chassisSpeeds, 
+    double translationMin,
+    double translationMax,
+    double rotationMin,
+    double rotationMax){
     // do not scale omega
     //double clampedOmega = MotorUtils.doubleSidedClamp(chassisSpeeds.omegaRadiansPerSecond, rotationMin, rotationMax);
     // if one or both of X or Y needs to be clamped, we need to scale both proportionally
@@ -396,12 +517,51 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param chassisSpeeds
    * @return clamped chassisSpeeds
    */
-  public ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds){
+  private ChassisSpeeds clampChassisSpeeds(ChassisSpeeds chassisSpeeds){
     return this.clampChassisSpeeds(chassisSpeeds, 
     MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND,
     MAX_VELOCITY_METERS_PER_SECOND, 
     MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND, 
     MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
+  }
+
+  /**
+   * Method that will store roll
+   */
+  private void storeRoll(){
+    this.RecentRolls.add(this.swerveNavx.getRoll());
+    while(this.RecentRolls.size() > LevelListMaxSize)
+    {
+      RecentRolls.remove(0);
+    }
+  }
+   
+  /**
+   * Method that will store pitch
+   */
+  private void storePitch(){
+    RecentPitches.add(swerveNavx.getPitch());
+    while(RecentPitches.size() > LevelListMaxSize)
+    {
+      RecentPitches.remove(0);
+    }
+  }
+ 
+  /**
+   * Method used to initialize the Odometry for the robot 
+   * @param currentRobotPosition - the centroid of the robot using the proper game coordinate system, see:
+   * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
+   */
+  private void initializeSwerveOdometry(Pose2d currentRobotPosition) {
+    frontLeftModule.setDriveDistance(0.0);
+    frontRightModule.setDriveDistance(0.0);
+    backLeftModule.setDriveDistance(0.0);
+    backRightModule.setDriveDistance(0.0);
+    swerveOdometry = new SwerveDriveOdometry(
+        swerveKinematics,
+        this.getGyroscopeRotation(),
+        this.getSwerveModulePositions(),
+        currentRobotPosition); 
   }
 
   /**
@@ -433,7 +593,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   private void refreshRobotPosition() {
     // Update the position of the robot
-    Rotation2d angle = this.getGyroAngle();
+    Rotation2d angle = this.getGyroscopeRotation();
     SwerveModulePosition[] positions = null;
     try{
       theLock.lock();
@@ -599,7 +759,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return resultAccelerations;
   }
 
-  public TrajectoryConfig getTrajectoryConfig() {
-    return trajectoryConfig;
-  }
 }
