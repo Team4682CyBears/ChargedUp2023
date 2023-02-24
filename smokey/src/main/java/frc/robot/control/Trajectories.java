@@ -71,6 +71,7 @@ public class Trajectories {
         ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
         InfrontToOntoRampWaypoints.add(Ramp);
+        // TODO can try to use fastConfig for this trajectory 
         Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, config);
 
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
