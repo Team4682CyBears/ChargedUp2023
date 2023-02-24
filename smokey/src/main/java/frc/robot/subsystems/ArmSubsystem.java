@@ -37,16 +37,16 @@ public class ArmSubsystem extends SubsystemBase
     ************************************************************************/
     // expected to be < 1.0 due to encoder granularity being lower for Rev/Neo
     private static final double telescopingArmsMotorEncoderTicksPerDegree = Constants.RevNeoEncoderTicksPerRevolution / Constants.DegreesPerRevolution;
-    // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:10
+    // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:100
     // TODO - confirm gearbox reduction
-    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 10.0); 
+    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 100.0); 
     // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:10
     // TODO - confirm gearbox reduction
     private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 10.0); 
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = 0.254; // 10.0 inches
+    private static final double maximumVerticalArmExtensionMeters = 0.210; // stubby arm // 0.254; // 10.0 inches
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = 0.9439402; // 78.5" - 41.337" == 37.163 inches
@@ -63,7 +63,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 0.7;
+    private static final double neoMotorSpeedReductionFactor = 1.0;
 
     /* *********************************************************************
     MEMBERS
@@ -79,10 +79,11 @@ public class ArmSubsystem extends SubsystemBase
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+//    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+    private DigitalInput horizontalArmMageneticSensor = verticalArmMageneticSensor;
 
-    private boolean isHorizontalMotorInverted = false;
-    private boolean isVerticalMotorInverted = false;
+    private boolean isHorizontalMotorInverted = true;
+    private boolean isVerticalMotorInverted = true;
 
     private boolean inSpeedMode = true;
     private boolean movementWithinTolerance = false;

@@ -1,5 +1,6 @@
 package frc.robot.common;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -48,5 +49,16 @@ public class VectorUtils{
             Math.sin(Math.toRadians(robotPose.getRoll())),
             Math.sin(Math.toRadians(robotPose.getPitch())));
 
+    }
+
+    /**
+     * Translates the x,y portion of the pose. Leaves the rotation unchanged.
+     * Use instead of Pose2d.add, which does strange things when the rotation is non-zero.
+     * @param pose
+     * @param translation
+     * @return new pose
+     */
+    public static Pose2d translatePose(Pose2d pose, Translation2d translation){
+        return new Pose2d(pose.getTranslation().plus(translation), pose.getRotation());
     }
 }

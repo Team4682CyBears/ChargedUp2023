@@ -10,6 +10,7 @@
 
 package frc.robot.swerveHelpers;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
@@ -94,7 +95,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
         @Override
         public void addDashboardEntries(ShuffleboardContainer container, ControllerImplementation controller) {
             SteerControllerFactory.super.addDashboardEntries(container, controller);
-            container.addNumber("Absolute Encoder Angle", () -> Math.toDegrees(controller.absoluteEncoder.getAbsoluteAngle()));
+            container.addNumber("Absolute Encoder Angle", () -> Math.toDegrees(controller.absoluteEncoder.getAbsoluteAngle()));         
         }
 
         @Override
@@ -139,7 +140,15 @@ public final class Falcon500SteerControllerFactoryBuilder {
             motor.setInverted(moduleConfiguration.isSteerInverted() ? TalonFXInvertType.CounterClockwise : TalonFXInvertType.Clockwise);
             motor.setNeutralMode(NeutralMode.Brake);
 
-            checkCtreError(motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / sensorPositionCoefficient, 0, CAN_TIMEOUT_MS), "Failed to set Falcon 500 encoder position");
+            Double absAngle = absoluteEncoder.getAbsoluteAngle();
+            if (absoluteEncoder.getLastError() == ErrorCode.OK) {
+                // if we were able to read the absolute encoder, then try to set the sensor position
+                checkCtreError(motor.setSelectedSensorPosition(absAngle / sensorPositionCoefficient, 0, CAN_TIMEOUT_MS), 
+                "WARNING: Failed to set Falcon 500 encoder position.");
+            } else {
+                // abs encoder is synced periodically, every 10s.  If reading the sensor fails, wait 10s before enabling the robot. 
+                System.out.println("WARNING: Reading absolute encoder position failed. Wait 10s before enabling robot.");
+            } 
 
             // Reduce CAN status frame rates
             CtreUtils.checkCtreError(
@@ -201,12 +210,12 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                     resetIteration = 0;
                     double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
-                    //System.out.println(
-                    //    "Syncing absolute encoder at " + absoluteAngle + "to motor encoder at " +
-                    //    currentAngleRadians + " for encoder " + (motor.getDeviceID() + 1) + 
-                    //    " (motor.getDeviceID() + 1).");
-                    motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
-                    currentAngleRadians = absoluteAngle;    
+                    if (absoluteEncoder.getLastError() == ErrorCode.OK){
+                        motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
+                        currentAngleRadians = absoluteAngle;    
+                    } else {
+                        System.out.println("WARNING: Syncing absolute encoder position failed.");
+                    }
                 }
             } else {
                 resetIteration = 0;
