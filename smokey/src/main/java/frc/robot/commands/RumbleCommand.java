@@ -6,32 +6,58 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 
-
+/**
+ * A class to rumble the xbox controller
+ */
 public class RumbleCommand extends CommandBase{
+    Timer timer = new Timer();
+    boolean done = false;
 
-    private XboxController controller = new XboxController(0);
-    private Timer timer;
-
-    public RumbleCommand(XboxController controller) {
-        this.timer = new Timer();
-        this.controller = controller;
+    // TODO rumble requires XboxController.  Previously, we used CommandXboxController
+    // check if having two APIs using the same controller be a problem?
+    public XboxController controller = null;
+    
+    /**
+     * constructor for rumble command
+     * @param controller
+     */
+    public RumbleCommand(XboxController controller) {  
+        this.controller= controller;
     }
 
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize()
+    {
+        timer.reset();
+        timer.start();
+        done = false;
+    }
 
+    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (controller.getBButton()) {
-            if(timer.hasElapsed(Constants.rumbleTime)){
-                System.out.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                controller.setRumble(RumbleType.kBothRumble, 1.0);
-            } else {
-                controller.setRumble(RumbleType.kBothRumble, 0.0);
-            }   
-        }
-    }
+        controller.setRumble(RumbleType.kBothRumble, 1.0);
+        if (timer.hasElapsed(Constants.rumbleTime))
+          {
+            done = true;
+          }
+    }   
+
+    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         controller.setRumble(RumbleType.kBothRumble, 0.0);
+        if(interrupted)
+        {
+          done = true;      
+        }
+      }
+    
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return done;
     }
     
 }
