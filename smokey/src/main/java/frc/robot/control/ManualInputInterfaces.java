@@ -139,7 +139,7 @@ public class ManualInputInterfaces {
         // bind the b button to auto balance
         this.driverController.b().onTrue(
           new ParallelCommandGroup(
-            new AutoBalanceStepCommand(localDrive).repeatedly().until(subsystemCollection.getDriveTrainSubsystem()::isLevel),
+            new AutoBalanceStepCommand(localDrive),
             new ButtonPressCommand(
               "driverController.b()",
               "auto balance")

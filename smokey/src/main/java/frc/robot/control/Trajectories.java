@@ -30,9 +30,9 @@ public class Trajectories {
         TrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // half max speed
 
-        this.Node1Position = new Pose2d(1.678, 5.084, Rotation2d.fromDegrees(180));
+        this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
-        this.Node9Position = new Pose2d(1.678, 0.416, Rotation2d.fromDegrees(180));
+        this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
         this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(180));
 
         this.TrajectoryEndPosition = new Pose2d(5.81, 2.748, Rotation2d.fromDegrees(90));
