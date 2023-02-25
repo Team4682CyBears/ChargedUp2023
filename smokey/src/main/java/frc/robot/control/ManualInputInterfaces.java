@@ -379,7 +379,7 @@ public class ManualInputInterfaces {
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      if(subsystemCollection.getPickerSubsystem() != null){
+      if(subsystemCollection.getArmSubsystem() != null){
         // right trigger stow preset for arm
         this.coDriverController.rightTrigger().onTrue(
           new ParallelCommandGroup(
