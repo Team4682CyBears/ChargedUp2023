@@ -382,7 +382,7 @@ public class ManualInputInterfaces {
         this.coDriverController.rightTrigger().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
-              this.subsystemCollection.getArmSubsystem(),
+              this.subsystemCollection.getArmSubsystem().andThen(new RumbleCommand()),
               Constants.armPresetPositionStowMetersY,
               Constants.armPresetPositionStowMetersZ),
             new ButtonPressCommand(
@@ -394,7 +394,7 @@ public class ManualInputInterfaces {
         this.coDriverController.leftTrigger().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
-              this.subsystemCollection.getArmSubsystem(),
+              this.subsystemCollection.getArmSubsystem().andThen(new RumbleCommand()),
               Constants.armPresetPositionGrabMetersY,
               Constants.armPresetPositionGrabMetersZ),
             new ButtonPressCommand(
@@ -406,7 +406,7 @@ public class ManualInputInterfaces {
         this.coDriverController.y().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
-              this.subsystemCollection.getArmSubsystem(),
+              this.subsystemCollection.getArmSubsystem().andThen(new RumbleCommand()),
               Constants.armPresetPositionScoreHighMetersY,
               Constants.armPresetPositionScoreHighMetersZ),
             new ButtonPressCommand(
@@ -418,7 +418,7 @@ public class ManualInputInterfaces {
         this.coDriverController.b().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
-              this.subsystemCollection.getArmSubsystem(),
+              this.subsystemCollection.getArmSubsystem().andThen(new RumbleCommand()),
               Constants.armPresetPositionScoreMediumMetersY,
               Constants.armPresetPositionScoreMediumMetersZ),
             new ButtonPressCommand(
@@ -430,7 +430,7 @@ public class ManualInputInterfaces {
         this.coDriverController.a().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
-              this.subsystemCollection.getArmSubsystem(),
+              this.subsystemCollection.getArmSubsystem().andThen(new RumbleCommand()),
               Constants.armPresetPositionScoreLowMetersY,
               Constants.armPresetPositionScoreLowMetersZ),
             new ButtonPressCommand(
