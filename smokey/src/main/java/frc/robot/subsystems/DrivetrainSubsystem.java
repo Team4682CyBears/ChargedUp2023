@@ -393,6 +393,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.storePitch();
     this.storeRoll();    
 
+    this.displayDiagnostics();
+
     // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
     // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
     SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -549,6 +551,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     {
       RecentPitches.remove(0);
     }
+  }
+
+  private void displayDiagnostics(){
+    SmartDashboard.putBoolean("NavX is calibrating", swerveNavx.isCalibrating());
+    SmartDashboard.putBoolean("NavX is calibrated", swerveNavx.isMagnetometerCalibrated());
   }
  
   /**
