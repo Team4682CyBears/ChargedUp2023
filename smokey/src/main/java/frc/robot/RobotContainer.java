@@ -162,8 +162,8 @@ public class RobotContainer {
       subsystems.setEveryBotPickerSubsystem(new EveryBotPickerSubsystem());
       subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new DefaultEveryBotPickerCommand(
         subsystems.getEveryBotPickerSubsystem(),
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
+        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
+        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
