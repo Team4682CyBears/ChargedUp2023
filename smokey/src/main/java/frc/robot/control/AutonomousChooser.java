@@ -180,9 +180,9 @@ public class AutonomousChooser {
 
     private void setRobotPose(SequentialCommandGroup command, Pose2d pose){
         command.addCommands(
-            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().zeroGyroscope(),
+            // set yaw to the starting rotation here so that field orientation ends up correct after auto
+            new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setYaw(pose.getRotation().getDegrees()),
             subsystems.getDriveTrainSubsystem()));
-        // TODO need to set yaw to the starting rotation here so that field orientation ends up correct after auto
         command.addCommands(
             new InstantCommand(() -> subsystems.getDriveTrainSubsystem().setRobotPosition(pose),
             subsystems.getDriveTrainSubsystem()));

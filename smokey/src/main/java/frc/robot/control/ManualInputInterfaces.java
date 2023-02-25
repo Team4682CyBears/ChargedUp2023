@@ -17,11 +17,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
+import frc.robot.commands.RumbleCommand;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +35,8 @@ public class ManualInputInterfaces {
 
   // sets joystick variables to joysticks
   private CommandXboxController driverController = new CommandXboxController(Constants.portDriverController); 
-  private CommandXboxController coDriverController = new CommandXboxController(Constants.portCoDriverController); 
+  private CommandXboxController coDriverController = new CommandXboxController(Constants.portCoDriverController);
+  private XboxController coDriverControllerForRumbleOnly = new XboxController(Constants.portCoDriverController);
 
   // subsystems needed for inputs
   private SubsystemCollection subsystemCollection = null;
@@ -377,7 +379,7 @@ public class ManualInputInterfaces {
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      if(subsystemCollection.getPickerSubsystem() != null){
+      if(subsystemCollection.getArmSubsystem() != null){
         // right trigger stow preset for arm
         this.coDriverController.rightTrigger().onTrue(
           new ParallelCommandGroup(
@@ -388,7 +390,7 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
               "coDriverController.rightTrigger()",
               "arm stow")
-            )
+            ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
         // left trigger grab preset for arm
         this.coDriverController.leftTrigger().onTrue(
@@ -400,7 +402,7 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
               "coDriverController.leftTrigger()",
               "arm grab")
-            )
+            ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
         // y button press will move the arms to high score position
         this.coDriverController.y().onTrue(
@@ -412,7 +414,7 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
               "coDriverController.y()",
               "arm score high")
-            )
+            ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
           // b button press will move the arms to medium score position
         this.coDriverController.b().onTrue(
@@ -424,7 +426,7 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
               "coDriverController.b()",
               "arm score medium")
-            )
+            ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
         // a button press will drive the arms to low score position
         this.coDriverController.a().onTrue(
@@ -436,7 +438,7 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
               "coDriverController.a()",
               "arm score low")
-            )
+            ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
       }
       // x button press will stop all
