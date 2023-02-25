@@ -144,7 +144,7 @@ public class AutonomousChooser {
     public Command getBalanceRoutine (AutonomousBalance DoBalance){
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
-            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
+            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BehindToOntoRampTrajectory));
             command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         }
         return command;
