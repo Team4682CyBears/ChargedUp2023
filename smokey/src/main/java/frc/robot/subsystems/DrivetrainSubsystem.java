@@ -453,11 +453,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * A method to zero the current position
+   * sets the Yaw to a specific angle
+   * @param offsetDegrees
    */
-  public void zeroRobotPosition()
-  {
-    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+  public void setYaw(double offsetDegrees) {
+    this.zeroGyroscope();
+    this.yawOffsetDegrees = offsetDegrees;
   }
 
   /**
@@ -474,12 +475,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the Yaw to a specific angle
-   * @param offsetDegrees
+   * A method to zero the current position
    */
-  public void setYaw(double offsetDegrees) {
-    this.zeroGyroscope();
-    this.yawOffsetDegrees = offsetDegrees;
+  public void zeroRobotPosition()
+  {
+    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
   }
 
   /**
