@@ -26,6 +26,8 @@ public class AutoBalanceStepCommand extends CommandBase{
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.25;  
   private double velocityValue = 0.6;
+  private int numIterations = 0;
+  private int maxIterations = 12;
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
 
@@ -77,11 +79,12 @@ public class AutoBalanceStepCommand extends CommandBase{
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       // test for level at the end of the wait cycle. 
-      if (drivetrainsubsystem.isLevel()){
+      if (drivetrainsubsystem.isLevel() || (numIterations >= maxIterations)){
         done = true;
       } else {
         // setup the next drive cycle
-        System.out.println("auto balance step command: completed one cycle");
+        numIterations += 1;
+        System.out.println("auto balance step command: completed cycle " + numIterations + ".");
         System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
         System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
         Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
