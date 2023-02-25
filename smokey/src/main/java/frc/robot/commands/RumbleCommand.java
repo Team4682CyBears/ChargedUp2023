@@ -10,25 +10,26 @@ import frc.robot.Constants;
  * A class to rumble the xbox controller
  */
 public class RumbleCommand extends CommandBase{
-    Timer timer = new Timer();
-    boolean done = false;
+    private Timer timer = new Timer();
+    private boolean done = false;
+    private double rumbleMaximumSeconds = 0.0;
 
     // TODO rumble requires XboxController.  Previously, we used CommandXboxController
     // check if having two APIs using the same controller be a problem?
-    public XboxController controller = null;
+    private XboxController controller = null;
     
     /**
      * constructor for rumble command
      * @param controller
      */
-    public RumbleCommand(XboxController controller) {  
+    public RumbleCommand(XboxController controller, double durationSeconds) {  
         this.controller= controller;
+        rumbleMaximumSeconds = durationSeconds;
     }
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         timer.reset();
         timer.start();
         done = false;
@@ -38,18 +39,16 @@ public class RumbleCommand extends CommandBase{
     @Override
     public void execute() {
         controller.setRumble(RumbleType.kBothRumble, 1.0);
-        if (timer.hasElapsed(Constants.rumbleTimeSeconds))
-          {
-            done = true;
-          }
+        if (timer.hasElapsed(rumbleMaximumSeconds)) {
+          done = true;
+        }
     }   
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         controller.setRumble(RumbleType.kBothRumble, 0.0);
-        if(interrupted)
-        {
+        if(interrupted) {
           done = true;      
         }
       }
