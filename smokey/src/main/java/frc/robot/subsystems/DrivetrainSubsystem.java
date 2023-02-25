@@ -97,7 +97,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
 
   // store yaw/pitch history
-  private static final int LevelListMaxSize = 20;
+  private static final int LevelListMaxSize = 20; // 20 * 20ms = 0.4s total history time
   private ArrayList<Float> RecentRolls = new ArrayList<Float>();
   private ArrayList<Float> RecentPitches = new ArrayList<Float>();
 

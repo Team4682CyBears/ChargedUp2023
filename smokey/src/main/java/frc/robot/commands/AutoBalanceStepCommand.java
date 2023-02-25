@@ -11,8 +11,6 @@ import java.lang.Math;
 
 /**
  * Implements a command to perform a single step of an auto balancing routine. 
- * Intended to be called in a loop like this:
- * AutoBalanceStepCommand(drive, navx).repeatedly().until(navx::isLevel)
  */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
@@ -22,9 +20,9 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double yVelocity = 0.0;
   private double rotVelocity = 0.0;
   // wait duration needs to be sufficiently long to allow the ramp to settle for the navx to take another reading
-  private double waitDurationSecondsValue = .6;
+  private double waitDurationSecondsValue = .7;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
-  private double driveDurationSecondsValue = 0.25;  
+  private double driveDurationSecondsValue = 0.2;  
   private double velocityValue = 0.8;
   private int numIterations = 0;
   private int maxIterations = 12;
