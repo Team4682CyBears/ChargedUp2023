@@ -145,8 +145,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem())
-            .repeatedly().until(subsystems.getDriveTrainSubsystem()::isLevel));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         }
         return command;
     }
@@ -175,8 +174,7 @@ public class AutonomousChooser {
     public Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.DirectToRampTrajectory));
-        command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem())
-            .repeatedly().until(subsystems.getDriveTrainSubsystem()::isLevel));
+        command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 

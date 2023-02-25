@@ -76,10 +76,23 @@ public class AutoBalanceStepCommand extends CommandBase{
 
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
-      System.out.println("auto balance step command: completed one cycle");
-      System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
-      System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
-      done = true;
+      // test for level at the end of the wait cycle. 
+      if (drivetrainsubsystem.isLevel()){
+        done = true;
+      } else {
+        // setup the next drive cycle
+        System.out.println("auto balance step command: completed one cycle");
+        System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
+        System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
+        Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
+        Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
+        xVelocity = velocityVec.getX();
+        yVelocity = velocityVec.getY();
+
+        driveTimer.reset();
+        waitTimer.reset();
+        driveTimer.start();
+      }
     }
   }
 
