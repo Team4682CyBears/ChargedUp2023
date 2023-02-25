@@ -51,7 +51,10 @@ public class InstalledHardware
     public static final boolean horizontalArmMotorInstalled = false;
     public static final boolean verticalArmMotorInstalled = false;
 
-    // Arm Related Hardware
+    // Picker Related Hardware
     public static final boolean pickerPneumaticsInstalled = false;
     public static final boolean stablizerPneumaticsInstalled = false;
+
+    // EveryBot Picker Related Hardware
+    public static final boolean everyBotPickerInstalled = false;
 }

@@ -94,6 +94,26 @@ public class ManualInputInterfaces {
   }
 
   /**
+   * A method to get the every bot uptake trigger
+   * @return - a double value associated with the magnitude of the right trigger pull
+   */
+  public double getInputEveryBotUptakeTrigger()
+  {
+    // use the co drivers right trigger - multiply by -1.0
+    return coDriverController.getRightTriggerAxis() * -1.0;
+  }
+
+  /**
+   * A method to get the every bot expell trigger
+   * @return - a double value associated with the magnitude of the left trigger pull
+   */
+  public double getInputEveryBotExpellTrigger()
+  {
+    // use the co drivers left trigger
+    return coDriverController.getLeftTriggerAxis();
+  }
+
+  /**
    * A method to initialize various commands to the numerous buttons.
    * Need delayed bindings as some subsystems during testing won't always be there.
    */
@@ -379,9 +399,9 @@ public class ManualInputInterfaces {
   {
     if(InstalledHardware.coDriverXboxControllerInstalled)
     {
-      if(subsystemCollection.getArmSubsystem() != null){
-        // right trigger stow preset for arm
-        this.coDriverController.rightTrigger().onTrue(
+      if(subsystemCollection.getArmSubsystem() != null) {
+        // right bumper stow preset for arm
+        this.coDriverController.rightBumper().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
               this.subsystemCollection.getArmSubsystem(),
@@ -392,15 +412,15 @@ public class ManualInputInterfaces {
               "arm stow")
             ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
-        // left trigger grab preset for arm
-        this.coDriverController.leftTrigger().onTrue(
+        // left bumper grab preset for arm
+        this.coDriverController.leftBumper().onTrue(
           new ParallelCommandGroup(
             new ArmToPointCommand(
               this.subsystemCollection.getArmSubsystem(),
               Constants.armPresetPositionGrabMetersY,
               Constants.armPresetPositionGrabMetersZ),
             new ButtonPressCommand(
-              "coDriverController.leftTrigger()",
+              "coDriverController.leftBumper()",
               "arm grab")
             ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );
@@ -452,28 +472,33 @@ public class ManualInputInterfaces {
           )
         );
 
-        if(subsystemCollection.getPickerSubsystem() != null){
-          // left bumper press will close the picker  
-          this.coDriverController.leftBumper().onTrue(
+        if(subsystemCollection.getPickerSubsystem() != null) {
+          // left trigger press will close the picker  
+          this.coDriverController.leftTrigger().onTrue(
             new ParallelCommandGroup(
               new ManipulatePickerCommand(
                 subsystemCollection.getPickerSubsystem(), false),
               new ButtonPressCommand(
-              "coDriverController.leftBumper()",
+              "coDriverController.leftTrigger()",
               "close the picker")
             )
           );
-          // right bumper press will open the picker  
-          this.coDriverController.rightBumper().onTrue(
+          // right trigger press will open the picker  
+          this.coDriverController.rightTrigger().onTrue(
             new ParallelCommandGroup(
               new ManipulatePickerCommand(
                 subsystemCollection.getPickerSubsystem(), true),
               new ButtonPressCommand(
-              "coDriverController.rightBumper()",
+              "coDriverController.rightTrigger()",
               "open the picker")
             )
           );
         }
+
+        // NOTE: subsystemCollection.getEveryBotPickerSubsystem()
+        // THESE ARE TAKEN CARE OF IN DEFAULT COMMANDS
+        // left trigger variable press will intake on the every bot picker 
+        // right trigger variable press will expell on the every bot picker 
     }
   }
 }

@@ -14,12 +14,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DefaultEveryBotPickerCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 
@@ -38,11 +40,11 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
     this.initializePickerSubsystem();
+    this.initializeEveryBotPickerSubsystem();
     this.initializeStablizerSubsystem();
 
     // init the input system 
@@ -57,7 +59,6 @@ public class RobotContainer {
     System.out.println(">>>> Finished initializing button bindings.");
 
     this.autonomousChooser = new AutonomousChooser(subsystems);
-
   }
  
   /**
@@ -77,13 +78,11 @@ public class RobotContainer {
     // note: in this case it is safe to build the interfaces if only one of the controllers is present
     // because button binding assignment code checks that each is installed later (see: initializeButtonCommandBindings)
     if(InstalledHardware.driverXboxControllerInstalled ||
-      InstalledHardware.coDriverXboxControllerInstalled)
-    {
+      InstalledHardware.coDriverXboxControllerInstalled) {
       subsystems.setManualInputInterfaces(new ManualInputInterfaces(subsystems));
       System.out.println("SUCCESS: initializeManualInputInterfaces");
     }
-    else
-    {
+    else {
       System.out.println("FAIL: initializeManualInputInterfaces");
     }
   }
@@ -96,8 +95,7 @@ public class RobotContainer {
       InstalledHardware.leftRearDriveInstalled && 
       InstalledHardware.rightFrontDriveInstalled &&
       InstalledHardware.rightRearDriveInstalled &&
-      InstalledHardware.navxInstalled)
-    {
+      InstalledHardware.navxInstalled) {
       // The robot's subsystems and commands are defined here...
       subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
       System.out.println("SUCCESS: initializeDrivetrain");
@@ -114,8 +112,7 @@ public class RobotContainer {
         () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ));
     }
-    else
-    {
+    else {
       System.out.println("FAIL: initializeDrivetrain");
     }
   }
@@ -125,8 +122,7 @@ public class RobotContainer {
    */
   private void initializeArmSubsystem() {
     if(InstalledHardware.verticalArmMotorInstalled && 
-      InstalledHardware.horizontalArmMotorInstalled)
-    {
+      InstalledHardware.horizontalArmMotorInstalled) {
       // The robot's subsystems and commands are defined here...
       subsystems.setArmSubsystem(new ArmSubsystem());
       System.out.println("SUCCESS: initializeArm");
@@ -140,8 +136,7 @@ public class RobotContainer {
         () -> subsystems.getManualInputInterfaces().getInputArcadeArmZ()
       ));
     }
-    else
-    {
+    else {
       System.out.println("FAIL: initializeArm");
     }
   }
@@ -150,14 +145,30 @@ public class RobotContainer {
    * A method to init the picker
    */
   private void initializePickerSubsystem() {
-    if(InstalledHardware.pickerPneumaticsInstalled)
-    {
+    if(InstalledHardware.pickerPneumaticsInstalled) {
       subsystems.setPickerSubsystem(new PickerSubsystem());
       System.out.println("SUCCESS: initializePicker");
     }
-    else
-    {
+    else {
       System.out.println("FAIL: initializePicker");
+    }
+  }
+
+  /**
+   * A method to init the every bot picker
+   */
+  private void initializeEveryBotPickerSubsystem() {
+    if(InstalledHardware.everyBotPickerInstalled) {
+      subsystems.setEveryBotPickerSubsystem(new EveryBotPickerSubsystem());
+      subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new DefaultEveryBotPickerCommand(
+        subsystems.getEveryBotPickerSubsystem(),
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
+        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
+      ));
+      System.out.println("SUCCESS: initializeEveryBotPicker");
+    }
+    else {
+      System.out.println("FAIL: initializeEveryBotPicker");
     }
   }
 
@@ -165,13 +176,11 @@ public class RobotContainer {
    * A method to init the stablizer
    */
   private void initializeStablizerSubsystem() {
-    if(InstalledHardware.stablizerPneumaticsInstalled)
-    {
+    if(InstalledHardware.stablizerPneumaticsInstalled) {
       subsystems.setStabilizerSubsystem(new StabilizerSubsystem());
       System.out.println("SUCCESS: initializeStablizer");
     }
-    else
-    {
+    else {
       System.out.println("FAIL: initializeStablizer");
     }
   }  
@@ -187,8 +196,7 @@ public class RobotContainer {
     // 2. estimate the robot centroid location
     // 3. find other April tags ...
     // 4. apply some smoothing
-    if(subsystems.getDriveTrainSubsystem() != null)
-    {
+    if(subsystems.getDriveTrainSubsystem() != null) {
       subsystems.getDriveTrainSubsystem().setRobotPosition(initialRobotPosition);
       System.out.println(">>>> Initialized Robot Position. ");
     }
@@ -198,10 +206,12 @@ public class RobotContainer {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {
         return (value - deadband) / (1.0 - deadband);
-      } else {
+      }
+      else {
         return (value + deadband) / (1.0 - deadband);
       }
-    } else {
+    }
+    else {
       return 0.0;
     }
   }

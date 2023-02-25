@@ -117,7 +117,11 @@ public final class Constants {
     public static final int PickerVerticalPneumaticsControlModuleForwardChannel = 4;
     public static final int PickerVerticalPneumaticsControlModuleReverseChannel = 5; 
     
-    // ********************************************************************
+     // *****************************************************************
+    // every bot constants
+    public static final int EveryBotPickerMotorCanId = 15;
+
+   // ********************************************************************
     //Controller Constants
     public final static double rumbleTimeSeconds = 1.0;
 

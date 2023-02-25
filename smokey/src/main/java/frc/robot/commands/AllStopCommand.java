@@ -35,6 +35,9 @@ public class AllStopCommand extends CommandBase {
         if(this.subsystems.getPickerSubsystem() != null) {
             addRequirements(this.subsystems.getPickerSubsystem());
         }
+        if(this.subsystems.getPickerSubsystem() != null) {
+            addRequirements(this.subsystems.getPickerSubsystem());
+        }
         if(this.subsystems.getStabilizerSubsystem() != null) {
             addRequirements(this.subsystems.getStabilizerSubsystem());
         }
@@ -58,6 +61,9 @@ public class AllStopCommand extends CommandBase {
         }
         if(this.subsystems.getStabilizerSubsystem() != null) {
             this.subsystems.getStabilizerSubsystem().retractPosition();
+        }
+        if(this.subsystems.getEveryBotPickerSubsystem() != null) {
+            this.subsystems.getEveryBotPickerSubsystem().setPickerSpeed(0.0);
         }
     }
 
