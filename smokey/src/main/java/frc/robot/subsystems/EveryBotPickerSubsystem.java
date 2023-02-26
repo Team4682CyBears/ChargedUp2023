@@ -31,16 +31,16 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     /* *********************************************************************
     CONSTANTS
     ************************************************************************/
-    // expected to be < 1.0 due to encoder granularity being lower for Rev/Neo
-    private static final double everyBotMotorEncoderTicksPerDegree = Constants.RevNeoEncoderTicksPerRevolution / Constants.DegreesPerRevolution;
-
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 1.0;
+    private static final double neoMotorSpeedReductionFactor = 5.0;
+
+    // EveryBot picker gear reduction
+    // TODO - get proper values from Simeon/Grayson
+    private static final double everyBotGearReduction = 10.0/1.0;
 
     /* *********************************************************************
     MEMBERS
     ************************************************************************/
-    // two matched motors - one for each climber side
     private CANSparkMax everyBotMotor = new CANSparkMax(Constants.EveryBotPickerMotorCanId, MotorType.kBrushless);
     private SparkMaxPIDController everyBotPidController;
     private RelativeEncoder everyBotEncoder;
@@ -48,7 +48,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     private boolean motorInitalizedForSmartMotion = false;
 
     private boolean isEveryBotMotorInverted = true;
-    private double requestedEveryBotMotorSpeed = 0.0;
+    private double requestedEveryBotMotorRpm = 0.0;
 
     /* *********************************************************************
     CONSTRUCTORS
@@ -65,11 +65,12 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     PUBLIC METHODS
     ************************************************************************/
     /**
-     * A method to set the every bot motor to a certain speed
-     * @param everyBotArmSpeed the speed to run the everyBot arm motor at
+     * A method to set the every bot motor to a certain RPM based on a relative speed input
+     * @param everyBotPickerSpeed the relative speed -1.0 to 1.0 to run the everyBot arm motor at
      */
-    public void setPickerSpeed(double everyBotPickerSpeed) {
-      this.requestedEveryBotMotorSpeed = MotorUtils.truncateValue(everyBotPickerSpeed, -1.0, 1.0);
+    public void setPickerRelativeSpeed(double everyBotPickerSpeed) {
+      this.requestedEveryBotMotorRpm =
+        MotorUtils.truncateValue(everyBotPickerSpeed, -1.0, 1.0) * Constants.neoFiveFiveZeroMaximumRevolutionsPerMinute;
     }
    
     /**
@@ -80,7 +81,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
       // confirm that the smart motion is setup - no-op after it is setup first time
       this.initializeMotorsSmartMotion();
       this.refreshPickerPosition();
-      this.everyBotMotor.set(this.requestedEveryBotMotorSpeed * neoMotorSpeedReductionFactor);
+      everyBotPidController.setReference(this.requestedEveryBotMotorRpm, CANSparkMax.ControlType.kVelocity);
     }
 
     @Override
@@ -95,7 +96,8 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
      * A function intended to be called from perodic to update encoder value of the motor.
      */
     private void refreshPickerPosition() {
-      SmartDashboard.putNumber("everyBotArmMotorTicks", this.everyBotEncoder.getPosition());
+      SmartDashboard.putNumber("EveryBotPickerMotorSpeedRpm", this.everyBotEncoder.getVelocity());
+      SmartDashboard.putNumber("EveryBotPickerIntakeSpeedRpm", this.everyBotEncoder.getVelocity()/EveryBotPickerSubsystem.everyBotGearReduction);
     }
 
     // a method devoted to establishing proper startup of the jaws motors
@@ -110,7 +112,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
         kFF = 0.00001; 
         kMaxOutput = 1; 
         kMinOutput = -1;
-        maxRPM = Constants.neoMaximumRevolutionsPerMinute;
+        maxRPM = Constants.neoFiveFiveZeroMaximumRevolutionsPerMinute;
         int smartMotionSlot = 0;
     
         // Smart Motion Coefficients

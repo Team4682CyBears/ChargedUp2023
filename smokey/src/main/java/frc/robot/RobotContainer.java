@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.DefaultEveryBotPickerCommand;
+import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
@@ -181,14 +181,14 @@ public class RobotContainer {
   private void initializeEveryBotPickerSubsystem() {
     if(InstalledHardware.everyBotPickerInstalled) {
       subsystems.setEveryBotPickerSubsystem(new EveryBotPickerSubsystem());
-      subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new DefaultEveryBotPickerCommand(
+      subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new EveryBotPickerDefaultCommand(
         subsystems.getEveryBotPickerSubsystem(),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
 
       // add a watcher for overcurrent on the 
-      DefaultEveryBotPickerCommand ebCmd = new DefaultEveryBotPickerCommand(
+      EveryBotPickerDefaultCommand ebCmd = new EveryBotPickerDefaultCommand(
         subsystems.getEveryBotPickerSubsystem(), 
         () -> 0.0, 
         () -> 0.0);
