@@ -38,14 +38,13 @@ public class PowerDistributionPanelWatcherSubsystem extends SubsystemBase {
             double current = distroPannel.getCurrent(nextSpy.getPort());
             if(current > nextSpy.getCurrentLimit())
             {
-                var theCommand = nextSpy.getAction();
                 System.out.println(
                     "Overcurrent detected for port " + nextSpy.getPort() +
                     " with maximum of " + nextSpy.getCurrentLimit() + 
                     " and actual of " + current + 
-                    " therefore running " + theCommand.getClass());
+                    ". -> " + nextSpy.getActionDescription());
                 // lanunch the command
-                CommandScheduler.getInstance().schedule(theCommand);
+                CommandScheduler.getInstance().schedule(nextSpy.getAction());
             }
         }
     }

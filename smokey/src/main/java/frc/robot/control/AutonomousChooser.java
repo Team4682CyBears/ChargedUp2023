@@ -25,6 +25,7 @@ import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.commands.EveryBotPickerAutoExpellCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.common.SwerveTrajectoryGenerator;
@@ -110,15 +111,42 @@ public class AutonomousChooser {
         setRobotPose(command, NodePosition);
         command.addCommands(new InstantCommand(
             () -> System.out.println("Begin Driving Trajectory from: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
-        command.addCommands(new ParallelCommandGroup(
-            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory)));
-            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE)));
 
-        //command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
+        // drive into node
+        ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup(
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
 
-        command.addCommands(new ParallelCommandGroup(
-            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory)));
-            //new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW)));
+        // move arm to high score
+        if(this.subsystems.getArmSubsystem() != null) {
+            intoNodeAndHighScore.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+        }
+
+        command.addCommands(intoNodeAndHighScore);
+
+        // expel the game piece by either opening the claw or running the motors to expell
+        if(this.subsystems.getPickerSubsystem() != null) {
+            command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
+        }
+        else if (this.subsystems.getEveryBotPickerSubsystem() != null) {
+            command.addCommands(new EveryBotPickerAutoExpellCommand(subsystems.getEveryBotPickerSubsystem()));
+        }
+
+        // drive out of the score position
+        ParallelCommandGroup outOfNodeAndStow = new ParallelCommandGroup(
+            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), OutOfNodeTrajectory));
+
+        // stow the arm
+        if(this.subsystems.getArmSubsystem() != null) {
+            outOfNodeAndStow.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW));
+        }
+
+        command.addCommands(outOfNodeAndStow);
+
+        // close the claw
+        if(this.subsystems.getPickerSubsystem() != null) {
+            command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), false));
+        }
+
         return command;
     }
     

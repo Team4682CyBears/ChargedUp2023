@@ -199,7 +199,8 @@ public class RobotContainer {
         new PortSpy(
           Constants.EveryBotMotorPdpPortId,
           Constants.EveryBotMotorMaximuCurrentAmps,
-          new SequentialCommandGroup( ebCmd, rc)
+          new SequentialCommandGroup( ebCmd, rc),
+          "Every Bot Motor Overcurrent Protection"
         )
       );
       System.out.println("SUCCESS: initializeEveryBotPicker");

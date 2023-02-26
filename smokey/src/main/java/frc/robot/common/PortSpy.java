@@ -16,12 +16,21 @@ public class PortSpy {
     private int portToWatch = -1;
     private double currentLimit = 0.0;
     private CommandBase action = null;
+    private String description = "";
 
-    public PortSpy(int port, double limit, CommandBase action)
+    /**
+     * The constructor to assemble port watching metadata
+     * @param port
+     * @param limit
+     * @param action
+     * @param actionDescription
+     */
+    public PortSpy(int port, double limit, CommandBase action, String actionDescription)
     {
         this.portToWatch = port;
         this.currentLimit = limit;
         this.action = action;
+        this.description = actionDescription;
     }
 
     public void setPort(int port) {
@@ -47,4 +56,13 @@ public class PortSpy {
     public CommandBase getAction() {
         return this.action;
     }
+
+    public void setActionDescription(String actionDescription) {
+        this.description = actionDescription;
+    }
+
+    public String getActionDescription() {
+        return this.description;
+    }
+
 }
