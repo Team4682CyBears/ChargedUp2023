@@ -10,7 +10,11 @@
 
 package frc.robot;
 
+import javax.sound.sampled.Port;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
@@ -23,7 +27,9 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
+import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
+import frc.robot.common.PortSpy;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,6 +46,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    // init the pdp watcher
+    this.initializePowerDistributionPanelWatcherSubsystem();
+
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
@@ -85,6 +95,15 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeManualInputInterfaces");
     }
+  }
+
+  /**
+   * A method to init the PDP watcher
+   */
+  private void initializePowerDistributionPanelWatcherSubsystem() {
+    subsystems.setPowerDistributionPanelWatcherSubsystem(
+      new PowerDistributionPanelWatcherSubsystem(Constants.currentPowerDistributionPanelType));
+    System.out.println("SUCCESS: initializeManualInputInterfaces");
   }
 
   /**
@@ -165,6 +184,18 @@ public class RobotContainer {
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
+
+      // add a watcher for overcurrent on the 
+      subsystems.getPowerDistributionPanelWatcherSubsystem().add(
+        new PortSpy(
+          Constants.EveryBotMotorPdpPortId,
+          Constants.EveryBotMotorMaximuCurrentAmps,
+          new DefaultEveryBotPickerCommand(
+            subsystems.getEveryBotPickerSubsystem(), 
+            () -> 0.0, 
+            () -> 0.0)
+          )
+      );
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {

@@ -21,6 +21,7 @@ public class SubsystemCollection
     private DrivetrainSubsystem driveTrainSubsystem = null;
     private PickerSubsystem pickerSubsystem = null;
     private EveryBotPickerSubsystem everyBotPickerSubsystem = null;
+    private PowerDistributionPanelWatcherSubsystem powerDistributionPanelWatcherSubsystem = null; 
     private StabilizerSubsystem stabilizerSubsystem = null;
 
     /**
@@ -43,6 +44,9 @@ public class SubsystemCollection
     public StabilizerSubsystem getStabilizerSubsystem() { return stabilizerSubsystem; }
     public void setStabilizerSubsystem(StabilizerSubsystem value) { stabilizerSubsystem = value; }
 
+    public PowerDistributionPanelWatcherSubsystem getPowerDistributionPanelWatcherSubsystem() { return powerDistributionPanelWatcherSubsystem; }
+    public void setPowerDistributionPanelWatcherSubsystem(PowerDistributionPanelWatcherSubsystem value) { powerDistributionPanelWatcherSubsystem = value; }
+    
     public ManualInputInterfaces getManualInputInterfaces() { return manualInput; }
     public void setManualInputInterfaces(ManualInputInterfaces value) { manualInput = value; }
 
