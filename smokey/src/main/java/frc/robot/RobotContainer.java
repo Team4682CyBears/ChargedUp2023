@@ -16,9 +16,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultEveryBotPickerCommand;
+import frc.robot.commands.RumbleCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
@@ -186,15 +188,19 @@ public class RobotContainer {
       ));
 
       // add a watcher for overcurrent on the 
+      DefaultEveryBotPickerCommand ebCmd = new DefaultEveryBotPickerCommand(
+        subsystems.getEveryBotPickerSubsystem(), 
+        () -> 0.0, 
+        () -> 0.0);
+      RumbleCommand rc = new RumbleCommand(
+        this.subsystems.getManualInputInterfaces().getCoDriverController(),
+        Constants.overcurrentRumbleTimeSeconds);
       subsystems.getPowerDistributionPanelWatcherSubsystem().add(
         new PortSpy(
           Constants.EveryBotMotorPdpPortId,
           Constants.EveryBotMotorMaximuCurrentAmps,
-          new DefaultEveryBotPickerCommand(
-            subsystems.getEveryBotPickerSubsystem(), 
-            () -> 0.0, 
-            () -> 0.0)
-          )
+          new SequentialCommandGroup( ebCmd, rc)
+        )
       );
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }

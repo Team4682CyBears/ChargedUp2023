@@ -49,6 +49,14 @@ public class ManualInputInterfaces {
   }
 
   /**
+   * A method to return the co driver controller for rumble needs
+   * @return
+   */
+  public final XboxController getCoDriverController() {
+    return coDriverControllerForRumbleOnly;
+  }
+
+  /**
    * A method to get the arcade drive X componet being input from humans
    * @return - a double value associated with the magnitude of the x componet
    */
