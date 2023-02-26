@@ -11,21 +11,26 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.PortSpy;
+import frc.robot.Constants;
 
 public class PowerDistributionPanelWatcherSubsystem extends SubsystemBase {
-   private static PowerDistribution distroPannel;
+    private PowerDistribution distroPannel = new PowerDistribution(
+        Constants.currentPowerDistributionPanelCanId,
+        Constants.currentPowerDistributionPanelType);
     private ArrayList<PortSpy> myList = new ArrayList<PortSpy>();
 
-    public PowerDistributionPanelWatcherSubsystem(ModuleType type) {
-        PowerDistributionPanelWatcherSubsystem.distroPannel = new PowerDistribution(2, type);
+    public PowerDistributionPanelWatcherSubsystem() {
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
 
+    /*
+     * Method to add new ports to watch for overcurrent protection on
+     * @param spy
+     */
     public void add(PortSpy spy) {
         myList.add(spy);
     }

@@ -10,11 +10,7 @@
 
 package frc.robot;
 
-import javax.sound.sampled.Port;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
@@ -103,9 +99,8 @@ public class RobotContainer {
    * A method to init the PDP watcher
    */
   private void initializePowerDistributionPanelWatcherSubsystem() {
-    subsystems.setPowerDistributionPanelWatcherSubsystem(
-      new PowerDistributionPanelWatcherSubsystem(Constants.currentPowerDistributionPanelType));
-    System.out.println("SUCCESS: initializeManualInputInterfaces");
+    subsystems.setPowerDistributionPanelWatcherSubsystem(new PowerDistributionPanelWatcherSubsystem());
+    System.out.println("SUCCESS: initializePowerDistributionPanelWatcherSubsystem");
   }
 
   /**
