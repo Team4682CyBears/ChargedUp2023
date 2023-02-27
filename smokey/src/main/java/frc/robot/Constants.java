@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 public final class Constants {
 
@@ -63,6 +64,8 @@ public final class Constants {
     public static final double DegreesPerRevolution = 360.0;
     // NEO maximum RPM 
     public static final double neoMaximumRevolutionsPerMinute = 5676;
+    // NEO 550 maximum RPM - see: https://www.revrobotics.com/rev-21-1651/#:~:text=The%20following%20specifications%20for%20the%20NEO%20550%20Brushless,Motor%20Kv%3A%20917%20Kv%20Free%20Speed%3A%2011000%20RPM
+    public static final double neoFiveFiveZeroMaximumRevolutionsPerMinute = 11000;
     // this uses the halls effect sensor when plugged into the spark max
     // see: https://www.revrobotics.com/rev-21-1650/ where it says "42 counts per rev."
     public static final double RevNeoEncoderTicksPerRevolution = 42;
@@ -72,10 +75,10 @@ public final class Constants {
     public static final int portDriverController = 0;
     public static final int portCoDriverController = 1;
 
-    //  *****************************************************************
+    // *****************************************************************
     // navx isLevel tolerence in degrees
     public static final double navxTolDegrees = 4;
-    //************************************
+    // ************************************
     // trajectory constants
     public static final double TrajectoryMaxAcceleration = 1;
     public static final double TrajectoryMaxVelocity = 1;
@@ -83,8 +86,8 @@ public final class Constants {
     // TODO test tightening up these values
     public static final Pose2d TrajectoryPoseTol = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(5));
 
-    //*************************************** 
-    //For auto constants
+    // *************************************** 
+    // For auto constants
     public static final double snoutDepth = Units.inchesToMeters(5.25);
 
     // *******************************************************************
@@ -117,8 +120,20 @@ public final class Constants {
     public static final int PickerVerticalPneumaticsControlModuleForwardChannel = 4;
     public static final int PickerVerticalPneumaticsControlModuleReverseChannel = 5; 
     
+    // *****************************************************************
+    // Every Bot picker constants
+    public static final int EveryBotPickerMotorCanId = 15;
+
     // ********************************************************************
-    //Controller Constants
-    public final static double rumbleTimeSeconds = 1.0;
+    // Controller Constants
+    public static final double rumbleTimeSeconds = 1.0;
+
+    // ********************************************************************
+    // PowerDistributionPanel Constants
+    public static final int currentPowerDistributionPanelCanId = 2;
+    public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
+    public static final double overcurrentRumbleTimeSeconds = 0.25;
+    public static final int EveryBotMotorPdpPortId = 1;
+    public static final double EveryBotMotorMaximuCurrentAmps = 23.0;
 
 }
