@@ -95,6 +95,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
   private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  private double yawOffsetDegrees = 0.0;
 
   // store yaw/pitch history
   private static final int LevelListMaxSize = 20;
@@ -210,7 +211,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return new EulerAngle(
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
-      swerveNavx.getYaw());
+      MathUtil.angleModulus(swerveNavx.getYaw() + this.yawOffsetDegrees));
   }
 
   /**
@@ -237,14 +238,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
 
       // We will only get valid fused headings if the magnetometer is calibrated
-      return Rotation2d.fromDegrees(swerveNavx.getFusedHeading());
+      return Rotation2d.fromDegrees(swerveNavx.getFusedHeading()+ yawOffsetDegrees);
     }
 
     // TODO - test this!!
     // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-    return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw());
+    return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw() + yawOffsetDegrees);
   }
   
   /**
@@ -454,11 +455,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * A method to zero the current position
+   * sets the Yaw to a specific angle
+   * @param offsetDegrees
    */
-  public void zeroRobotPosition()
-  {
-    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+  public void setYaw(double offsetDegrees) {
+    this.zeroGyroscope();
+    this.yawOffsetDegrees = offsetDegrees;
   }
 
   /**
@@ -471,6 +473,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
       System.out.println("WARNING: Gyro is calibrating. Zeroing gyro has no effect while it is calibrating.");
     }
     swerveNavx.zeroYaw();
+    this.yawOffsetDegrees = 0.0;
+  }
+
+  /**
+   * A method to zero the current position
+   */
+  public void zeroRobotPosition()
+  {
+    this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
   }
 
   /**
