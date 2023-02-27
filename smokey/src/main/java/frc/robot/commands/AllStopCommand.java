@@ -58,7 +58,7 @@ public class AllStopCommand extends CommandBase {
         if(this.subsystems.getPickerSubsystem() != null) {
             // safer to be deployed as we are less likely to drop a game piece this way
             this.subsystems.getPickerSubsystem().deployHorizontalPosition();
-            this.subsystems.getPickerSubsystem().deployHorizontalPosition();
+            this.subsystems.getPickerSubsystem().deployVerticalPosition();
         }
         if(this.subsystems.getStabilizerSubsystem() != null) {
             this.subsystems.getStabilizerSubsystem().retractPosition();
