@@ -77,8 +77,8 @@ public class AutoBalanceStepCommand extends CommandBase{
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       // test for level at the end of the wait cycle. 
+      // TODO could also stop after maxItermations here with || (numIterations >= maxIterations))
       if (drivetrainsubsystem.isLevel()){
-      // || (numIterations >= maxIterations)){
         System.out.println("Ramp is Level. Completing Auto Balance Step Command.");
         done = true;
       } else {

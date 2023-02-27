@@ -2,12 +2,10 @@ package frc.robot.control;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.Constants;
 import java.util.ArrayList;
 
 public class Trajectories {
@@ -56,7 +54,7 @@ public class Trajectories {
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(Node5Position);
         MiddleWaypoints.add(TrajectoryEndPosition);
-        Trajectory MiddleTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        this.MiddleTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
         
         ArrayList<Pose2d> BehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         BehindToOntoRampWaypoints.add(TrajectoryEndPosition);
