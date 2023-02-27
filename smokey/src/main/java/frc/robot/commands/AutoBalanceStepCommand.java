@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.math.controller.PIDController;
+import frc.robot.common.MotorUtils;
 import frc.robot.common.VectorUtils;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,7 +27,9 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double driveDurationSecondsValue = 0.2;  
   private double velocityValue = 0.6;
   private int numIterations = 0;
-  private int maxIterations = 12;
+  // ramp max slope = 15 degrees
+  // use velocity value for errors >= sin(10) degrees, and proprortaional for smaller errors
+  private PIDController pidController = new PIDController(velocityValue/Math.sin(Math.toRadians(10)),0.0,0.0);
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
 
@@ -119,13 +123,19 @@ public class AutoBalanceStepCommand extends CommandBase{
 
   /**
    * Scales XY values to the desired velocity 
-   * @param vec - Translation2d vector to be scaled
+   * @param angles - Translation2d vector representing angle of steepest ascent
    * @return - Translation2d scaled vector
    */
-  private Translation2d normalizeXYVelocities(Translation2d vec)
+  private Translation2d normalizeXYVelocities(Translation2d angles)
   {
-    double h = Math.sqrt(Math.pow(vec.getX(), 2) + Math.pow(vec.getY(), 2));
-    return new Translation2d((vec.getX()/h) * velocityValue, (vec.getY()/h) * velocityValue);
+    double h = Math.sqrt(Math.pow(angles.getX(), 2) + Math.pow(angles.getY(), 2));
+    double velocity = 0;
+    // we want positive velcoty when the error is positive
+    velocity = -pidController.calculate(h, 0.0);
+    velocity = MotorUtils.clamp(velocity, 0.0, velocityValue);
+    System.out.println("Setting velcoty to " + velocity + " for angle error " + h);
+    
+    return new Translation2d((angles.getX()/h) * velocity, (angles.getY()/h) * velocity);
   }
 
 }
