@@ -23,7 +23,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double waitDurationSecondsValue = .7;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.2;  
-  private double velocityValue = 0.8;
+  private double velocityValue = 0.6;
   private int numIterations = 0;
   private int maxIterations = 12;
 
@@ -77,7 +77,9 @@ public class AutoBalanceStepCommand extends CommandBase{
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       // test for level at the end of the wait cycle. 
-      if (drivetrainsubsystem.isLevel() || (numIterations >= maxIterations)){
+      if (drivetrainsubsystem.isLevel()){
+      // || (numIterations >= maxIterations)){
+        System.out.println("Ramp is Level. Completing Auto Balance Step Command.");
         done = true;
       } else {
         // setup the next drive cycle

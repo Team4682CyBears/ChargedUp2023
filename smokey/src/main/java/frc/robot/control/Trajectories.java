@@ -36,7 +36,7 @@ public class Trajectories {
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
         this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(90));
 
-        this.TrajectoryEndPosition = new Pose2d(5.47, 2.748, Rotation2d.fromDegrees(90));
+        this.TrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(90));
         Pose2d Ramp = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
  
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
