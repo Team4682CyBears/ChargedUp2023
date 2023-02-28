@@ -60,6 +60,7 @@ public class AutonomousChooser {
             AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
             AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
             AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
+            AutonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
             AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
             AutonomousPathChooser.addOption("Test Setting Robot Position", AutonomousPath.TEST_SET_ROBOT_POSITION);
     
@@ -171,9 +172,8 @@ public class AutonomousChooser {
     public Command getBalanceRoutine (AutonomousBalance DoBalance){
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
-            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.OntoRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem())
-            .repeatedly().until(subsystems.getDriveTrainSubsystem()::isLevel));
+            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BehindToOntoRampTrajectory));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         }
         return command;
     }
@@ -196,6 +196,13 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    public Command getDirectRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.DirectToRampTrajectory));
+        command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 
@@ -250,6 +257,8 @@ public class AutonomousChooser {
                 return this.getRightRoutine();
             case MIDDLE_PATH :
                 return this.getMiddleRoutine();
+            case DIRECT_PATH :
+                return this.getDirectRoutine();
             case TEST_NODE5_SCORE_ROUTINE:
                 return this.getScoreRoutine(trajectories.Node5Position);
             case TEST_SET_ROBOT_POSITION:
@@ -262,6 +271,7 @@ public class AutonomousChooser {
         LEFT_PATH,
         RIGHT_PATH,
         MIDDLE_PATH,
+        DIRECT_PATH,
         TEST_NODE5_SCORE_ROUTINE,
         TEST_SET_ROBOT_POSITION
     }

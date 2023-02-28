@@ -98,7 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double yawOffsetDegrees = 0.0;
 
   // store yaw/pitch history
-  private static final int LevelListMaxSize = 20;
+  private static final int LevelListMaxSize = 10; // 10 * 20ms = 0.2s total history time
   private ArrayList<Float> RecentRolls = new ArrayList<Float>();
   private ArrayList<Float> RecentPitches = new ArrayList<Float>();
 
@@ -111,7 +111,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private SwerveDriveOdometry swerveOdometry = null;
   private Pose2d currentPosition = new Pose2d();
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
-  private TrajectoryConfig trajectoryConfig;
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -176,13 +175,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
-
-    // setup default TrajectoryConfig
-    this.trajectoryConfig =  new TrajectoryConfig(
-    MAX_VELOCITY_METERS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    trajectoryConfig.setReversed(false);
-    trajectoryConfig.setKinematics(swerveKinematics);
   }
 
   /**
@@ -355,12 +347,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
    }
  
   /**
-  * Function to obtain the current TrajectoryConfig
+  * Function to obtain the TrajectoryConfig
+  * returns a new trajectory config so that when customization are made downstream
+  * they do not affect other trajectories
   * @return a TrajectoryConfig in use within the drive train subsystem
   */
   public TrajectoryConfig getTrajectoryConfig() {
-    return trajectoryConfig;
-  }
+    return new TrajectoryConfig(
+    MAX_VELOCITY_METERS_PER_SECOND,
+    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED).setReversed(false).setKinematics(swerveKinematics);
+    }
 
   /**
    * Method to increment the power reduction factor
