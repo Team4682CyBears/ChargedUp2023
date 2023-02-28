@@ -17,9 +17,7 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -75,7 +73,8 @@ public class ArmSubsystem extends SubsystemBase
     private CANSparkMax horizontalMotor = new CANSparkMax(Constants.HorizontalArmDriveMotorCanId, MotorType.kBrushless);
     private SparkMaxPIDController horizontalPidController;
     private RelativeEncoder horizontalEncoder;
-    private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
+    private double kPHorizontal, kIHorizontal, kDHorizontal, kIzHorizontal, kFFHorizontal, kMaxOutputHorizontal, kMinOutputHorizontal, maxRPMHorizontal, maxVelHorizontal, minVelHorizontal, maxAccHorizontal, allowedErrHorizontal;
+    private double kPVertical, kIVertical, kDVertical, kIzVertical, kFFVertical, kMaxOutputVertical, kMinOutputVertical, maxRPMVertical, maxVelVertical, minVelVertical, maxAccVertical, allowedErrVertical;
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
@@ -383,19 +382,53 @@ public class ArmSubsystem extends SubsystemBase
     private void initializeMotorsSmartMotion() {
       if(motorsInitalizedForSmartMotion == false) { 
         // PID coefficients
-        kP = 2e-4; 
-        kI = 0;
-        kD = 0;
-        kIz = 0; 
-        kFF = 0.00001; 
-        kMaxOutput = 1; 
-        kMinOutput = -1;
-        maxRPM = Constants.neoMaximumRevolutionsPerMinute;
+        kPHorizontal = 2e-4; 
+        kIHorizontal = 0;
+        kDHorizontal = 0;
+        kIzHorizontal = 0; 
+        kFFHorizontal = 0.00001; 
+        kMaxOutputHorizontal = 1; 
+        kMinOutputHorizontal = -1;
+        maxRPMHorizontal = Constants.neoMaximumRevolutionsPerMinute;
         int smartMotionSlot = 0;
     
         // Smart Motion Coefficients
-        maxVel = maxRPM * neoMotorSpeedReductionFactor; // rpm
-        maxAcc = maxVel * 2; // 1/2 second to get up to full speed
+        maxVelHorizontal = maxRPMHorizontal * neoMotorSpeedReductionFactor; // rpm
+        maxAccHorizontal = maxVelHorizontal * 2; // 1/2 second to get up to full speed
+      
+        horizontalMotor.restoreFactoryDefaults();
+        horizontalMotor.setIdleMode(IdleMode.kBrake);
+        horizontalMotor.setInverted(this.isHorizontalMotorInverted);
+        horizontalPidController = horizontalMotor.getPIDController();
+        horizontalEncoder = horizontalMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, (int)Constants.RevNeoEncoderTicksPerRevolution);
+        horizontalEncoder.setPositionConversionFactor((double)Constants.RevNeoEncoderTicksPerRevolution);
+   
+        // set PID coefficients
+        horizontalPidController.setP(kPHorizontal);
+        horizontalPidController.setI(kIHorizontal);
+        horizontalPidController.setD(kDHorizontal);
+        horizontalPidController.setIZone(kIzHorizontal);
+        horizontalPidController.setFF(kFFHorizontal);
+        horizontalPidController.setOutputRange(kMinOutputHorizontal, kMaxOutputHorizontal);
+    
+        horizontalPidController.setSmartMotionMaxVelocity(maxVelHorizontal, smartMotionSlot);
+        horizontalPidController.setSmartMotionMinOutputVelocity(minVelHorizontal, smartMotionSlot);
+        horizontalPidController.setSmartMotionMaxAccel(maxAccHorizontal, smartMotionSlot);
+        horizontalPidController.setSmartMotionAllowedClosedLoopError(allowedErrHorizontal, smartMotionSlot);
+
+        // PID coefficients
+        kPVertical = 2e-4; 
+        kIVertical = 0;
+        kDVertical = 0;
+        kIzVertical = 0; 
+        kFFVertical = 0.00001; 
+        kMaxOutputVertical = 1; 
+        kMinOutputVertical = -1;
+        maxRPMVertical = Constants.neoFiveFiveZeroMaximumRevolutionsPerMinute;
+    
+        // Smart Motion Coefficients
+        maxVelHorizontal = maxRPMVertical * neoMotorSpeedReductionFactor; // rpm
+        maxAccHorizontal = maxVelVertical * 2; // 1/2 second to get up to full speed
 
         verticalMotor.restoreFactoryDefaults();
         verticalMotor.setIdleMode(IdleMode.kBrake);
@@ -405,37 +438,17 @@ public class ArmSubsystem extends SubsystemBase
         verticalEncoder.setPositionConversionFactor((double)Constants.RevNeoEncoderTicksPerRevolution);
    
         // set PID coefficients
-        verticalPidController.setP(kP);
-        verticalPidController.setI(kI);
-        verticalPidController.setD(kD);
-        verticalPidController.setIZone(kIz);
-        verticalPidController.setFF(kFF);
-        verticalPidController.setOutputRange(kMinOutput, kMaxOutput);
+        verticalPidController.setP(kPVertical);
+        verticalPidController.setI(kIVertical);
+        verticalPidController.setD(kDVertical);
+        verticalPidController.setIZone(kIzVertical);
+        verticalPidController.setFF(kFFVertical);
+        verticalPidController.setOutputRange(kMinOutputVertical, kMaxOutputVertical);
     
-        verticalPidController.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
-        verticalPidController.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
-        verticalPidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-        verticalPidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
-
-        horizontalMotor.restoreFactoryDefaults();
-        horizontalMotor.setIdleMode(IdleMode.kBrake);
-        horizontalMotor.setInverted(this.isHorizontalMotorInverted);
-        horizontalPidController = horizontalMotor.getPIDController();
-        horizontalEncoder = horizontalMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, (int)Constants.RevNeoEncoderTicksPerRevolution);
-        horizontalEncoder.setPositionConversionFactor((double)Constants.RevNeoEncoderTicksPerRevolution);
-   
-        // set PID coefficients
-        horizontalPidController.setP(kP);
-        horizontalPidController.setI(kI);
-        horizontalPidController.setD(kD);
-        horizontalPidController.setIZone(kIz);
-        horizontalPidController.setFF(kFF);
-        horizontalPidController.setOutputRange(kMinOutput, kMaxOutput);
-    
-        horizontalPidController.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
-        horizontalPidController.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
-        horizontalPidController.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-        horizontalPidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+        verticalPidController.setSmartMotionMaxVelocity(maxVelVertical, smartMotionSlot);
+        verticalPidController.setSmartMotionMinOutputVelocity(minVelVertical, smartMotionSlot);
+        verticalPidController.setSmartMotionMaxAccel(maxAccVertical, smartMotionSlot);
+        verticalPidController.setSmartMotionAllowedClosedLoopError(allowedErrVertical, smartMotionSlot);
 
         this.motorsInitalizedForSmartMotion = true;
       }

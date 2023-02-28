@@ -35,6 +35,9 @@ public class AllStopCommand extends CommandBase {
         if(this.subsystems.getPickerSubsystem() != null) {
             addRequirements(this.subsystems.getPickerSubsystem());
         }
+        if(this.subsystems.getPickerSubsystem() != null) {
+            addRequirements(this.subsystems.getPickerSubsystem());
+        }
         if(this.subsystems.getStabilizerSubsystem() != null) {
             addRequirements(this.subsystems.getStabilizerSubsystem());
         }
@@ -53,11 +56,15 @@ public class AllStopCommand extends CommandBase {
             this.subsystems.getDriveTrainSubsystem().drive(new ChassisSpeeds(0.0,0.0,0.0));
         }
         if(this.subsystems.getPickerSubsystem() != null) {
-            this.subsystems.getPickerSubsystem().retractHorizontalPosition();
-            this.subsystems.getPickerSubsystem().retractVerticalPosition();
+            // safer to be deployed as we are less likely to drop a game piece this way
+            this.subsystems.getPickerSubsystem().deployHorizontalPosition();
+            this.subsystems.getPickerSubsystem().deployVerticalPosition();
         }
         if(this.subsystems.getStabilizerSubsystem() != null) {
             this.subsystems.getStabilizerSubsystem().retractPosition();
+        }
+        if(this.subsystems.getEveryBotPickerSubsystem() != null) {
+            this.subsystems.getEveryBotPickerSubsystem().setPickerRelativeSpeed(0.0);
         }
     }
 
