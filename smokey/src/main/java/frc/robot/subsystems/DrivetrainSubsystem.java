@@ -224,6 +224,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // 'getFusedHeading' or if it uses the 'getYaw' method (e.g., if isMagnetometerCalibrated() or not)
     // to run this test all we need is for someone to comment out the System.out.println lines of code below
 
+    /*
+    // This code does not work for us because 
+    // isMagtometerCalibrated does not zero when yaw is zeroed!!
     if (swerveNavx.isMagnetometerCalibrated()) {
 
       // TODO - test this!!
@@ -232,8 +235,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // We will only get valid fused headings if the magnetometer is calibrated
       return Rotation2d.fromRadians(
         MathUtil.angleModulus(
-          (360 - swerveNavx.getFusedHeading()+ yawOffsetDegrees)/(2*Math.PI)));
+          (360 - swerveNavx.getFusedHeading()+ yawOffsetDegrees)*(2*Math.PI)/360));
     }
+    */
 
     // TODO - test this!!
     // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
@@ -241,7 +245,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
     return Rotation2d.fromRadians(
       MathUtil.angleModulus(
-        (360.0 - swerveNavx.getYaw() + yawOffsetDegrees)/(2*Math.PI)));
+        (360.0 - swerveNavx.getYaw() + yawOffsetDegrees)*(2*Math.PI)/360));
   }
   
   /**
