@@ -30,7 +30,9 @@ public class InstalledHardware
     
     // Onboard Hardware - Orentation/Navigation Hardware
     public static final boolean wifiRadioInstalled = true;
-    public static final boolean navxInstalled = true;
+    public static final boolean navx2Installed = true;
+    public static final boolean navx1Installed = false;
+    public static final boolean navxInstalled = navx1Installed || navx2Installed;
     public static final boolean limelightInstalled = false;
 
     // External Input Hardware

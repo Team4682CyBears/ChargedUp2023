@@ -88,7 +88,7 @@ public final class Constants {
 
     // *************************************** 
     // For auto constants
-    public static final double snoutDepth = Units.inchesToMeters(5.25);
+    public static final double snoutDepth = Units.inchesToMeters(2.75);
 
     // *******************************************************************
     // arm constants - preset positions

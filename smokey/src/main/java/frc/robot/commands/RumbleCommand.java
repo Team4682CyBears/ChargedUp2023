@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
 
 /**
  * A class to rumble the xbox controller
@@ -24,8 +23,7 @@ public class RumbleCommand extends CommandBase{
     private boolean done = false;
     private double rumbleMaximumSeconds = 0.0;
 
-    // TODO rumble requires XboxController.  Previously, we used CommandXboxController
-    // check if having two APIs using the same controller be a problem?
+    // NOTE! rumble requires XboxController.  For buttons and axes, we use CommandXboxController
     private XboxController controller = null;
     
     /**

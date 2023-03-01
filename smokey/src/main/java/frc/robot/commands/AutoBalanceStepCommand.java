@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
 /**
- * Implements a command to perform a single step of an auto balancing routine. 
+ * Implements a command that will repeatedly iterate small drive steps and measurements to 
+ * determine if the robot has obtained level, therefore attaining auto balance on the ramp.
  */
 public class AutoBalanceStepCommand extends CommandBase{
   private Timer driveTimer = new Timer();
@@ -81,8 +82,8 @@ public class AutoBalanceStepCommand extends CommandBase{
     if (waitTimer.hasElapsed(this.waitDurationSecondsValue))
     {
       // test for level at the end of the wait cycle. 
+      // TODO could also stop after maxItermations here with || (numIterations >= maxIterations))
       if (drivetrainsubsystem.isLevel()){
-      // || (numIterations >= maxIterations)){
         System.out.println("Ramp is Level. Completing Auto Balance Step Command.");
         done = true;
       } else {
