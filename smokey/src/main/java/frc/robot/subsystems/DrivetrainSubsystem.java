@@ -203,7 +203,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return new EulerAngle(
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
-      MathUtil.angleModulus(swerveNavx.getYaw() + this.yawOffsetDegrees));
+      swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
 
   /**
@@ -230,14 +230,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
 
       // We will only get valid fused headings if the magnetometer is calibrated
-      return Rotation2d.fromDegrees(swerveNavx.getFusedHeading()+ yawOffsetDegrees);
+      return Rotation2d.fromRadians(
+        MathUtil.angleModulus(
+          (360 - swerveNavx.getFusedHeading()+ yawOffsetDegrees)/(2*Math.PI)));
     }
 
     // TODO - test this!!
     // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-    return Rotation2d.fromDegrees(360.0 - swerveNavx.getYaw() + yawOffsetDegrees);
+    return Rotation2d.fromRadians(
+      MathUtil.angleModulus(
+        (360.0 - swerveNavx.getYaw() + yawOffsetDegrees)/(2*Math.PI)));
   }
   
   /**
