@@ -219,17 +219,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @return A Rotation2d that describes the current orentation of the robot.
    */
   public Rotation2d getGyroscopeRotation() {
+    // Note: for the navx1, isMagnetometerCalibrated was always false, and so the code exercised the second path (using getYaw)
+    // when we switched to the navx2, isMagnetometerCalibrated was true, and so the code exercised the first path (using getFusedHeading)
+    // this first path does not work for us because isMagtometerCalibrated does not zero when yaw is zeroed
+    // our ability to both zero and set the yaw is critical to field-oriented drive.  
+    // If we would like to us getFusedHeading in the future, we will need to change how we zero and set the yaw.  
 
-    // TODO - we need to have someone determine if our existing (NavX v1) setup will make use of the
-    // 'getFusedHeading' or if it uses the 'getYaw' method (e.g., if isMagnetometerCalibrated() or not)
-    // to run this test all we need is for someone to comment out the System.out.println lines of code below
-
-    /*
-    // This code does not work for us because 
-    // isMagtometerCalibrated does not zero when yaw is zeroed!!
+    /* 
     if (swerveNavx.isMagnetometerCalibrated()) {
 
-      // TODO - test this!!
       // System.out.println("getGyroscopeRotation() using: swerveNavx.getFusedHeading()");
 
       // We will only get valid fused headings if the magnetometer is calibrated
@@ -239,7 +237,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     */
 
-    // TODO - test this!!
     // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.

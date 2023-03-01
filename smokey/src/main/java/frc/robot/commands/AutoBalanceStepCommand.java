@@ -24,12 +24,13 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double rotVelocity = 0.0;
   // wait duration needs to be sufficiently long to allow the ramp to settle for the navx to take another reading
   private double waitDurationSecondsValue = .7;
-  // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.2;  
+  // higher velocity values caused the robot to slip on the polycarb and not advance as far
   private double velocityValue = 0.9;
   private int numIterations = 0;
-  // ramp max slope = 15 degrees
-  // use velocity value for errors >= sin(10) degrees, and proprortaional for smaller errors
+  // ramp max slope = 15 degrees, and then typically <10 degrees once the robot is mostly on.  
+  // use velocity value for errors >= sin(10) degrees to have high velocity for getting onto the ramp
+  // and then proprortaional for smaller errors to get the fine control needed to balance.  
   private PIDController pidController = new PIDController(velocityValue/Math.sin(Math.toRadians(10)),0.0,0.0);
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
@@ -131,10 +132,12 @@ public class AutoBalanceStepCommand extends CommandBase{
   {
     double h = Math.sqrt(Math.pow(angles.getX(), 2) + Math.pow(angles.getY(), 2));
     double velocity = 0;
-    // we want positive velcoty when the error is positive
-    velocity = -pidController.calculate(h, 0.0);
+    // h is always positive, so the pidController will always return a negative. 
+    // Take the absolute value of the output of pidController to always have positive velcoty.
+    // Directionality is already accounted for in X and Y.    
+    velocity = Math.abs(pidController.calculate(h, 0.0));
     velocity = MotorUtils.clamp(velocity, 0.0, velocityValue);
-    System.out.println("Setting velcoty to " + velocity + " for angle error " + h);
+    System.out.println("Setting velocity to " + velocity + " for angle error " + h);
     
     return new Translation2d((angles.getX()/h) * velocity, (angles.getY()/h) * velocity);
   }
