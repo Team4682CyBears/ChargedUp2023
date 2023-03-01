@@ -26,7 +26,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double waitDurationSecondsValue = .7;
   // TODO hardcoded values eventually replaced when we implement PID controller drive command
   private double driveDurationSecondsValue = 0.2;  
-  private double velocityValue = 0.6;
+  private double velocityValue = 0.9;
   private int numIterations = 0;
   // ramp max slope = 15 degrees
   // use velocity value for errors >= sin(10) degrees, and proprortaional for smaller errors
