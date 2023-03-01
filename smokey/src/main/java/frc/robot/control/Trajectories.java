@@ -35,7 +35,11 @@ public class Trajectories {
         this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(90));
 
         this.TrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(90));
-        Pose2d Ramp = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
+
+        // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
+        // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
+        Pose2d RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
+        Pose2d RampNearWaypoint = new Pose2d(3.54, 2.748, Rotation2d.fromDegrees(90));
  
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
         LeftWaypoints.add(new Translation2d(2.1, 4.67));
@@ -58,12 +62,12 @@ public class Trajectories {
         
         ArrayList<Pose2d> BehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         BehindToOntoRampWaypoints.add(TrajectoryEndPosition);
-        BehindToOntoRampWaypoints.add(Ramp);
+        BehindToOntoRampWaypoints.add(RampNearWaypoint);
         this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, fastConfig);    
 
         ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
-        InfrontToOntoRampWaypoints.add(Ramp);
+        InfrontToOntoRampWaypoints.add(RampFarWaypoint);
         // use fastConfig for this trajectory 
         Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, fastConfig);
 

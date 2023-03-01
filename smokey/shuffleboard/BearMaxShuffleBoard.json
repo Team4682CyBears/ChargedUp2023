@@ -103,7 +103,7 @@
               "_showGlyph": false
             }
           },
-          "5,1": {
+          "7,1": {
             "size": [
               2,
               1
@@ -118,7 +118,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,0": {
+          "7,0": {
             "size": [
               2,
               1
@@ -131,6 +131,32 @@
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RobotPitchDegrees",
+              "_title": "SmartDashboard/RobotPitchDegrees",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RobotRollDegrees",
+              "_title": "SmartDashboard/RobotRollDegrees",
+              "_glyph": 148,
+              "_showGlyph": false
             }
           }
         }
