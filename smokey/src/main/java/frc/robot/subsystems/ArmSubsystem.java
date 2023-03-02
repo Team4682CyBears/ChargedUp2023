@@ -61,7 +61,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
 
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 1.0;
+    private static final double neoMotorSpeedReductionFactor = 0.1;
 
     /* *********************************************************************
     MEMBERS

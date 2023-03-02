@@ -105,7 +105,7 @@ public final class Constants {
 
     // *******************************************************************
     // pneumatics constants
-    public static final int PneumaticsControlModuleNumber = 1;
+    public static final int PneumaticsControlModuleNumber = 0;
     public static final PneumaticsModuleType PneumaticsControlModuleType = PneumaticsModuleType.REVPH;
 
     // *******************************************************************
@@ -130,7 +130,7 @@ public final class Constants {
 
     // ********************************************************************
     // PowerDistributionPanel Constants
-    public static final int currentPowerDistributionPanelCanId = 2;
+    public static final int currentPowerDistributionPanelCanId = 29;
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
     public static final double overcurrentRumbleTimeSeconds = 0.25;
     public static final int EveryBotMotorPdpPortId = 1;

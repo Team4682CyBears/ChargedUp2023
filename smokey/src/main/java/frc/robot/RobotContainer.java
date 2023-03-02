@@ -48,15 +48,15 @@ public class RobotContainer {
     // init the pdp watcher
     this.initializePowerDistributionPanelWatcherSubsystem();
 
+    // init the input system 
+    this.initializeManualInputInterfaces();
+
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
     this.initializeArmSubsystem();
     this.initializePickerSubsystem();
     this.initializeEveryBotPickerSubsystem();
     this.initializeStablizerSubsystem();
-
-    // init the input system 
-    this.initializeManualInputInterfaces();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();
@@ -190,6 +190,8 @@ public class RobotContainer {
       RumbleCommand rc = new RumbleCommand(
         this.subsystems.getManualInputInterfaces().getCoDriverController(),
         Constants.overcurrentRumbleTimeSeconds);
+      
+      // NOTE - PDP watcher code needs testing and fine tuning
       subsystems.getPowerDistributionPanelWatcherSubsystem().add(
         new PortSpy(
           Constants.EveryBotMotorPdpPortId,
