@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.control.InstalledHardware;
 
 /**
  * A collection of methods for vector computations
@@ -43,12 +44,20 @@ public class VectorUtils{
      */
     public static Translation2d getAngleOfSteepestAscent(EulerAngle robotPose)
     {
-        // Move X proportional to the sin of the roll (rotation about y)
-        // Move Y proportional to the sin or the pitch (rotation about x)
-        return new Translation2d(
-            Math.sin(Math.toRadians(robotPose.getRoll())),
-            Math.sin(Math.toRadians(robotPose.getPitch())));
-
+        if (InstalledHardware.navx1Installed){
+            // Move X proportional to the sin of the roll (rotation about y)
+            // Move Y proportional to the sin or the pitch (rotation about x)
+            return new Translation2d(
+                Math.sin(Math.toRadians(robotPose.getRoll())),
+                Math.sin(Math.toRadians(robotPose.getPitch())));
+        }
+        else { //navx2 istalled
+            // Move Y proportional to the sin of the roll (rotation about x)
+            // Move X proportional to the sin or the pitch (rotation about y)
+            return new Translation2d(
+                Math.sin(Math.toRadians(robotPose.getPitch())),
+                -1 * Math.sin(Math.toRadians(robotPose.getRoll())));
+        }
     }
 
     /**
