@@ -288,6 +288,7 @@ public class ArmSubsystem extends SubsystemBase
             this.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
             ControlType.kSmartMotion);
         }
+
       }
     }
 
@@ -453,8 +454,8 @@ public class ArmSubsystem extends SubsystemBase
         maxRPMVertical = Constants.neoMaximumRevolutionsPerMinute;
     
         // Smart Motion Coefficients
-        maxVelHorizontal = maxRPMVertical * neoMotorSpeedReductionFactor; // rpm
-        maxAccHorizontal = maxVelVertical * 2; // 1/2 second to get up to full speed
+        maxVelVertical = maxRPMVertical * neoMotorSpeedReductionFactor; // rpm
+        maxAccVertical = maxVelVertical * 2; // 1/2 second to get up to full speed
 
         verticalMotor.restoreFactoryDefaults();
         verticalMotor.setIdleMode(IdleMode.kBrake);
