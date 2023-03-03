@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(30.125); // 30.125 inches;
-    private static final double toleranceHorizontalArmExtensionMeters = 0.01;
+    private static final double toleranceHorizontalArmExtensionMeters = 0.003;
 
     // the various geometry aspects of the arm setup // 
     private static final double lengthFloorToHorizontalArmPivotMeters = Units.inchesToMeters(3.0); // 3 inches

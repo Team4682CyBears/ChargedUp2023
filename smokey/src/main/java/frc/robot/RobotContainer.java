@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
+import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
@@ -183,25 +184,21 @@ public class RobotContainer {
       ));
 
       // add a watcher for overcurrent on the 
-      EveryBotPickerDefaultCommand ebCmd = new EveryBotPickerDefaultCommand(
-        subsystems.getEveryBotPickerSubsystem(), 
-        () -> 0.0, 
-        () -> 0.0);
+      EveryBotPickerOverCurrentCommand ebCmd = new EveryBotPickerOverCurrentCommand(
+        subsystems.getEveryBotPickerSubsystem(), Constants.overcurrentRumbleTimeSeconds);
       RumbleCommand rc = new RumbleCommand(
         this.subsystems.getManualInputInterfaces().getCoDriverController(),
         Constants.overcurrentRumbleTimeSeconds);
       
       // NOTE - PDP watcher code needs testing and fine tuning
-      /* 
       subsystems.getPowerDistributionPanelWatcherSubsystem().add(
         new PortSpy(
           Constants.EveryBotMotorPdpPortId,
           Constants.EveryBotMotorMaximuCurrentAmps,
           new SequentialCommandGroup( ebCmd, rc),
-          "Every Bot Motor Overcurrent Protection"
+          "EveryBotMotorOvercurrentProtection"
         )
       );
-      */
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {
