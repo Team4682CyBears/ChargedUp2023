@@ -32,11 +32,11 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     CONSTANTS
     ************************************************************************/
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 0.5;
+    private static final double neoMotorSpeedReductionFactor = 1.0;
 
     // EveryBot picker gear reduction
     // TODO - get proper values from Simeon/Grayson
-    private static final double everyBotGearReduction = 5.0/1.0;
+    private static final double everyBotGearReduction = 10.0/1.0;
 
     /* *********************************************************************
     MEMBERS

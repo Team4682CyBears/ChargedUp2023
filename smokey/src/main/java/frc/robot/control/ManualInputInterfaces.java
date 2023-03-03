@@ -87,6 +87,7 @@ public class ManualInputInterfaces {
   public double getInputArcadeArmY()
   {
     // use the co drivers right X to represent the horizontal movement
+    // and multiply by -1.0 as xbox reports values flipped
     return -1.0 * coDriverController.getLeftY();
   }
 

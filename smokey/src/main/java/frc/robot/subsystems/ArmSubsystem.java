@@ -36,32 +36,33 @@ public class ArmSubsystem extends SubsystemBase
     // expected to be < 1.0 due to encoder granularity being lower for Rev/Neo
     private static final double telescopingArmsMotorEncoderTicksPerDegree = Constants.RevNeoEncoderTicksPerRevolution / Constants.DegreesPerRevolution;
     // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:100
-    // TODO - confirm gearbox reduction
-    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 100.0); 
+    private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 50.0); 
     // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:10
-    // TODO - confirm gearbox reduction
     private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 10.0); 
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = 0.210; // stubby arm // 0.254; // 10.0 inches
+    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
-    private static final double maximumHorizontalArmExtensionMeters = 0.9439402; // 78.5" - 41.337" == 37.163 inches
-    private static final double toleranceHorizontalArmExtensionMeters = 0.001;
+    private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(30.125); // 30.125 inches;
+    private static final double toleranceHorizontalArmExtensionMeters = 0.01;
 
-    // the various geometry aspects of the arm setup
-    private static final double lengthFloorToHorizontalArmPivotMeters = 0.0762; // 3 inches
-    private static final double lengthFloorToVerticalArmPivotMeters = 0.0762; // 3 inches
-    private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = 0.572262; // 22.53 inches
-    private static final double lengthHorizontalArmPinDistanceMeters = 0.5554472; // 21.868 inches
-    private static final double lengthMinimumVerticalArmMeters = 0.5394706; //0.5140706 - 20.239 inches  // 0.5394706 - 21.239??
+    // the various geometry aspects of the arm setup // 
+    private static final double lengthFloorToHorizontalArmPivotMeters = Units.inchesToMeters(3.0); // 3 inches
+    private static final double lengthFloorToVerticalArmPivotMeters = Units.inchesToMeters(3.125); // 3.125 inches
+    private static final double lengthBasePinDistanceBetweewnHorizontalAndVerticalArmsMeters = Units.inchesToMeters(22.75); // 22.75 inches
+    private static final double lengthHorizontalArmPinDistanceMeters = Units.inchesToMeters(16.5); // 16.5 inches
+    private static final double lengthMinimumVerticalArmMeters = Units.inchesToMeters(14.0); // 14 inches
     private static final double lengthMaximumVerticalArmMeters = lengthMinimumVerticalArmMeters + (maximumVerticalArmExtensionMeters - minimumVerticalArmExtensionMeters);
-    private static final double lengthMinimumHorizontalArmMeters = 1.1537188; // 45.422 inches
-    private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters);
+    private static final double lengthMinimumHorizontalArmMeters = Units.inchesToMeters(42.25); // 42.25 inches
+    private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // 72 3/8
+
+    private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 1.0 inches
+    private static final double neoMotorSpeedReductionFactorVeryCloseToStop = 0.25; 
 
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 0.1;
+    private static final double neoMotorSpeedReductionFactor = 1.0;
 
     /* *********************************************************************
     MEMBERS
@@ -78,10 +79,9 @@ public class ArmSubsystem extends SubsystemBase
     private boolean motorsInitalizedForSmartMotion = false;
 
     private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
-//    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = verticalArmMageneticSensor;
+    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
 
-    private boolean isHorizontalMotorInverted = true;
+    private boolean isHorizontalMotorInverted = false;
     private boolean isVerticalMotorInverted = true;
 
     private boolean inSpeedMode = true;
@@ -99,6 +99,18 @@ public class ArmSubsystem extends SubsystemBase
     * constructor for TelescopingArms subsystem
     */
     public ArmSubsystem() {
+
+      // init smart motion and set positions if mag sensors are set
+      this.initializeMotorsSmartMotion();
+      boolean isHorizontalArmAtOrBelowLowStop = (this.horizontalArmMageneticSensor.get() == false);
+      boolean isVerticalArmAtOrBelowLowStop = (this.verticalArmMageneticSensor.get() == false);
+      if(isHorizontalArmAtOrBelowLowStop){
+        this.horizontalEncoder.setPosition(0.0);
+      }
+      if(isVerticalArmAtOrBelowLowStop){
+        this.verticalEncoder.setPosition(0.0);
+      }
+
       CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -172,7 +184,7 @@ public class ArmSubsystem extends SubsystemBase
      * @return true when the arms have arrived at their extension distances, else false
      */
     public boolean isRequestedArmMovementComplete() {
-      return this.inSpeedMode == false &&  this.movementWithinTolerance;
+      return this.inSpeedMode == false && this.movementWithinTolerance;
     }
 
     /**
@@ -206,6 +218,10 @@ public class ArmSubsystem extends SubsystemBase
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalMotorSpeed > 0.0) {
           this.horizontalMotor.set(0.0);
+        }
+        // we are slapping the sensor too hard we need to figure out how to slow down before we smack it
+        else if(currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters &&  this.requestedHorizontalMotorSpeed < 0.0 ) {
+          this.horizontalMotor.set(this.requestedHorizontalMotorSpeed * neoMotorSpeedReductionFactorVeryCloseToStop);
         }
         else {
           this.horizontalMotor.set(this.requestedHorizontalMotorSpeed * neoMotorSpeedReductionFactor);
@@ -241,6 +257,14 @@ public class ArmSubsystem extends SubsystemBase
         }
         else if (isHorizontalWithinTolerance) {
           this.horizontalMotor.set(0.0);
+        }
+        // we are slapping the sensor too hard we need to figure out how to slow down before we smack it
+        else if(currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters ) {
+          double frogSpellExtensionDistance = 
+            (currentHorizontalExtensionInMeters + this.requestedHorizontalArmExtension) / 2;
+          horizontalPidController.setReference(
+            this.convertHorizontalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
+            ControlType.kSmartMotion);
         }
         else {
           horizontalPidController.setReference(
@@ -367,6 +391,8 @@ public class ArmSubsystem extends SubsystemBase
      * A function intended to be called from perodic to update the robots centroid position on the field.
      */
     private void refreshArmPosition() {
+      SmartDashboard.putBoolean("horizontalArmSensor", this.horizontalArmMageneticSensor.get());
+      SmartDashboard.putBoolean("VerticalArmSensor", this.verticalArmMageneticSensor.get());
       SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
@@ -424,7 +450,7 @@ public class ArmSubsystem extends SubsystemBase
         kFFVertical = 0.00001; 
         kMaxOutputVertical = 1; 
         kMinOutputVertical = -1;
-        maxRPMVertical = Constants.neoFiveFiveZeroMaximumRevolutionsPerMinute;
+        maxRPMVertical = Constants.neoMaximumRevolutionsPerMinute;
     
         // Smart Motion Coefficients
         maxVelHorizontal = maxRPMVertical * neoMotorSpeedReductionFactor; // rpm

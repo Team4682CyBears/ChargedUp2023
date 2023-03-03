@@ -192,6 +192,7 @@ public class RobotContainer {
         Constants.overcurrentRumbleTimeSeconds);
       
       // NOTE - PDP watcher code needs testing and fine tuning
+      /* 
       subsystems.getPowerDistributionPanelWatcherSubsystem().add(
         new PortSpy(
           Constants.EveryBotMotorPdpPortId,
@@ -200,6 +201,7 @@ public class RobotContainer {
           "Every Bot Motor Overcurrent Protection"
         )
       );
+      */
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {

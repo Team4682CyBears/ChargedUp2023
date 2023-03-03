@@ -92,16 +92,16 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    public static final double armPresetPositionStowMetersY = 0.1;
-    public static final double armPresetPositionStowMetersZ = 1.23;
-    public static final double armPresetPositionGrabMetersY = 1.00;
-    public static final double armPresetPositionGrabMetersZ = 1.60;
-    public static final double armPresetPositionScoreHighMetersY = 1.10;
-    public static final double armPresetPositionScoreHighMetersZ = 1.78;
-    public static final double armPresetPositionScoreMediumMetersY = 1.00;
-    public static final double armPresetPositionScoreMediumMetersZ = 1.55;
-    public static final double armPresetPositionScoreLowMetersY = 0.65;
-    public static final double armPresetPositionScoreLowMetersZ = 1.04;
+    public static final double armPresetPositionStowMetersY = 0.470;
+    public static final double armPresetPositionStowMetersZ = 1.050;
+    public static final double armPresetPositionGrabMetersY = 0.707;
+    public static final double armPresetPositionGrabMetersZ = 0.918;
+    public static final double armPresetPositionScoreHighMetersY = 1.368;
+    public static final double armPresetPositionScoreHighMetersZ = 1.089;
+    public static final double armPresetPositionScoreMediumMetersY = 0.951;
+    public static final double armPresetPositionScoreMediumMetersZ = 0.809;
+    public static final double armPresetPositionScoreLowMetersY = 0.848;
+    public static final double armPresetPositionScoreLowMetersZ = 0.732;
 
     // *******************************************************************
     // pneumatics constants
@@ -133,7 +133,7 @@ public final class Constants {
     public static final int currentPowerDistributionPanelCanId = 29;
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
     public static final double overcurrentRumbleTimeSeconds = 0.25;
-    public static final int EveryBotMotorPdpPortId = 1;
+    public static final int EveryBotMotorPdpPortId = 8;
     public static final double EveryBotMotorMaximuCurrentAmps = 23.0;
 
 }
