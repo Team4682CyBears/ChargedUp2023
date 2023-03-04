@@ -96,6 +96,7 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
             else if(this.firstActionStep == true) {
                 this.armSubsystem.setArmToPointInSpace(presentAction.getYArmPointMeters(), presentAction.getZArmPointMeters());
                 this.pickerSubsystem.setPickerRelativeSpeed(presentAction.getPickerMotorSpeed());
+                firstActionStep = false;
             } 
             else {
                 if(this.armSubsystem.isRequestedArmMovementComplete()) {
