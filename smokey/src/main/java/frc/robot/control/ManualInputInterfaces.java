@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmPlusPickerUptakeCommand;
 import frc.robot.commands.ArmToPointCommand;
+import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
 
@@ -509,6 +510,7 @@ public class ManualInputInterfaces {
            subsystemCollection.getArmSubsystem() != null) {
 
           // Back button does auto arm + every bot picker cube pickup
+          /* 
           this.coDriverController.back().onTrue(
             new ParallelCommandGroup(
               new ArmPlusPickerUptakeCommand(
@@ -521,9 +523,20 @@ public class ManualInputInterfaces {
                 "move arm and pickup cube")
               )
             );
+*/
+
+          // start button try ref pos
+          this.coDriverController.back().onTrue(
+            new ParallelCommandGroup(
+              new ArmToReferencePositionCommand(subsystemCollection.getArmSubsystem()),
+              new ButtonPressCommand(
+                "coDriverController.start()",
+                "move arm to ref pos")
+              )
+            );
 
           // start button does auto arm + every bot picker cone pickup
-          this.coDriverController.back().onTrue(
+          this.coDriverController.start().onTrue(
             new ParallelCommandGroup(
               new ArmPlusPickerUptakeCommand(
                 subsystemCollection.getArmSubsystem(), 
@@ -531,10 +544,10 @@ public class ManualInputInterfaces {
                 subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
                 true).withTimeout(3.5),
               new ButtonPressCommand(
-                "coDriverController.back()",
+                "coDriverController.start()",
                 "move arm and pickup cone")
               )
-            );
+            );            
         }
 
         // NOTE: subsystemCollection.getEveryBotPickerSubsystem()
