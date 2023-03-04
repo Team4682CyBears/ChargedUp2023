@@ -27,6 +27,7 @@ import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
+import frc.robot.commands.ArmPlusPickerUptakeCommand;
 import frc.robot.commands.ArmToPointCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
@@ -502,6 +503,36 @@ public class ManualInputInterfaces {
               "open the picker")
             )
           );
+        }
+
+        if(subsystemCollection.getEveryBotPickerSubsystem() != null &&
+           subsystemCollection.getArmSubsystem() != null) {
+
+          // Back button does auto arm + every bot picker cube pickup
+          this.coDriverController.back().onTrue(
+            new ParallelCommandGroup(
+              new ArmPlusPickerUptakeCommand(
+                subsystemCollection.getArmSubsystem(), 
+                subsystemCollection.getEveryBotPickerSubsystem(),
+                false).withTimeout(3.5),
+              new ButtonPressCommand(
+                "coDriverController.back()",
+                "move arm and pickup cube")
+              )
+            );
+
+          // start button does auto arm + every bot picker cone pickup
+          this.coDriverController.back().onTrue(
+            new ParallelCommandGroup(
+              new ArmPlusPickerUptakeCommand(
+                subsystemCollection.getArmSubsystem(), 
+                subsystemCollection.getEveryBotPickerSubsystem(),
+                true).withTimeout(3.5),
+              new ButtonPressCommand(
+                "coDriverController.back()",
+                "move arm and pickup cone")
+              )
+            );
         }
 
         // NOTE: subsystemCollection.getEveryBotPickerSubsystem()
