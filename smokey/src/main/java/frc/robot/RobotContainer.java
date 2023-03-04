@@ -49,15 +49,17 @@ public class RobotContainer {
     // init the pdp watcher
     this.initializePowerDistributionPanelWatcherSubsystem();
 
+    // init the various subsystems
+    this.initializeDrivetrainSubsystem();
+    this.initializeStablizerSubsystem();
+
     // init the input system 
     this.initializeManualInputInterfaces();
 
-    // init the various subsystems
-    this.initializeDrivetrainSubsystem();
+    // arm and picker later
     this.initializeArmSubsystem();
-    this.initializePickerSubsystem();
     this.initializeEveryBotPickerSubsystem();
-    this.initializeStablizerSubsystem();
+    this.initializePickerSubsystem();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();
