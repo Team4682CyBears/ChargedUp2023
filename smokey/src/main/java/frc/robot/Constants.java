@@ -94,8 +94,8 @@ public final class Constants {
     // arm constants - preset positions
     public static final double armPresetPositionStowMetersY = 0.470;
     public static final double armPresetPositionStowMetersZ = 1.050;
-    public static final double armPresetPositionGrabMetersY = 0.698;
-    public static final double armPresetPositionGrabMetersZ = 0.900;
+    public static final double armPresetPositionGrabMetersY = 0.7736;
+    public static final double armPresetPositionGrabMetersZ = 0.8961;
     public static final double armPresetPositionScoreHighMetersY = 1.368;
     public static final double armPresetPositionScoreHighMetersZ = 1.089;
     public static final double armPresetPositionScoreMediumMetersY = 0.951;
