@@ -65,6 +65,9 @@ public class ArmToReferencePositionCommand extends CommandBase {
             }
             this.armSubsystem.setArmSpeeds(horizontalSpeed, verticalSpeed);
             this.done = horizontalAtSensor && verticalAtSensor;
+            if(this.done){
+                System.out.println("ArmToReferencePositionCommand is DONE!");
+            }
         }
     }
 

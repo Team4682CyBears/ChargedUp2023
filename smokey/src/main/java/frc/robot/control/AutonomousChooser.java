@@ -119,12 +119,14 @@ public class AutonomousChooser {
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
 
         // move arm to high score
+        /*
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
             armSequence.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
             intoNodeAndHighScore.addCommands(armSequence);
         }
+        */
 
         command.addCommands(intoNodeAndHighScore);
 
