@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
-    private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(30.125); // 30.125 inches;
+    private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 ... 30.125 inches;
     private static final double toleranceHorizontalArmExtensionMeters = 0.003;
 
     // the various geometry aspects of the arm setup // 
@@ -55,8 +55,8 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthHorizontalArmPinDistanceMeters = Units.inchesToMeters(16.5); // 16.5 inches
     private static final double lengthMinimumVerticalArmMeters = Units.inchesToMeters(14.0); // 14 inches
     private static final double lengthMaximumVerticalArmMeters = lengthMinimumVerticalArmMeters + (maximumVerticalArmExtensionMeters - minimumVerticalArmExtensionMeters);
-    private static final double lengthMinimumHorizontalArmMeters = Units.inchesToMeters(42.25); // 42.25 inches
-    private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // 72 3/8
+    private static final double lengthMinimumHorizontalArmMeters = Units.inchesToMeters(40.25); // 40.25 inches
+    private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // ??
 
     private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 1.0 inches
     private static final double neoMotorSpeedReductionFactorVeryCloseToStop = 0.25; 
