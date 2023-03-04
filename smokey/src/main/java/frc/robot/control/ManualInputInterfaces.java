@@ -514,6 +514,7 @@ public class ManualInputInterfaces {
               new ArmPlusPickerUptakeCommand(
                 subsystemCollection.getArmSubsystem(), 
                 subsystemCollection.getEveryBotPickerSubsystem(),
+                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
                 false).withTimeout(3.5),
               new ButtonPressCommand(
                 "coDriverController.back()",
@@ -527,6 +528,7 @@ public class ManualInputInterfaces {
               new ArmPlusPickerUptakeCommand(
                 subsystemCollection.getArmSubsystem(), 
                 subsystemCollection.getEveryBotPickerSubsystem(),
+                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
                 true).withTimeout(3.5),
               new ButtonPressCommand(
                 "coDriverController.back()",

@@ -36,6 +36,8 @@ public class PowerDistributionPanelWatcherSubsystem extends SubsystemBase {
         myList.add(spy);
     }
 
+    public PowerDistribution getPowerDistribution() { return distroPannel; }
+
     @Override
     public void periodic() {
         for (int counter = 0; counter < myList.size(); counter++) {

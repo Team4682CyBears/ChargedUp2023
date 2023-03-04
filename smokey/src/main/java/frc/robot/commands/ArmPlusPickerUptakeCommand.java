@@ -18,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.control.ArmPlusPickerAction;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
+import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 
 /*
  * Forms a command to move the dual part arm and the every bot picker as a unit to help in pickup
@@ -42,9 +43,7 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
     private boolean firstActionStep = true;
     private ArrayList<ArmPlusPickerAction> actionList = new ArrayList<ArmPlusPickerAction>();
 
-    private PowerDistribution distroPannel = new PowerDistribution(
-        Constants.currentPowerDistributionPanelCanId,
-        Constants.currentPowerDistributionPanelType);
+    private PowerDistribution distroPannel = null;
     /**
      * The constructor to create a arm movement uptake command.
      * @param theArmSubsystem - the arm subsystem
@@ -54,10 +53,12 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
     public ArmPlusPickerUptakeCommand(
         ArmSubsystem theArmSubsystem,
         EveryBotPickerSubsystem thePickerSubsystem,
+        PowerDistributionPanelWatcherSubsystem watcher,
         boolean isConeTarget) {
         this.armSubsystem = theArmSubsystem;
         this.pickerSubsystem = thePickerSubsystem;
         this.isTargetCone = isConeTarget;
+        this.distroPannel = watcher.getPowerDistribution();
         addRequirements(this.armSubsystem);
         addRequirements(this.pickerSubsystem);
     }
