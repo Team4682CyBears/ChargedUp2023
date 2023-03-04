@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
-import java.util.function.DoubleSupplier;
-
 /*
  * Forms a command to move the dual part arm with y and z motor inputs.  
  * Y motor input for the extension/horizontal arm.
@@ -25,7 +23,7 @@ public class ArmToReferencePositionCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private Timer timer = new Timer();
     private boolean done = false;
-    private final double retractMaximumTime = 2.5;
+    private final double retractMaximumTime = 3.0;
     private final double horizontalRetractSpeed = -1.0;
     private final double verticalRetractSpeed = -1.0;
 
@@ -57,14 +55,16 @@ public class ArmToReferencePositionCommand extends CommandBase {
         else {
             double verticalSpeed = 0.0;
             double horizontalSpeed = 0.0;
-            if(this.armSubsystem.isHorizontalArmAtSensorReference() == false) {
+            boolean horizontalAtSensor = this.armSubsystem.isHorizontalArmAtSensorReference();
+            boolean verticalAtSensor = this.armSubsystem.isVerticalArmAtSensorReference();
+            if(horizontalAtSensor == false) {
                 horizontalSpeed = horizontalRetractSpeed;
             }
-            if(this.armSubsystem.isVerticalArmAtSensorReference() == false) {
+            if(verticalAtSensor == false) {
                 verticalSpeed = verticalRetractSpeed;
             }
             this.armSubsystem.setArmSpeeds(horizontalSpeed, verticalSpeed);
-            this.done = this.armSubsystem.isHorizontalArmAtSensorReference() && this.armSubsystem.isVerticalArmAtSensorReference();
+            this.done = horizontalAtSensor && verticalAtSensor;
         }
     }
 
