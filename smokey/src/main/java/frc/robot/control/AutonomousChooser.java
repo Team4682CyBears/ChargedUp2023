@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
@@ -119,7 +120,10 @@ public class AutonomousChooser {
 
         // move arm to high score
         if(this.subsystems.getArmSubsystem() != null) {
-            intoNodeAndHighScore.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            SequentialCommandGroup armSequence = new SequentialCommandGroup();
+            armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
+            armSequence.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            intoNodeAndHighScore.addCommands(armSequence);
         }
 
         command.addCommands(intoNodeAndHighScore);

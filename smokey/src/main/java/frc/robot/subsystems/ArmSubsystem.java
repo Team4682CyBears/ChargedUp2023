@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase
     // Discussion with Nathan on 02/08/2023 on 'angle arm' - 0.375" per hole * 15 teeth - gearbox is aprox 1:100
     private static final double verticalArmMovementInMetersPerMotorRotation = (0.009525 * 15) * (1.0 / 50.0); 
     // Discussion with Owen on 02/08/2023 on 'extension arm' - 5mm per tooth on belt 36 teeth - gearbox is aprox 1:10
-    private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 10.0); 
+    private static final double horizontalArmMovementInMetersPerMotorRotation = (0.005 * 36) * (1.0 / 20.0); 
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
@@ -187,6 +187,22 @@ public class ArmSubsystem extends SubsystemBase
       return this.inSpeedMode == false && this.movementWithinTolerance;
     }
 
+    /**
+     * Method to confirm if the horizontal arm is at sensor reference position
+     * @return true if the arm is at the sensor reference position
+     */
+    public boolean isHorizontalArmAtSensorReference(){
+      return (this.horizontalArmMageneticSensor.get() == false);
+    }
+
+    /**
+     * Method to confirm if the vertical arm is at sensor reference position
+     * @return true if the arm is at the sensor reference position
+     */
+    public boolean isVerticalArmAtSensorReference(){
+      return (this.verticalArmMageneticSensor.get() == false);
+    }
+    
     /**
      * A method to handle periodic processing
      */

@@ -24,7 +24,7 @@ public class DefaultArmCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private final DoubleSupplier ySupplier;
     private final DoubleSupplier zSupplier;
-    private final double inputThreshold = 0.1;
+    private final double inputThreshold = 0.2;
 
     /**
      * The constructor to create a default command for the arm subsystem.
