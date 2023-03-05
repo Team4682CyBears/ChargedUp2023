@@ -37,6 +37,7 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
     private final EveryBotPickerSubsystem pickerSubsystem;
+    private final PowerDistributionPanelWatcherSubsystem watcherSubsystem;
     private boolean isTargetCone = true; 
     private boolean done = false;
     private int currentActionIndex = 0;
@@ -57,6 +58,7 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
         boolean isConeTarget) {
         this.armSubsystem = theArmSubsystem;
         this.pickerSubsystem = thePickerSubsystem;
+        this.watcherSubsystem = watcher;
         this.isTargetCone = isConeTarget;
         this.distroPannel = watcher.getPowerDistribution();
         addRequirements(this.armSubsystem);
@@ -77,6 +79,7 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
         else {
             this.fillListForCube();
         }
+        this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, false);
     }
 
     @Override
@@ -116,12 +119,16 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
         this.pickerSubsystem.setPickerRelativeSpeed(0.0);
         if(interrupted)
         {
-          done = true;      
+          done = true;
         }
+        this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, true);
     }
     
     @Override
     public boolean isFinished() {
+        if(this.done) {
+            this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, true);
+        }
         return this.done;
     }
 
