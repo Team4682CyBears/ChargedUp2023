@@ -11,6 +11,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -25,8 +26,11 @@ public class DefaultDriveCommand extends CommandBase {
 
     // true if field oriented drive, false for robot oriented drive
     private final Boolean fieldOrientedDrive = true;
-    private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds();
-    private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds();
+    private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private TrajectoryConfig trajectoryConfig = null;
+    // TODO move this to Constants
+    private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -36,6 +40,7 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
+        this.trajectoryConfig = drivetrainSubsystem.getTrajectoryConfig();
 
         // NOTE: For now we will NOT register the NavxSubsystem, this is safe to do here because
         // all access to the class is read-only.
@@ -52,19 +57,44 @@ public class DefaultDriveCommand extends CommandBase {
                 m_rotationSupplier.getAsDouble(),
                 m_drivetrainSubsystem.getGyroscopeRotation()
                 );   
-            m_drivetrainSubsystem.drive(commandedChassisSpeeds);
         } else {
             commandedChassisSpeeds = new ChassisSpeeds(
                 m_translationXSupplier.getAsDouble(),
                 m_translationYSupplier.getAsDouble(),
                 m_rotationSupplier.getAsDouble());
-            m_drivetrainSubsystem.drive(commandedChassisSpeeds);
         }
+   
+        commandedChassisSpeeds = limitChassisSpeedsAccel(commandedChassisSpeeds);
+        m_drivetrainSubsystem.drive(commandedChassisSpeeds);        
         previousChassisSpeeds = commandedChassisSpeeds;
     }
 
     @Override
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    }
+
+    private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
+        double xAccel = (speeds.vxMetersPerSecond - previousChassisSpeeds.vxMetersPerSecond)/deltaTimeSeconds;
+        double yAccel = (speeds.vyMetersPerSecond - previousChassisSpeeds.vyMetersPerSecond)/deltaTimeSeconds;
+        double xVelocityLimited = speeds.vxMetersPerSecond;
+        double yVelocityLimited = speeds.vyMetersPerSecond;
+        // if accelerations over limit
+        if (Math.abs(xAccel) > trajectoryConfig.getMaxAcceleration()){
+            // new velocity is the old velocity + the maximum allowed change toward the new direction
+            xVelocityLimited = 
+                previousChassisSpeeds.vxMetersPerSecond 
+                + Math.copySign(trajectoryConfig.getMaxAcceleration() * deltaTimeSeconds, xAccel);
+            System.out.println("Limiting joystick x acceleration!! Commanded: " + speeds.vxMetersPerSecond + 
+            " limited: " + xVelocityLimited);
+        }
+        if (Math.abs(yAccel) > trajectoryConfig.getMaxAcceleration()){
+            yVelocityLimited = 
+                previousChassisSpeeds.vyMetersPerSecond 
+                + Math.copySign(trajectoryConfig.getMaxAcceleration() * deltaTimeSeconds, yAccel);
+            System.out.println("Limiting joystick y acceleration!! Commanded: " + speeds.vyMetersPerSecond + 
+                " limited: " + yVelocityLimited);
+        }
+        return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, speeds.omegaRadiansPerSecond);
     }
 }
