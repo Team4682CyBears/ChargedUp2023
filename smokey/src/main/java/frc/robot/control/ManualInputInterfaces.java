@@ -510,7 +510,6 @@ public class ManualInputInterfaces {
            subsystemCollection.getArmSubsystem() != null) {
 
           // Back button does auto arm + every bot picker cube pickup
-          /* 
           this.coDriverController.back().onTrue(
             new ParallelCommandGroup(
               new ArmPlusPickerUptakeCommand(
@@ -521,17 +520,6 @@ public class ManualInputInterfaces {
               new ButtonPressCommand(
                 "coDriverController.back()",
                 "move arm and pickup cube")
-              )
-            );
-*/
-
-          // start button try ref pos
-          this.coDriverController.back().onTrue(
-            new ParallelCommandGroup(
-              new ArmToReferencePositionCommand(subsystemCollection.getArmSubsystem()),
-              new ButtonPressCommand(
-                "coDriverController.start()",
-                "move arm to ref pos")
               )
             );
 
