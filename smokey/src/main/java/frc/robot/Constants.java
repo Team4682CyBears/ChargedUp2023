@@ -98,7 +98,7 @@ public final class Constants {
     public static final double armPresetPositionGrabMetersZ = 0.8961;
     public static final double armPresetPositionScoreHighMetersY = 1.368;
     public static final double armPresetPositionScoreHighMetersZ = 1.089;
-    public static final double armPresetPositionScoreMediumMetersY = 0.951;
+    public static final double armPresetPositionScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
     public static final double armPresetPositionScoreMediumMetersZ = 0.809;
     public static final double armPresetPositionScoreLowMetersY = 0.848;
     public static final double armPresetPositionScoreLowMetersZ = 0.732;
