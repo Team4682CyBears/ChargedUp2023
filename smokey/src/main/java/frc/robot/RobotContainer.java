@@ -82,6 +82,32 @@ public class RobotContainer {
     return autonomousChooser.getCommand();
   }
 
+
+  /**
+   * 
+   */
+  public void teleopInit()
+  {
+    if(this.subsystems.getEveryBotPickerSubsystem() != null){
+          // add a watcher for overcurrent on the 
+          EveryBotPickerOverCurrentCommand ebCmd = new EveryBotPickerOverCurrentCommand(
+            subsystems.getEveryBotPickerSubsystem(), Constants.overcurrentRumbleTimeSeconds);
+          RumbleCommand rc = new RumbleCommand(
+            this.subsystems.getManualInputInterfaces().getCoDriverController(),
+            Constants.overcurrentRumbleTimeSeconds);
+          
+          // NOTE - PDP watcher code needs testing and fine tuning
+          subsystems.getPowerDistributionPanelWatcherSubsystem().add(
+            new PortSpy(
+              Constants.EveryBotMotorPdpPortId,
+              Constants.EveryBotMotorMaximuCurrentAmps,
+              new SequentialCommandGroup( ebCmd, rc),
+              "EveryBotMotorOvercurrentProtection"
+            )
+          );
+    }    
+  }
+
   /**
    * A method to init the input interfaces
    */
@@ -184,23 +210,6 @@ public class RobotContainer {
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
-
-      // add a watcher for overcurrent on the 
-      EveryBotPickerOverCurrentCommand ebCmd = new EveryBotPickerOverCurrentCommand(
-        subsystems.getEveryBotPickerSubsystem(), Constants.overcurrentRumbleTimeSeconds);
-      RumbleCommand rc = new RumbleCommand(
-        this.subsystems.getManualInputInterfaces().getCoDriverController(),
-        Constants.overcurrentRumbleTimeSeconds);
-      
-      // NOTE - PDP watcher code needs testing and fine tuning
-      subsystems.getPowerDistributionPanelWatcherSubsystem().add(
-        new PortSpy(
-          Constants.EveryBotMotorPdpPortId,
-          Constants.EveryBotMotorMaximuCurrentAmps,
-          new SequentialCommandGroup( ebCmd, rc),
-          "EveryBotMotorOvercurrentProtection"
-        )
-      );
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {
@@ -219,7 +228,7 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeStablizer");
     }
-  }  
+  } 
 
   /**
    * A method to calculate the initial position of the robot
