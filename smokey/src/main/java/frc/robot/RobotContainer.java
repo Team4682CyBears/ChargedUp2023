@@ -88,6 +88,7 @@ public class RobotContainer {
    */
   public void teleopInit()
   {
+    // NOTE this is enabled in teleop, because when enabled in Auto, it usurps the rest of the auto routine.  
     if(this.subsystems.getEveryBotPickerSubsystem() != null){
           // add a watcher for overcurrent on the 
           EveryBotPickerOverCurrentCommand ebCmd = new EveryBotPickerOverCurrentCommand(
@@ -96,7 +97,7 @@ public class RobotContainer {
             this.subsystems.getManualInputInterfaces().getCoDriverController(),
             Constants.overcurrentRumbleTimeSeconds);
           
-          // NOTE - PDP watcher code needs testing and fine tuning
+          // TODO - PDP watcher code needs testing and fine tuning
           subsystems.getPowerDistributionPanelWatcherSubsystem().add(
             new PortSpy(
               Constants.EveryBotMotorPdpPortId,

@@ -36,15 +36,34 @@ public class PowerDistributionPanelWatcherSubsystem extends SubsystemBase {
         myList.add(spy);
     }
 
+    /**
+     * Get the power distro
+     * @return the power distro object
+     */
     public PowerDistribution getPowerDistribution() { return distroPannel; }
+
+    /**
+     * enable or disable a port that is currently under watch
+     * @param targetPort - the port we want to make sure is disabled 
+     * @param enabledValue - if true the port will be disabled, else if false it will be enabled
+     */
+    public void setEnabledWatchOnPort(int targetPort, boolean enabledValue) {
+        for (int counter = 0; counter < myList.size(); counter++) {
+            PortSpy nextSpy = myList.get(counter);
+            if(nextSpy.getPort() == targetPort) {
+                nextSpy.setEnabled(enabledValue);
+                break;
+            }
+        }
+    }
 
     @Override
     public void periodic() {
         for (int counter = 0; counter < myList.size(); counter++) {
             PortSpy nextSpy = myList.get(counter);
-
             double current = distroPannel.getCurrent(nextSpy.getPort());
-            if(current > nextSpy.getCurrentLimit())
+
+            if(nextSpy.getEnabled() && current > nextSpy.getCurrentLimit())
             {
                 System.out.println(
                     "Overcurrent detected for port " + nextSpy.getPort() +

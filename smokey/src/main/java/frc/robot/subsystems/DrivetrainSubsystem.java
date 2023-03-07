@@ -98,7 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double yawOffsetDegrees = 0.0;
 
   // store yaw/pitch history
-  private static final int LevelListMaxSize = 10; // 10 * 20ms = 0.2s total history time
+  private static final int LevelListMaxSize = 12; // 12 * 20ms = 0.24s total history time
   private ArrayList<Float> RecentRolls = new ArrayList<Float>();
   private ArrayList<Float> RecentPitches = new ArrayList<Float>();
 
@@ -240,6 +240,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // System.out.println("getGyroscopeRotation() using: swerveNavx.getYaw()");
 
     // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+    // TODO test angleModulus again with the NavX1.  We disabled it during debugging the NavX2, but it might have been
+    // a red herring.  
     //return Rotation2d.fromRadians(
     //  MathUtil.angleModulus(
     //    (360.0 - swerveNavx.getYaw() + yawOffsetDegrees)*(2*Math.PI)/360));

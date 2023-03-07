@@ -17,6 +17,7 @@ public class PortSpy {
     private double currentLimit = 0.0;
     private CommandBase action = null;
     private String description = "";
+    private boolean enabled = true;
 
     /**
      * The constructor to assemble port watching metadata
@@ -64,5 +65,8 @@ public class PortSpy {
     public String getActionDescription() {
         return this.description;
     }
+
+    public boolean getEnabled() { return enabled; }
+    public void setEnabled(boolean value) { this.enabled = value; }
 
 }

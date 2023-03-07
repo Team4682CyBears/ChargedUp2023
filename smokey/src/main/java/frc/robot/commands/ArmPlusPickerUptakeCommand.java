@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.control.ArmPlusPickerAction;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
@@ -37,7 +38,8 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
     private final EveryBotPickerSubsystem pickerSubsystem;
-    private boolean isTargetCone = true; 
+    private final PowerDistributionPanelWatcherSubsystem watcherSubsystem;
+    private ChargedUpGamePiece targetPiece = ChargedUpGamePiece.Cone; 
     private boolean done = false;
     private int currentActionIndex = 0;
     private boolean firstActionStep = true;
@@ -48,16 +50,17 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
      * The constructor to create a arm movement uptake command.
      * @param theArmSubsystem - the arm subsystem
      * @param thePickerSubsystem - the picker subsystem
-     * @param isConeTarget - when true the cone is the target, else the cube is the target
+     * @param targetGamePiece - the target game piece
      */
     public ArmPlusPickerUptakeCommand(
         ArmSubsystem theArmSubsystem,
         EveryBotPickerSubsystem thePickerSubsystem,
         PowerDistributionPanelWatcherSubsystem watcher,
-        boolean isConeTarget) {
+        ChargedUpGamePiece targetGamePiece) {
         this.armSubsystem = theArmSubsystem;
         this.pickerSubsystem = thePickerSubsystem;
-        this.isTargetCone = isConeTarget;
+        this.watcherSubsystem = watcher;
+        this.targetPiece = targetGamePiece;
         this.distroPannel = watcher.getPowerDistribution();
         addRequirements(this.armSubsystem);
         addRequirements(this.pickerSubsystem);
@@ -71,12 +74,13 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
         currentActionIndex = 0;
         firstActionStep = true;
         actionList.clear();
-        if(this.isTargetCone) {
+        if(this.targetPiece == ChargedUpGamePiece.Cone) {
             this.fillListForCone();
         }
         else {
             this.fillListForCube();
         }
+        this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, false);
     }
 
     @Override
@@ -116,12 +120,16 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
         this.pickerSubsystem.setPickerRelativeSpeed(0.0);
         if(interrupted)
         {
-          done = true;      
+          done = true;
         }
+        this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, true);
     }
     
     @Override
     public boolean isFinished() {
+        if(this.done) {
+            this.watcherSubsystem.setEnabledWatchOnPort(Constants.EveryBotMotorPdpPortId, true);
+        }
         return this.done;
     }
 
