@@ -35,22 +35,22 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1; 
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2; 
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 3; 
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(147.92); 
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(147.92 + 344.26); 
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 4; 
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 5; 
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 6; 
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(108.15); 
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(108.15 + 282.74); 
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 7; 
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 8; 
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 9; 
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(77.639); 
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(77.639 + 259.80 + 180.0); 
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 10; 
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 11; 
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 12; 
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-32.881); 
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-32.881 + 172.88 + 180.0); 
 
     // *****************************************************************
     // arm constants
@@ -92,20 +92,20 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    public static final double armPresetPositionStowMetersY = 0.1;
-    public static final double armPresetPositionStowMetersZ = 1.23;
-    public static final double armPresetPositionGrabMetersY = 1.00;
-    public static final double armPresetPositionGrabMetersZ = 1.60;
-    public static final double armPresetPositionScoreHighMetersY = 1.10;
-    public static final double armPresetPositionScoreHighMetersZ = 1.78;
-    public static final double armPresetPositionScoreMediumMetersY = 1.00;
-    public static final double armPresetPositionScoreMediumMetersZ = 1.55;
-    public static final double armPresetPositionScoreLowMetersY = 0.65;
-    public static final double armPresetPositionScoreLowMetersZ = 1.04;
+    public static final double armPresetPositionStowMetersY = 0.470;
+    public static final double armPresetPositionStowMetersZ = 1.050 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionGrabMetersY = 1.140;
+    public static final double armPresetPositionGrabMetersZ = 0.975 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionScoreHighMetersY = 1.368;
+    public static final double armPresetPositionScoreHighMetersZ = 1.089;
+    public static final double armPresetPositionScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionScoreMediumMetersZ = 0.809;
+    public static final double armPresetPositionScoreLowMetersY = 0.848;
+    public static final double armPresetPositionScoreLowMetersZ = 0.732;
 
     // *******************************************************************
     // pneumatics constants
-    public static final int PneumaticsControlModuleNumber = 1;
+    public static final int PneumaticsControlModuleNumber = 0;
     public static final PneumaticsModuleType PneumaticsControlModuleType = PneumaticsModuleType.REVPH;
 
     // *******************************************************************
@@ -130,10 +130,10 @@ public final class Constants {
 
     // ********************************************************************
     // PowerDistributionPanel Constants
-    public static final int currentPowerDistributionPanelCanId = 2;
+    public static final int currentPowerDistributionPanelCanId = 19;
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
     public static final double overcurrentRumbleTimeSeconds = 0.25;
-    public static final int EveryBotMotorPdpPortId = 1;
-    public static final double EveryBotMotorMaximuCurrentAmps = 23.0;
+    public static final int EveryBotMotorPdpPortId = 8;
+    public static final double EveryBotMotorMaximuCurrentAmps = 35.5;
 
 }

@@ -103,7 +103,7 @@
               "_showGlyph": false
             }
           },
-          "7,1": {
+          "5,1": {
             "size": [
               2,
               1
@@ -118,7 +118,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "7,0": {
+          "5,0": {
             "size": [
               2,
               1
@@ -131,32 +131,6 @@
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RobotPitchDegrees",
-              "_title": "SmartDashboard/RobotPitchDegrees",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RobotRollDegrees",
-              "_title": "SmartDashboard/RobotRollDegrees",
-              "_glyph": 148,
-              "_showGlyph": false
             }
           }
         }
@@ -243,15 +217,65 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "4,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/VerticalArmSensor",
+              "_title": "SmartDashboard/VerticalArmSensor",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "4,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/horizontalArmSensor",
+              "_title": "SmartDashboard/horizontalArmSensor",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,3": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/EveryBotMotorOvercurrentProtection",
+              "_title": "SmartDashboard/EveryBotMotorOvercurrentProtection",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/EveryBotMotorOvercurrentProtection": true
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": -4.0,
-    "y": 0.0,
-    "width": 1293.0,
-    "height": 758.0
+    "x": -6.0,
+    "y": 3.0,
+    "width": 1519.0,
+    "height": 828.0
   }
 }

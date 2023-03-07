@@ -22,10 +22,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.EveryBotPickerAutoExpellCommand;
+import frc.robot.commands.EveryBotPickerAutoUptakeCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.common.SwerveTrajectoryGenerator;
@@ -117,9 +119,13 @@ public class AutonomousChooser {
         ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup(
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
 
-        // move arm to high score
+        // move arm sigh score
+
         if(this.subsystems.getArmSubsystem() != null) {
-            intoNodeAndHighScore.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            SequentialCommandGroup armSequence = new SequentialCommandGroup();
+            armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
+            armSequence.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            intoNodeAndHighScore.addCommands(armSequence);
         }
 
         command.addCommands(intoNodeAndHighScore);
@@ -128,8 +134,8 @@ public class AutonomousChooser {
         if(this.subsystems.getPickerSubsystem() != null) {
             command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
         }
-        else if (this.subsystems.getEveryBotPickerSubsystem() != null) {
-            command.addCommands(new EveryBotPickerAutoExpellCommand(subsystems.getEveryBotPickerSubsystem()));
+        else if (this.subsystems.getEveryBotPickerSubsystem() != null) {// cube uses uptake command to expell
+            command.addCommands(new EveryBotPickerAutoUptakeCommand(subsystems.getEveryBotPickerSubsystem()));
         }
 
         // drive out of the score position

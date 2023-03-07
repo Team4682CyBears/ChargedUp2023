@@ -30,8 +30,8 @@ public class InstalledHardware
     
     // Onboard Hardware - Orentation/Navigation Hardware
     public static final boolean wifiRadioInstalled = true;
-    public static final boolean navx2Installed = true;
-    public static final boolean navx1Installed = false;
+    public static final boolean navx2Installed = false;
+    public static final boolean navx1Installed = true;
     public static final boolean navxInstalled = navx1Installed || navx2Installed;
     public static final boolean limelightInstalled = false;
 
@@ -50,13 +50,13 @@ public class InstalledHardware
     public static final boolean applyDriveTrajectoryButtonsToDriverXboxController = false;
 
     // Arm Related Hardware
-    public static final boolean horizontalArmMotorInstalled = false;
-    public static final boolean verticalArmMotorInstalled = false;
+    public static final boolean horizontalArmMotorInstalled = true;
+    public static final boolean verticalArmMotorInstalled = true;
 
     // Picker Related Hardware
     public static final boolean pickerPneumaticsInstalled = false;
     public static final boolean stablizerPneumaticsInstalled = false;
 
     // EveryBot Picker Related Hardware
-    public static final boolean everyBotPickerInstalled = false;
+    public static final boolean everyBotPickerInstalled = true;
 }

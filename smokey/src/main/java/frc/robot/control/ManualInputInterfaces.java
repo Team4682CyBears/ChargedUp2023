@@ -23,11 +23,14 @@ import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
+import frc.robot.commands.ArmPlusPickerUptakeCommand;
 import frc.robot.commands.ArmToPointCommand;
+import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
 
@@ -87,6 +90,7 @@ public class ManualInputInterfaces {
   public double getInputArcadeArmY()
   {
     // use the co drivers right X to represent the horizontal movement
+    // and multiply by -1.0 as xbox reports values flipped
     return -1.0 * coDriverController.getLeftY();
   }
 
@@ -501,6 +505,38 @@ public class ManualInputInterfaces {
               "open the picker")
             )
           );
+        }
+
+        if(subsystemCollection.getEveryBotPickerSubsystem() != null &&
+           subsystemCollection.getArmSubsystem() != null) {
+
+          // Back button does auto arm + every bot picker cube pickup
+          this.coDriverController.back().onTrue(
+            new ParallelCommandGroup(
+              new ArmPlusPickerUptakeCommand(
+                subsystemCollection.getArmSubsystem(), 
+                subsystemCollection.getEveryBotPickerSubsystem(),
+                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
+                ChargedUpGamePiece.Cube).withTimeout(3.5),
+              new ButtonPressCommand(
+                "coDriverController.back()",
+                "move arm and pickup cube")
+              )
+            );
+
+          // start button does auto arm + every bot picker cone pickup
+          this.coDriverController.start().onTrue(
+            new ParallelCommandGroup(
+              new ArmPlusPickerUptakeCommand(
+                subsystemCollection.getArmSubsystem(), 
+                subsystemCollection.getEveryBotPickerSubsystem(),
+                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
+                ChargedUpGamePiece.Cone).withTimeout(3.5),
+              new ButtonPressCommand(
+                "coDriverController.start()",
+                "move arm and pickup cone")
+              )
+            );            
         }
 
         // NOTE: subsystemCollection.getEveryBotPickerSubsystem()

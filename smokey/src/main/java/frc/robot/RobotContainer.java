@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
+import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
@@ -50,13 +51,15 @@ public class RobotContainer {
 
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
-    this.initializeArmSubsystem();
-    this.initializePickerSubsystem();
-    this.initializeEveryBotPickerSubsystem();
     this.initializeStablizerSubsystem();
 
     // init the input system 
     this.initializeManualInputInterfaces();
+
+    // arm and picker later
+    this.initializeArmSubsystem();
+    this.initializeEveryBotPickerSubsystem();
+    this.initializePickerSubsystem();
 
     // calculate and update the current position of the robot
     this.calculateAndUpdateRobotPosition();
@@ -77,6 +80,33 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return autonomousChooser.getCommand();
+  }
+
+
+  /**
+   * 
+   */
+  public void teleopInit()
+  {
+    // NOTE this is enabled in teleop, because when enabled in Auto, it usurps the rest of the auto routine.  
+    if(this.subsystems.getEveryBotPickerSubsystem() != null){
+          // add a watcher for overcurrent on the 
+          EveryBotPickerOverCurrentCommand ebCmd = new EveryBotPickerOverCurrentCommand(
+            subsystems.getEveryBotPickerSubsystem(), Constants.overcurrentRumbleTimeSeconds);
+          RumbleCommand rc = new RumbleCommand(
+            this.subsystems.getManualInputInterfaces().getCoDriverController(),
+            Constants.overcurrentRumbleTimeSeconds);
+          
+          // TODO - PDP watcher code needs testing and fine tuning
+          subsystems.getPowerDistributionPanelWatcherSubsystem().add(
+            new PortSpy(
+              Constants.EveryBotMotorPdpPortId,
+              Constants.EveryBotMotorMaximuCurrentAmps,
+              new SequentialCommandGroup( ebCmd, rc),
+              "EveryBotMotorOvercurrentProtection"
+            )
+          );
+    }    
   }
 
   /**
@@ -181,23 +211,6 @@ public class RobotContainer {
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
-
-      // add a watcher for overcurrent on the 
-      EveryBotPickerDefaultCommand ebCmd = new EveryBotPickerDefaultCommand(
-        subsystems.getEveryBotPickerSubsystem(), 
-        () -> 0.0, 
-        () -> 0.0);
-      RumbleCommand rc = new RumbleCommand(
-        this.subsystems.getManualInputInterfaces().getCoDriverController(),
-        Constants.overcurrentRumbleTimeSeconds);
-      subsystems.getPowerDistributionPanelWatcherSubsystem().add(
-        new PortSpy(
-          Constants.EveryBotMotorPdpPortId,
-          Constants.EveryBotMotorMaximuCurrentAmps,
-          new SequentialCommandGroup( ebCmd, rc),
-          "Every Bot Motor Overcurrent Protection"
-        )
-      );
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {
@@ -216,7 +229,7 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeStablizer");
     }
-  }  
+  } 
 
   /**
    * A method to calculate the initial position of the robot

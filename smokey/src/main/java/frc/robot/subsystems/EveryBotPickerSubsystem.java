@@ -32,7 +32,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     CONSTANTS
     ************************************************************************/
     // TODO - use something less than 1.0 for testing
-    private static final double neoMotorSpeedReductionFactor = 5.0;
+    private static final double neoMotorSpeedReductionFactor = 1.0;
 
     // EveryBot picker gear reduction
     // TODO - get proper values from Simeon/Grayson
@@ -48,7 +48,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
     private boolean motorInitalizedForSmartMotion = false;
 
     private boolean isEveryBotMotorInverted = true;
-    private double requestedEveryBotMotorRpm = 0.0;
+    private double requestedEveryBotMotorSpeed = 0.0;
 
     /* *********************************************************************
     CONSTRUCTORS
@@ -69,8 +69,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
      * @param everyBotPickerSpeed the relative speed -1.0 to 1.0 to run the everyBot arm motor at
      */
     public void setPickerRelativeSpeed(double everyBotPickerSpeed) {
-      this.requestedEveryBotMotorRpm =
-        MotorUtils.truncateValue(everyBotPickerSpeed, -1.0, 1.0) * Constants.neoFiveFiveZeroMaximumRevolutionsPerMinute;
+      this.requestedEveryBotMotorSpeed = MotorUtils.truncateValue(everyBotPickerSpeed, -1.0, 1.0);
     }
    
     /**
@@ -81,7 +80,7 @@ public class EveryBotPickerSubsystem extends SubsystemBase {
       // confirm that the smart motion is setup - no-op after it is setup first time
       this.initializeMotorsSmartMotion();
       this.refreshPickerPosition();
-      everyBotPidController.setReference(this.requestedEveryBotMotorRpm, CANSparkMax.ControlType.kVelocity);
+      everyBotMotor.set(this.requestedEveryBotMotorSpeed * this.neoMotorSpeedReductionFactor);
     }
 
     @Override
