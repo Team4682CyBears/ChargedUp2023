@@ -23,6 +23,7 @@ import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -516,7 +517,7 @@ public class ManualInputInterfaces {
                 subsystemCollection.getArmSubsystem(), 
                 subsystemCollection.getEveryBotPickerSubsystem(),
                 subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
-                false).withTimeout(3.5),
+                ChargedUpGamePiece.Cube).withTimeout(3.5),
               new ButtonPressCommand(
                 "coDriverController.back()",
                 "move arm and pickup cube")
@@ -530,7 +531,7 @@ public class ManualInputInterfaces {
                 subsystemCollection.getArmSubsystem(), 
                 subsystemCollection.getEveryBotPickerSubsystem(),
                 subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
-                true).withTimeout(3.5),
+                ChargedUpGamePiece.Cone).withTimeout(3.5),
               new ButtonPressCommand(
                 "coDriverController.start()",
                 "move arm and pickup cone")
