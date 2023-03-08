@@ -28,7 +28,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final Boolean fieldOrientedDrive = true;
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-    private TrajectoryConfig trajectoryConfig = null;
+    private double maxAccelerationMetersS2 = 6.0;
     // TODO move this to Constants
     private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
@@ -40,7 +40,6 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
-        this.trajectoryConfig = drivetrainSubsystem.getTrajectoryConfig();
 
         // NOTE: For now we will NOT register the NavxSubsystem, this is safe to do here because
         // all access to the class is read-only.
@@ -80,18 +79,18 @@ public class DefaultDriveCommand extends CommandBase {
         double xVelocityLimited = speeds.vxMetersPerSecond;
         double yVelocityLimited = speeds.vyMetersPerSecond;
         // if accelerations over limit
-        if (Math.abs(xAccel) > trajectoryConfig.getMaxAcceleration()){
+        if (Math.abs(xAccel) > maxAccelerationMetersS2){
             // new velocity is the old velocity + the maximum allowed change toward the new direction
             xVelocityLimited = 
                 previousChassisSpeeds.vxMetersPerSecond 
-                + Math.copySign(trajectoryConfig.getMaxAcceleration() * deltaTimeSeconds, xAccel);
+                + Math.copySign(maxAccelerationMetersS2 * deltaTimeSeconds, xAccel);
             System.out.println("Limiting joystick x acceleration!! Commanded: " + speeds.vxMetersPerSecond + 
             " limited: " + xVelocityLimited);
         }
-        if (Math.abs(yAccel) > trajectoryConfig.getMaxAcceleration()){
+        if (Math.abs(yAccel) > maxAccelerationMetersS2){
             yVelocityLimited = 
                 previousChassisSpeeds.vyMetersPerSecond 
-                + Math.copySign(trajectoryConfig.getMaxAcceleration() * deltaTimeSeconds, yAccel);
+                + Math.copySign(maxAccelerationMetersS2 * deltaTimeSeconds, yAccel);
             System.out.println("Limiting joystick y acceleration!! Commanded: " + speeds.vyMetersPerSecond + 
                 " limited: " + yVelocityLimited);
         }
