@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SmartDash;
 import frc.robot.subsystems.TheRevMoter;
 
 /**
@@ -18,7 +21,7 @@ import frc.robot.subsystems.TheRevMoter;
 public class Robot extends TimedRobot {
 
   TheRevMoter theRevMoter;
-
+  SmartDash SmartDash;
 
 
   private Command m_autonomousCommand;
@@ -31,6 +34,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    SmartDash = new SmartDash();
     theRevMoter = new TheRevMoter();
   }
 
@@ -44,6 +48,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     theRevMoter.driveTheMotor();
+    double input = SmartDashboard.getNumber("Speed", 0.0);
     CommandScheduler.getInstance().run();
   }
 

@@ -23,6 +23,9 @@ public class ExampleCommand extends CommandBase {
     addRequirements(subsystem);
   }
 
+  private void addRequirements(SmartDash subsystem) {
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}

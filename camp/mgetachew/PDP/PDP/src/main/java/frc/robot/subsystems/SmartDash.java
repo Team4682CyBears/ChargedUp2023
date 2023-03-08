@@ -1,45 +1,23 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 
-public class SmartDash extends SubsystemBase {
+public class SmartDash implements Sendable {
+    private double input;
 
+    public SmartDash() {
+        input = 0.0;
+        SendableRegistry.add(this, "SmartDash");
+    }
 
-  /** Creates a new ExampleSubsystem. */
-  public SmartDash() {}
+    public void setInput(double input) {
+        this.input = input;
+    }
 
-  /* (non-Javadoc)
-   * @see edu.wpi.first.wpilibj2.command.Subsystem#periodic()
-   */
-  @Override
-   public void periodic() {
-
-     /* TheRevMoter.driveTheMotorSafely();
-    
-
-       // Get the total current of all channels.
-       double totalCurrent = TheRevMoter.getTotalCurrent();
-       SmartDashboard.putNumber("Total Current", totalCurrent);
-   
-       // Get the total power of all channels.
-       // Power is the bus voltage multiplied by the current with the units Watts.
-       double totalPower = TheRevMoter.getTotalPower();
-       SmartDashboard.putNumber("Total Power", totalPower);
-   
-       // Get the total energy of all channels.
-       // Energy is the power summed over time with units Joules.
-       double totalEnergy = TheRevMoter.getTotalEnergy();
-       SmartDashboard.putNumber("Total Energy", totalEnergy);
-
-       // JJDHSHJGNNHHGHNHHFhdGYSDYADUShushusdhgfddsfhusdfhuasfijsfhsauhfsdjdsfajofe
-   */ }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Input", () -> input, this::setInput);
+    }
 }
