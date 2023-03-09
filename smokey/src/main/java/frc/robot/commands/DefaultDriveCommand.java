@@ -25,6 +25,11 @@ public class DefaultDriveCommand extends CommandBase {
 
     // true if field oriented drive, false for robot oriented drive
     private final Boolean fieldOrientedDrive = true;
+    private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private double maxAccelerationMPerS2 = 6.0;
+    // TODO move this to Constants
+    private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -44,26 +49,46 @@ public class DefaultDriveCommand extends CommandBase {
     public void execute() {       
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         if(fieldOrientedDrive) {
-            m_drivetrainSubsystem.drive(
-                    ChassisSpeeds.fromFieldRelativeSpeeds(
-                            m_translationXSupplier.getAsDouble(),
-                            m_translationYSupplier.getAsDouble(),
-                            m_rotationSupplier.getAsDouble(),
-                            m_drivetrainSubsystem.getGyroscopeRotation()
-                    )
-            );
+            commandedChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                m_translationXSupplier.getAsDouble(),
+                m_translationYSupplier.getAsDouble(),
+                m_rotationSupplier.getAsDouble(),
+                m_drivetrainSubsystem.getGyroscopeRotation()
+                );   
         } else {
-            // supply 0.0 heading for gyro
-            m_drivetrainSubsystem.drive(new ChassisSpeeds(
-                        m_translationXSupplier.getAsDouble(),
-                        m_translationYSupplier.getAsDouble(),
-                        m_rotationSupplier.getAsDouble())
-                        );
+            commandedChassisSpeeds = new ChassisSpeeds(
+                m_translationXSupplier.getAsDouble(),
+                m_translationYSupplier.getAsDouble(),
+                m_rotationSupplier.getAsDouble());
         }
+   
+        commandedChassisSpeeds = limitChassisSpeedsAccel(commandedChassisSpeeds);
+        m_drivetrainSubsystem.drive(commandedChassisSpeeds);        
+        previousChassisSpeeds = commandedChassisSpeeds;
     }
 
     @Override
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    }
+
+    private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
+        double xAccel = (speeds.vxMetersPerSecond - previousChassisSpeeds.vxMetersPerSecond)/deltaTimeSeconds;
+        double yAccel = (speeds.vyMetersPerSecond - previousChassisSpeeds.vyMetersPerSecond)/deltaTimeSeconds;
+        double xVelocityLimited = speeds.vxMetersPerSecond;
+        double yVelocityLimited = speeds.vyMetersPerSecond;
+        // if accelerations over limit
+        if (Math.abs(xAccel) > maxAccelerationMPerS2){
+            // new velocity is the old velocity + the maximum allowed change toward the new direction
+            xVelocityLimited = 
+                previousChassisSpeeds.vxMetersPerSecond 
+                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, xAccel);
+        }
+        if (Math.abs(yAccel) > maxAccelerationMPerS2){
+            yVelocityLimited = 
+                previousChassisSpeeds.vyMetersPerSecond 
+                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, yAccel);
+        }
+        return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, speeds.omegaRadiansPerSecond);
     }
 }
