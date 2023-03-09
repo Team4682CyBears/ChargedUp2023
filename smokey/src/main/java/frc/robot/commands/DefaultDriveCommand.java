@@ -11,7 +11,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -28,7 +27,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final Boolean fieldOrientedDrive = true;
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-    private double maxAccelerationMetersS2 = 6.0;
+    private double maxAccelerationMPerS2 = 6.0;
     // TODO move this to Constants
     private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
@@ -79,20 +78,16 @@ public class DefaultDriveCommand extends CommandBase {
         double xVelocityLimited = speeds.vxMetersPerSecond;
         double yVelocityLimited = speeds.vyMetersPerSecond;
         // if accelerations over limit
-        if (Math.abs(xAccel) > maxAccelerationMetersS2){
+        if (Math.abs(xAccel) > maxAccelerationMPerS2){
             // new velocity is the old velocity + the maximum allowed change toward the new direction
             xVelocityLimited = 
                 previousChassisSpeeds.vxMetersPerSecond 
-                + Math.copySign(maxAccelerationMetersS2 * deltaTimeSeconds, xAccel);
-            System.out.println("Limiting joystick x acceleration!! Commanded: " + speeds.vxMetersPerSecond + 
-            " limited: " + xVelocityLimited);
+                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, xAccel);
         }
-        if (Math.abs(yAccel) > maxAccelerationMetersS2){
+        if (Math.abs(yAccel) > maxAccelerationMPerS2){
             yVelocityLimited = 
                 previousChassisSpeeds.vyMetersPerSecond 
-                + Math.copySign(maxAccelerationMetersS2 * deltaTimeSeconds, yAccel);
-            System.out.println("Limiting joystick y acceleration!! Commanded: " + speeds.vyMetersPerSecond + 
-                " limited: " + yVelocityLimited);
+                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, yAccel);
         }
         return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, speeds.omegaRadiansPerSecond);
     }
