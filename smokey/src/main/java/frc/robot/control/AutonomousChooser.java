@@ -13,8 +13,6 @@ package frc.robot.control;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,16 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
-import frc.robot.commands.ArmToPointCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
-import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
-import frc.robot.commands.EveryBotPickerAutoExpellCommand;
 import frc.robot.commands.EveryBotPickerAutoUptakeCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
-import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.VectorUtils;
 
@@ -40,7 +34,7 @@ import frc.robot.common.VectorUtils;
  */
 public class AutonomousChooser {
     private SubsystemCollection subsystems;
-    private final SendableChooser<AutonomousPath> AutonomousPathChooser = new SendableChooser<>();
+    private final SendableChooser<AutonomousPath> autonomousPathChooser = new SendableChooser<>();
     private final SendableChooser<AutonomousBalance> balanceChooser = new SendableChooser<>();
     private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
     private Trajectories trajectories;
@@ -61,13 +55,13 @@ public class AutonomousChooser {
             this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
             System.out.println(">>>> finished creating auto trajectories");
             
-            AutonomousPathChooser.setDefaultOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
-            AutonomousPathChooser.addOption("Node 1 (Left) Routine", AutonomousPath.LEFT_PATH);
-            AutonomousPathChooser.addOption("Node 2 (Left) Routine", AutonomousPath.NODE2_ROUTINE);
-            AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
-            AutonomousPathChooser.addOption("Node 8 (Right) Routine", AutonomousPath.NODE8_ROUTINE);
-            AutonomousPathChooser.addOption("Node 9 (Right) Routine", AutonomousPath.RIGHT_PATH);
-            AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
+            autonomousPathChooser.setDefaultOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
+            autonomousPathChooser.addOption("Node 1 (Left) Routine", AutonomousPath.LEFT_PATH);
+            autonomousPathChooser.addOption("Node 2 (Left) Routine", AutonomousPath.NODE2_ROUTINE);
+            autonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
+            autonomousPathChooser.addOption("Node 8 (Right) Routine", AutonomousPath.NODE8_ROUTINE);
+            autonomousPathChooser.addOption("Node 9 (Right) Routine", AutonomousPath.RIGHT_PATH);
+            autonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
     
             balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
             balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
@@ -75,7 +69,7 @@ public class AutonomousChooser {
             scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
             scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
     
-            SmartDashboard.putData(AutonomousPathChooser);
+            SmartDashboard.putData(autonomousPathChooser);
             SmartDashboard.putData(balanceChooser);
             SmartDashboard.putData(scoreHeight);
         }
@@ -83,21 +77,39 @@ public class AutonomousChooser {
             System.out.println(">>>> NO auto trajectories because no drive train subsystem");
         }
     }
-    
-    /**
-     * A method to return the AutonomousPathChooser
-     * @return AutonomousPathChooser
-     */
-    public SendableChooser<AutonomousPath> getModeChooser() {
-        return AutonomousPathChooser;
-    }
 
+    /**
+     * A method to return the chosen auto command
+     * @param subsystems - the SubsystemCollection
+     * @return command
+     */
+    public Command getCommand() {
+        switch (autonomousPathChooser.getSelected()) {
+            case LEFT_PATH :
+                return this.getLeftRoutine();
+            case RIGHT_PATH :
+                return this.getRightRoutine();
+            case MIDDLE_PATH :
+                return this.getMiddleRoutine();
+            case DIRECT_PATH :
+                return this.getDirectRoutine();
+            case NODE2_ROUTINE:
+                return this.getNode2Routine();
+            case NODE8_ROUTINE:
+                return this.getNode8Routine();
+            case TEST_NODE5_SCORE_ROUTINE:
+                return this.getScoreRoutine(trajectories.Node5Position);
+        }
+        return new InstantCommand();
+    }
+    
     /**
      * Builds a command list for use in auto routines.  This is the first part of the routine that scores the game piece. 
      * @param NodePosition
      * @return
      */
-    public Command getScoreRoutine(Pose2d NodePosition){
+    private Command getScoreRoutine(Pose2d NodePosition){
+        // Build into/out of node trajectories in real time because they depend on the starting position
         ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
         IntoNodeWaypoints.add(NodePosition);
         IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
@@ -121,11 +133,11 @@ public class AutonomousChooser {
         ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup(
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
 
-        // move arm score into selectable position
+        // move arm score into selected position
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
-            armSequence.addCommands(getScoringPosition(scoreHeight.getSelected()));
+            armSequence.addCommands(getArmPositionRoutine(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
 
@@ -159,33 +171,12 @@ public class AutonomousChooser {
     }
     
     /**
-     * Builds a command list for use in auto routines
-     * @param NodePosition starting position of robot corrosponding to the node. Nodes are numbered from left to right 1- 9 from the drivers perspective
-     * @param Trajectory trajectory to follow out of the community
+     * A method to move the arm to the specified scoring position. 
+     * Caller is responsible for checking that the Arm Subsystem is installed. 
+     * @param height
      * @return command
      */
-    public Command getAutoRoutine (Pose2d NodePosition, Trajectory Trajectory){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreRoutine(NodePosition));
-        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
-        return command;
-    }
-
-    /**
-     * Builds a command list for the balance routine, or will not if we toggle it so
-     * @param DoBalance the enum for wether the balance routine should be run
-     * @return
-     */
-    public Command getBalanceRoutine (AutonomousBalance DoBalance){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        if (DoBalance == AutonomousBalance.DO_BALANCE){
-            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.BehindToOntoRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
-        }
-        return command;
-    }
-
-    public Command getScoringPosition (ScoringPosition height){
+    private Command getArmPositionRoutine (ScoringPosition height){
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (height == ScoringPosition.SCORE_HIGH){
             command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE));
@@ -196,45 +187,72 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getLeftRoutine(){
+    /**
+     * Builds a command list for the balance routine, or will not if we toggle it so
+     * @param DoBalance the enum for wether the balance routine should be run
+     * @return command
+     */
+    private Command getBalanceRoutine (AutonomousBalance DoBalance, Trajectory toRampTrajectory){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        if (DoBalance == AutonomousBalance.DO_BALANCE){
+            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), toRampTrajectory));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
+        }
         return command;
     }
 
-    public Command getNode2Routine(){
+        private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node2Position, trajectories.Node2Trajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
-        return command;
-    }
-
-    public Command getNode8Routine(){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node8Position, trajectories.Node8Trajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
-        return command;
-    }
-
-    public Command getRightRoutine(){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node9Position, trajectories.RightTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
-        return command;
-    }
-
-    public Command getMiddleRoutine(){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
-        return command;
-    }
-
-    public Command getDirectRoutine(){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getAutoRoutine(trajectories.Node5Position, trajectories.DirectToRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node5Position, trajectories.DirectToRampTrajectory));
         command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
+        return command;
+    }
+
+    private Command getLeftRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.LeftToOntoRampTrajectory));
+        return command;
+    }
+
+    private Command getMiddleRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.BehindToOntoRampTrajectory));
+        return command;
+    }
+
+    private Command getNode2Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node2Position, trajectories.Node2Trajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.LeftToOntoRampTrajectory));
+        return command;
+    }
+
+    private Command getNode8Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node8Position, trajectories.Node8Trajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.RightToOntoRampTrajectory));
+        return command;
+    }
+
+    private Command getRightRoutine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.Node9Position, trajectories.RightTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.RightToOntoRampTrajectory));
+        return command;
+    }
+
+    /**
+     * Builds a command list for use in auto routines
+     * @param NodePosition starting position of robot corrosponding to the node. Nodes are numbered from left to right 1- 9 from the drivers perspective
+     * @param Trajectory trajectory to follow out of the community
+     * @return command
+     */
+    private Command getScoreAndDriveRoutine (Pose2d NodePosition, Trajectory Trajectory){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreRoutine(NodePosition));
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
     }
 
@@ -248,57 +266,6 @@ public class AutonomousChooser {
             subsystems.getDriveTrainSubsystem()));
         command.addCommands(new InstantCommand(
             () -> System.out.println("Setting Robot Position to : " + pose)));
-    }
-
-    private Command getTestRobotPositionRoutine(){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Setting Robot Position to: " + trajectories.Node1Position)));
-        command.addCommands(new InstantCommand(
-            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node1Position),
-            subsystems.getDriveTrainSubsystem()));
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Setting Robot Position to: " + trajectories.Node5Position)));
-        command.addCommands(new InstantCommand(
-            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node5Position),
-            subsystems.getDriveTrainSubsystem()));
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Setting Robot Position to: " + trajectories.Node9Position)));
-        command.addCommands(new InstantCommand(
-            () -> subsystems.getDriveTrainSubsystem().setRobotPosition(trajectories.Node9Position),
-            subsystems.getDriveTrainSubsystem()));
-        command.addCommands(new InstantCommand(
-            () -> System.out.println("Robot Position: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
-        return command;
-    }
-
-    /**
-     * A method to return the chosen auto command
-     * @param subsystems - the SubsystemCollection
-     * @return command
-     */
-    public Command getCommand() {
-        switch (AutonomousPathChooser.getSelected()) {
-            case LEFT_PATH :
-                return this.getLeftRoutine();
-            case RIGHT_PATH :
-                return this.getRightRoutine();
-            case MIDDLE_PATH :
-                return this.getMiddleRoutine();
-            case DIRECT_PATH :
-                return this.getDirectRoutine();
-            case NODE2_ROUTINE:
-                return this.getNode2Routine();
-            case NODE8_ROUTINE:
-                return this.getNode8Routine();
-            case TEST_NODE5_SCORE_ROUTINE:
-                return this.getScoreRoutine(trajectories.Node5Position);
-        }
-        return new InstantCommand();
     }
 
     private enum AutonomousPath {
