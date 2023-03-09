@@ -18,6 +18,8 @@ import com.swervedrivespecialties.swervelib.*;
 import com.swervedrivespecialties.swervelib.ctre.CtreUtils;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static com.swervedrivespecialties.swervelib.ctre.CtreUtils.checkCtreError;
@@ -40,6 +42,8 @@ public final class Falcon500SteerControllerFactoryBuilder {
 
     private double nominalVoltage = Double.NaN;
     private double currentLimit = Double.NaN;
+
+    private static double absAngleTolRadians = Units.degreesToRadians(5);
 
     public Falcon500SteerControllerFactoryBuilder withPidConstants(double proportional, double integral, double derivative) {
         this.proportionalConstant = proportional;
@@ -212,6 +216,11 @@ public final class Falcon500SteerControllerFactoryBuilder {
                     resetIteration = 0;
                     double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
                     if (absoluteEncoder.getLastError() == ErrorCode.OK){
+                        if (Math.abs(MathUtil.angleModulus(absoluteAngle - currentAngleRadians)) 
+                        > absAngleTolRadians){
+                            System.out.println("WARNING: Large error encountered when syncing absolute encoder from " + 
+                            currentAngleRadians + " to " + absoluteAngle + ".");
+                        }
                         motor.setSelectedSensorPosition(absoluteAngle / motorEncoderPositionCoefficient);
                         currentAngleRadians = absoluteAngle;    
                     } else {
