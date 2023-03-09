@@ -61,15 +61,13 @@ public class AutonomousChooser {
             this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
             System.out.println(">>>> finished creating auto trajectories");
             
-            AutonomousPathChooser.setDefaultOption("Node 1 Routine", AutonomousPath.LEFT_PATH);
+            AutonomousPathChooser.setDefaultOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
+            AutonomousPathChooser.addOption("Node 1 (Left) Routine", AutonomousPath.LEFT_PATH);
+            AutonomousPathChooser.addOption("Node 2 (Left) Routine", AutonomousPath.NODE2_ROUTINE);
             AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
-            AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
-            AutonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
+            AutonomousPathChooser.addOption("Node 8 (Right) Routine", AutonomousPath.NODE8_ROUTINE);
+            AutonomousPathChooser.addOption("Node 9 (Right) Routine", AutonomousPath.RIGHT_PATH);
             AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
-            AutonomousPathChooser.addOption("Node 8 Routine", AutonomousPath.NODE8_ROUTINE);
-            AutonomousPathChooser.addOption("Node 2 Routine", AutonomousPath.NODE2_ROUTINE);
-            AutonomousPathChooser.addOption("Test Setting Robot Position", AutonomousPath.TEST_SET_ROBOT_POSITION);
-
     
             balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
             balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
@@ -299,8 +297,6 @@ public class AutonomousChooser {
                 return this.getNode8Routine();
             case TEST_NODE5_SCORE_ROUTINE:
                 return this.getScoreRoutine(trajectories.Node5Position);
-            case TEST_SET_ROBOT_POSITION:
-                return this.getTestRobotPositionRoutine();
         }
         return new InstantCommand();
     }
@@ -311,7 +307,6 @@ public class AutonomousChooser {
         MIDDLE_PATH,
         DIRECT_PATH,
         TEST_NODE5_SCORE_ROUTINE,
-        TEST_SET_ROBOT_POSITION,
         NODE2_ROUTINE,
         NODE8_ROUTINE
     }
