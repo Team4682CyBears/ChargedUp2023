@@ -65,6 +65,7 @@ public class AutonomousChooser {
             AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
             AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
             AutonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
+            AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
             AutonomousPathChooser.addOption("Node 8 Routine", AutonomousPath.NODE8_ROUTINE);
             AutonomousPathChooser.addOption("Node 2 Routine", AutonomousPath.NODE2_ROUTINE);
             AutonomousPathChooser.addOption("Test Setting Robot Position", AutonomousPath.TEST_SET_ROBOT_POSITION);

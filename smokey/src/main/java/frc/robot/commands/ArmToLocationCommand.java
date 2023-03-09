@@ -36,17 +36,17 @@ public class ArmToLocationCommand extends ArmToPointCommand {
 
             case ARM_LOW_SCORE:
                 super.setYValue(Constants.armPresetPositionScoreLowMetersY);
-                super.setYValue(Constants.armPresetPositionScoreLowMetersZ);
+                super.setZValue(Constants.armPresetPositionScoreLowMetersZ);
                 break;
 
             case ARM_MED_SCORE:
                 super.setYValue(Constants.armPresetPositionScoreMediumMetersY);
-                super.setYValue(Constants.armPresetPositionScoreMediumMetersZ);
+                super.setZValue(Constants.armPresetPositionScoreMediumMetersZ);
                 break;
 
             case ARM_HIGH_SCORE: 
                 super.setYValue(Constants.armPresetPositionScoreHighMetersY);
-                super.setYValue(Constants.armPresetPositionScoreHighMetersZ);
+                super.setZValue(Constants.armPresetPositionScoreHighMetersZ);
                 break;
 
             default: //use stow position
