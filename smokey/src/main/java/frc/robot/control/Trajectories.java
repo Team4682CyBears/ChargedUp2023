@@ -10,13 +10,17 @@ import java.util.ArrayList;
 
 public class Trajectories {
     public Pose2d Node1Position;
+    public Pose2d Node2Position;
     public Pose2d Node5Position;
+    public Pose2d Node8Position;
     public Pose2d Node9Position;
     public Pose2d InfrontOfRampPosition;
     public Pose2d BehindRampPosition;
     public Pose2d TrajectoryEndPosition;
     public Trajectory LeftTrajectory;
+    public Trajectory Node2Trajectory;
     public Trajectory RightTrajectory;
+    public Trajectory Node8Trajectory;
     public Trajectory MiddleTrajectory;
     public Trajectory BehindToOntoRampTrajectory;
     public Trajectory DirectToRampTrajectory;
@@ -30,7 +34,9 @@ public class Trajectories {
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
+        this.Node2Position = new Pose2d(1.678, 4.433, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
+        this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
         this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(90));
 
@@ -47,6 +53,8 @@ public class Trajectories {
         LeftWaypoints.add(new Translation2d(5.3, 4.67));
         LeftWaypoints.add(new Translation2d(5.81, 2.748));
         this.LeftTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node1Position, LeftWaypoints, TrajectoryEndPosition, config);
+        Pose2d Node2TrajectoryEndPosition = new Pose2d(5.31, 4.67, Rotation2d.fromDegrees(0));
+        this.Node2Trajectory = SwerveTrajectoryGenerator.generateTrajectory(Node2Position, LeftWaypoints.subList(0,3), Node2TrajectoryEndPosition, config);
 
         ArrayList<Translation2d> RightWaypoints = new ArrayList<Translation2d>();
         RightWaypoints.add(new Translation2d(2.1, .69));
@@ -54,6 +62,8 @@ public class Trajectories {
         RightWaypoints.add(new Translation2d(5.3, .69));
         RightWaypoints.add(new Translation2d(5.81, 2.748));
         this.RightTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node9Position, RightWaypoints, TrajectoryEndPosition, config);
+        Pose2d Node8TrajectoryEndPosition = new Pose2d(5.31, 0.69, Rotation2d.fromDegrees(0));
+        this.Node8Trajectory = SwerveTrajectoryGenerator.generateTrajectory(Node8Position, RightWaypoints.subList(0,3), Node8TrajectoryEndPosition, config);
 
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(Node5Position);

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.ArmToPointCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveToPointCommand;
@@ -30,6 +31,7 @@ import frc.robot.commands.EveryBotPickerAutoExpellCommand;
 import frc.robot.commands.EveryBotPickerAutoUptakeCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
+import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.VectorUtils;
 
@@ -63,15 +65,16 @@ public class AutonomousChooser {
             AutonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
             AutonomousPathChooser.addOption("Node 9 Routine", AutonomousPath.RIGHT_PATH);
             AutonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
-            AutonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
+            AutonomousPathChooser.addOption("Node 8 Routine", AutonomousPath.NODE8_ROUTINE);
+            AutonomousPathChooser.addOption("Node 2 Routine", AutonomousPath.NODE2_ROUTINE);
             AutonomousPathChooser.addOption("Test Setting Robot Position", AutonomousPath.TEST_SET_ROBOT_POSITION);
+
     
             balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
             balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
     
             scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
             scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
-            scoreHeight.addOption("Score Low", ScoringPosition.SCORE_LOW);
     
             SmartDashboard.putData(AutonomousPathChooser);
             SmartDashboard.putData(balanceChooser);
@@ -119,12 +122,11 @@ public class AutonomousChooser {
         ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup(
             new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
 
-        // move arm sigh score
-
+        // move arm score into selectable position
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
-            armSequence.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            armSequence.addCommands(getScoringPosition(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
 
@@ -184,9 +186,34 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command getScoringPosition (ScoringPosition height){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        if (height == ScoringPosition.SCORE_HIGH){
+            command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE));
+        }
+        else if (height == ScoringPosition.SCORE_MIDDLE){
+            command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_MED_SCORE));
+        }
+        return command;
+    }
+
     public Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getAutoRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    public Command getNode2Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node2Position, trajectories.Node2Trajectory));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
+        return command;
+    }
+
+    public Command getNode8Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getAutoRoutine(trajectories.Node8Position, trajectories.Node8Trajectory));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected()));
         return command;
     }
@@ -265,6 +292,10 @@ public class AutonomousChooser {
                 return this.getMiddleRoutine();
             case DIRECT_PATH :
                 return this.getDirectRoutine();
+            case NODE2_ROUTINE:
+                return this.getNode2Routine();
+            case NODE8_ROUTINE:
+                return this.getNode8Routine();
             case TEST_NODE5_SCORE_ROUTINE:
                 return this.getScoreRoutine(trajectories.Node5Position);
             case TEST_SET_ROBOT_POSITION:
@@ -279,7 +310,9 @@ public class AutonomousChooser {
         MIDDLE_PATH,
         DIRECT_PATH,
         TEST_NODE5_SCORE_ROUTINE,
-        TEST_SET_ROBOT_POSITION
+        TEST_SET_ROBOT_POSITION,
+        NODE2_ROUTINE,
+        NODE8_ROUTINE
     }
 
     private enum AutonomousBalance {
@@ -290,6 +323,5 @@ public class AutonomousChooser {
     private enum ScoringPosition {
         SCORE_HIGH,
         SCORE_MIDDLE,
-        SCORE_LOW
     }
 }
