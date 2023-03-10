@@ -124,7 +124,11 @@ public class AutonomousChooser {
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
-            armSequence.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_HIGH_SCORE));
+            armSequence.addCommands(
+                new ArmToLocationCommand(
+                    subsystems.getArmSubsystem(),
+                    ArmLocation.ARM_HIGH_SCORE,
+                    subsystems.getManualInputInterfaces()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
 
@@ -144,7 +148,11 @@ public class AutonomousChooser {
 
         // stow the arm
         if(this.subsystems.getArmSubsystem() != null) {
-            outOfNodeAndStow.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmLocation.ARM_STOW));
+            outOfNodeAndStow.addCommands(
+                new ArmToLocationCommand(
+                    subsystems.getArmSubsystem(),
+                    ArmLocation.ARM_STOW,
+                    subsystems.getManualInputInterfaces()));
         }
 
         command.addCommands(outOfNodeAndStow);

@@ -23,12 +23,14 @@ import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.common.ChargedUpGamePiece;
 import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmPlusPickerUptakeCommand;
+import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToPointCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
@@ -43,6 +45,9 @@ public class ManualInputInterfaces {
 
   // subsystems needed for inputs
   private SubsystemCollection subsystemCollection = null;
+
+  // a member to hold the current game piece target
+  private ChargedUpGamePiece coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cone;
 
   /**
    * The constructor to build this 'manual input' conduit
@@ -111,8 +116,16 @@ public class ManualInputInterfaces {
    */
   public double getInputEveryBotUptakeTrigger()
   {
-    // use the co drivers right trigger - multiply by -1.0
-    return coDriverController.getRightTriggerAxis() * -1.0;
+    // use the co drivers right trigger
+    double inputValue = 0.0;
+    // TODO - need help to know signs for both
+    if(this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cone) {
+      inputValue = coDriverController.getRightTriggerAxis() * -1.0;
+    }
+    else if (this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cube) {
+      inputValue = coDriverController.getRightTriggerAxis();
+    }
+    return inputValue;
   }
 
   /**
@@ -122,7 +135,36 @@ public class ManualInputInterfaces {
   public double getInputEveryBotExpellTrigger()
   {
     // use the co drivers left trigger
-    return coDriverController.getLeftTriggerAxis();
+    double inputValue = 0.0;
+    // TODO - need help to know signs for both
+    if(this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cone) {
+      inputValue = coDriverController.getLeftTriggerAxis();
+    }
+    else if (this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cube) {
+      inputValue = coDriverController.getLeftTriggerAxis() * -1.0;
+    }
+    return inputValue;
+  }
+
+  /**
+   * A method to obtain the target game piece
+   * @return the current target game piece
+   */
+  public ChargedUpGamePiece getTargetGamePiece() {
+    return this.coDriverControllerGamePieceTarget;
+  }
+
+  /**
+   * A method to set the target game piece as Cone
+   */
+  public void setTargetGamePieceAsCone() {
+    this.coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cone;
+  }
+  /**
+   * A method to set the target game piece as Cube
+   */
+  public void setTargetGamePieceAsCube() {
+    this.coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cube;
   }
 
   /**
@@ -415,10 +457,10 @@ public class ManualInputInterfaces {
         // right bumper stow preset for arm
         this.coDriverController.rightBumper().onTrue(
           new ParallelCommandGroup(
-            new ArmToPointCommand(
+            new ArmToLocationCommand(
               this.subsystemCollection.getArmSubsystem(),
-              Constants.armPresetPositionStowMetersY,
-              Constants.armPresetPositionStowMetersZ),
+              ArmLocation.ARM_STOW,
+              this),
             new ButtonPressCommand(
               "coDriverController.rightTrigger()",
               "arm stow")
@@ -427,10 +469,10 @@ public class ManualInputInterfaces {
         // left bumper grab preset for arm
         this.coDriverController.leftBumper().onTrue(
           new ParallelCommandGroup(
-            new ArmToPointCommand(
+            new ArmToLocationCommand(
               this.subsystemCollection.getArmSubsystem(),
-              Constants.armPresetPositionGrabMetersY,
-              Constants.armPresetPositionGrabMetersZ),
+              ArmLocation.ARM_GRAB,
+              this),
             new ButtonPressCommand(
               "coDriverController.leftBumper()",
               "arm grab")
@@ -439,10 +481,10 @@ public class ManualInputInterfaces {
         // y button press will move the arms to high score position
         this.coDriverController.y().onTrue(
           new ParallelCommandGroup(
-            new ArmToPointCommand(
+            new ArmToLocationCommand(
               this.subsystemCollection.getArmSubsystem(),
-              Constants.armPresetPositionScoreHighMetersY,
-              Constants.armPresetPositionScoreHighMetersZ),
+              ArmLocation.ARM_HIGH_SCORE,
+              this),
             new ButtonPressCommand(
               "coDriverController.y()",
               "arm score high")
@@ -451,10 +493,10 @@ public class ManualInputInterfaces {
           // b button press will move the arms to medium score position
         this.coDriverController.b().onTrue(
           new ParallelCommandGroup(
-            new ArmToPointCommand(
+            new ArmToLocationCommand(
               this.subsystemCollection.getArmSubsystem(),
-              Constants.armPresetPositionScoreMediumMetersY,
-              Constants.armPresetPositionScoreMediumMetersZ),
+              ArmLocation.ARM_MED_SCORE,
+              this),
             new ButtonPressCommand(
               "coDriverController.b()",
               "arm score medium")
@@ -463,10 +505,10 @@ public class ManualInputInterfaces {
         // a button press will drive the arms to low score position
         this.coDriverController.a().onTrue(
           new ParallelCommandGroup(
-            new ArmToPointCommand(
+            new ArmToLocationCommand(
               this.subsystemCollection.getArmSubsystem(),
-              Constants.armPresetPositionScoreLowMetersY,
-              Constants.armPresetPositionScoreLowMetersZ),
+              ArmLocation.ARM_LOW_SCORE,
+              this),
             new ButtonPressCommand(
               "coDriverController.a()",
               "arm score low")
@@ -507,37 +549,25 @@ public class ManualInputInterfaces {
           );
         }
 
-        if(subsystemCollection.getEveryBotPickerSubsystem() != null &&
-           subsystemCollection.getArmSubsystem() != null) {
+        // Back button sets cube
+        this.coDriverController.back().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(subsystemCollection.getManualInputInterfaces()::setTargetGamePieceAsCube),
+            new ButtonPressCommand(
+              "coDriverController.back()",
+              "set target as cube")
+            )
+          );
 
-          // Back button does auto arm + every bot picker cube pickup
-          this.coDriverController.back().onTrue(
-            new ParallelCommandGroup(
-              new ArmPlusPickerUptakeCommand(
-                subsystemCollection.getArmSubsystem(), 
-                subsystemCollection.getEveryBotPickerSubsystem(),
-                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
-                ChargedUpGamePiece.Cube).withTimeout(3.5),
-              new ButtonPressCommand(
-                "coDriverController.back()",
-                "move arm and pickup cube")
-              )
-            );
-
-          // start button does auto arm + every bot picker cone pickup
-          this.coDriverController.start().onTrue(
-            new ParallelCommandGroup(
-              new ArmPlusPickerUptakeCommand(
-                subsystemCollection.getArmSubsystem(), 
-                subsystemCollection.getEveryBotPickerSubsystem(),
-                subsystemCollection.getPowerDistributionPanelWatcherSubsystem(),
-                ChargedUpGamePiece.Cone).withTimeout(3.5),
-              new ButtonPressCommand(
-                "coDriverController.start()",
-                "move arm and pickup cone")
-              )
-            );            
-        }
+        // start button does sets cone
+        this.coDriverController.start().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(subsystemCollection.getManualInputInterfaces()::setTargetGamePieceAsCone),
+            new ButtonPressCommand(
+              "coDriverController.start()",
+              "set target as cone")
+            )
+          );            
 
         // NOTE: subsystemCollection.getEveryBotPickerSubsystem()
         // THESE ARE TAKEN CARE OF IN DEFAULT COMMANDS

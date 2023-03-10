@@ -94,14 +94,24 @@ public final class Constants {
     // arm constants - preset positions
     public static final double armPresetPositionStowMetersY = 0.470;
     public static final double armPresetPositionStowMetersZ = 1.050 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionGrabMetersY = 1.140;
-    public static final double armPresetPositionGrabMetersZ = 0.975 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionScoreHighMetersY = 1.368;
-    public static final double armPresetPositionScoreHighMetersZ = 1.089;
-    public static final double armPresetPositionScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionScoreMediumMetersZ = 0.809;
-    public static final double armPresetPositionScoreLowMetersY = 0.848;
-    public static final double armPresetPositionScoreLowMetersZ = 0.732;
+
+    public static final double armPresetPositionCubeGrabMetersY = 1.140;
+    public static final double armPresetPositionCubeGrabMetersZ = 0.975 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionCubeScoreHighMetersY = 1.368;
+    public static final double armPresetPositionCubeScoreHighMetersZ = 1.089;
+    public static final double armPresetPositionCubeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionCubeScoreMediumMetersZ = 0.809;
+    public static final double armPresetPositionCubeScoreLowMetersY = 0.848;
+    public static final double armPresetPositionCubeScoreLowMetersZ = 0.732;
+
+    public static final double armPresetPositionConeGrabMetersY = 1.140;
+    public static final double armPresetPositionConeGrabMetersZ = 0.975 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionConeScoreHighMetersY = 1.368;
+    public static final double armPresetPositionConeScoreHighMetersZ = 1.089;
+    public static final double armPresetPositionConeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionConeScoreMediumMetersZ = 0.809;
+    public static final double armPresetPositionConeScoreLowMetersY = 0.848;
+    public static final double armPresetPositionConeScoreLowMetersZ = 0.732;
 
     // *******************************************************************
     // pneumatics constants

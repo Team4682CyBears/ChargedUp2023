@@ -138,73 +138,73 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
      */
     private void fillListForCone() {
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.07,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.07,
             ArmPlusPickerUptakeCommand.coneInitialSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentInitialLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.06,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.06,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentInitialLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.05,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.05,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.04,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.04,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.03,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.03,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.02,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.02,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.01,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.01,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.00,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ + 0.00,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.01,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.01,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.02,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.02,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.03,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.03,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.04,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.04,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.05,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.05,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.06,
+            Constants.armPresetPositionConeGrabMetersY,
+            Constants.armPresetPositionConeGrabMetersZ - 0.06,
             ArmPlusPickerUptakeCommand.coneSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.coneOverCurrentSteadyStateLimitAmps));
     }
@@ -214,73 +214,73 @@ public class ArmPlusPickerUptakeCommand extends CommandBase {
      */
     private void fillListForCube() {
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.07,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.07,
             ArmPlusPickerUptakeCommand.cubeInitialSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentInitialLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.06,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.06,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentInitialLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.05,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.05,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.04,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.04,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.03,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.03,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.02,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.02,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.01,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.01,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ + 0.00,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ + 0.00,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.01,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.01,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.02,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.02,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.03,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.03,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.04,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.04,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.05,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.05,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
         actionList.add(new ArmPlusPickerAction(
-            Constants.armPresetPositionGrabMetersY,
-            Constants.armPresetPositionGrabMetersZ - 0.06,
+            Constants.armPresetPositionCubeGrabMetersY,
+            Constants.armPresetPositionCubeGrabMetersZ - 0.06,
             ArmPlusPickerUptakeCommand.cubeSteadyStateSpeed,
             ArmPlusPickerUptakeCommand.cubeOverCurrentSteadyStateLimitAmps));
     }
