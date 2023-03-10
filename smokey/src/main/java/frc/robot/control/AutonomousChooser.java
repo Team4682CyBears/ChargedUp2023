@@ -98,7 +98,7 @@ public class AutonomousChooser {
             case NODE8_ROUTINE:
                 return this.getNode8Routine();
             case TEST_NODE5_SCORE_ROUTINE:
-                return this.getScoreRoutine(trajectories.Node5Position);
+                return this.getScoreRoutine(trajectories.getNode5Position());
         }
         return new InstantCommand();
     }
@@ -177,14 +177,13 @@ public class AutonomousChooser {
      * @return command
      */
     private Command getArmPositionRoutine (ScoringPosition height){
-        SequentialCommandGroup command = new SequentialCommandGroup();
         if (height == ScoringPosition.SCORE_HIGH){
-            command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE));
+            return new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE);
         }
         else if (height == ScoringPosition.SCORE_MIDDLE){
-            command.addCommands(new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_MED_SCORE));
+            return new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_MED_SCORE);
         }
-        return command;
+        return new InstantCommand();
     }
 
     /**
@@ -203,43 +202,43 @@ public class AutonomousChooser {
 
         private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node5Position, trajectories.DirectToRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getDirectToRampTrajectory()));
         command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 
     private Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node1Position, trajectories.LeftTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.LeftToOntoRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode1Position(), trajectories.getLeftTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
     private Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node5Position, trajectories.MiddleTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.BehindToOntoRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getBehindToOntoRampTrajectory()));
         return command;
     }
 
     private Command getNode2Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node2Position, trajectories.Node2Trajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.LeftToOntoRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode2Position(), trajectories.getNode2Trajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
     private Command getNode8Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node8Position, trajectories.Node8Trajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.RightToOntoRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode8Position(), trajectories.getNode8Trajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
 
     private Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.Node9Position, trajectories.RightTrajectory));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.RightToOntoRampTrajectory));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode9Position(), trajectories.getRightTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
 

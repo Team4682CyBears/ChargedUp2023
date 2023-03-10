@@ -9,22 +9,22 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import java.util.ArrayList;
 
 public class Trajectories {
-    public Pose2d Node1Position;
-    public Pose2d Node2Position;
-    public Pose2d Node5Position;
-    public Pose2d Node8Position;
-    public Pose2d Node9Position;
-    public Pose2d InfrontOfRampPosition;
-    public Trajectory LeftTrajectory;
-    public Trajectory Node2Trajectory;
-    public Trajectory RightTrajectory;
-    public Trajectory Node8Trajectory;
-    public Trajectory MiddleTrajectory;
-    public Trajectory LeftToOntoRampTrajectory;
-    public Trajectory RightToOntoRampTrajectory;
-    public Trajectory BehindToOntoRampTrajectory;
-    public Trajectory DirectToRampTrajectory;
-    
+    private Pose2d Node1Position;
+    private Pose2d Node2Position;
+    private Pose2d Node5Position;
+    private Pose2d Node8Position;
+    private Pose2d Node9Position;
+    private Pose2d InfrontOfRampPosition;
+    private Trajectory LeftTrajectory;
+    private Trajectory Node2Trajectory;
+    private Trajectory RightTrajectory;
+    private Trajectory Node8Trajectory;
+    private Trajectory MiddleTrajectory;
+    private Trajectory LeftToOntoRampTrajectory;
+    private Trajectory RightToOntoRampTrajectory;
+    private Trajectory BehindToOntoRampTrajectory;
+    private Trajectory DirectToRampTrajectory;
+
     public Trajectories(DrivetrainSubsystem drivetrain){
 
         TrajectoryConfig config = drivetrain.getTrajectoryConfig();
@@ -97,5 +97,65 @@ public class Trajectories {
         Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, config);
         
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
+    }
+
+    public Trajectory getBehindToOntoRampTrajectory() {
+        return BehindToOntoRampTrajectory;
+    }
+
+    public Trajectory getDirectToRampTrajectory() {
+        return DirectToRampTrajectory;
+    }
+
+    public Pose2d getInfrontOfRampPosition() {
+        return InfrontOfRampPosition;
+    }
+
+    public Trajectory getLeftToOntoRampTrajectory() {
+        return LeftToOntoRampTrajectory;
+    }
+
+    public Trajectory getLeftTrajectory() {
+        return LeftTrajectory;
+    }
+
+    public Trajectory getMiddleTrajectory() {
+        return MiddleTrajectory;
+    }
+
+    public Pose2d getNode1Position() {
+        return Node1Position;
+    }
+
+    public Pose2d getNode2Position() {
+        return Node2Position;
+    }
+
+    public Trajectory getNode2Trajectory() {
+        return Node2Trajectory;
+    }
+
+    public Pose2d getNode5Position() {
+        return Node5Position;
+    }
+
+    public Pose2d getNode8Position() {
+        return Node8Position;
+    }
+
+    public Trajectory getNode8Trajectory() {
+        return Node8Trajectory;
+    }
+
+    public Pose2d getNode9Position() {
+        return Node9Position;
+    }
+
+    public Trajectory getRightToOntoRampTrajectory() {
+        return RightToOntoRampTrajectory;
+    }
+
+    public Trajectory getRightTrajectory() {
+        return RightTrajectory;
     }
 }   
