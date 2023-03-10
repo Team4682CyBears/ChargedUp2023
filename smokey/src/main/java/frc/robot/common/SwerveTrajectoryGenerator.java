@@ -51,7 +51,7 @@ public class SwerveTrajectoryGenerator {
      * @param config
      * @return trajectory 
      */
-    public static Trajectory generateTrajectory(Pose2d start, ArrayList<Translation2d> interiorWaypoints, Pose2d end, TrajectoryConfig config){
+    public static Trajectory generateTrajectory(Pose2d start, List<Translation2d> interiorWaypoints, Pose2d end, TrajectoryConfig config){
         Rotation2d origStartingAngle = start.getRotation();
         Rotation2d origEndingAngle = end.getRotation();
         // calaculte new headings for the start and end points 
