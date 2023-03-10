@@ -46,8 +46,8 @@ public class ManualInputInterfaces {
   // subsystems needed for inputs
   private SubsystemCollection subsystemCollection = null;
 
-  // a member to hold the current game piece target
-  private ChargedUpGamePiece coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cone;
+  // a member to hold the current game piece target - start with cube because manual likely will target cube as start
+  private ChargedUpGamePiece coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cube;
 
   /**
    * The constructor to build this 'manual input' conduit
