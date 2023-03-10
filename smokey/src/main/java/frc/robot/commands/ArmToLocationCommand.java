@@ -11,6 +11,8 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.common.ChargedUpGamePiece;
+import frc.robot.control.ManualInputInterfaces;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmToLocationCommand extends ArmToPointCommand {
@@ -20,7 +22,7 @@ public class ArmToLocationCommand extends ArmToPointCommand {
      * @param arm - the arm subsystem that should be in use
      * @param location - the enum 'named' location to drive the arm to in space
      */
-    public ArmToLocationCommand(ArmSubsystem arm, ArmLocation location) {
+    public ArmToLocationCommand(ArmSubsystem arm, ArmLocation location, ManualInputInterfaces input) {
         super(arm, 0.0, 0.0);
         
         switch(location){
@@ -30,23 +32,47 @@ public class ArmToLocationCommand extends ArmToPointCommand {
                 break;
 
             case ARM_GRAB:
-                super.setYValue(Constants.armPresetPositionGrabMetersY);
-                super.setZValue(Constants.armPresetPositionGrabMetersZ);
+                if(input.getTargetGamePiece() == ChargedUpGamePiece.Cone) {
+                    super.setYValue(Constants.armPresetPositionConeGrabMetersY);
+                    super.setZValue(Constants.armPresetPositionConeGrabMetersZ);
+                }
+                else if(input.getTargetGamePiece() == ChargedUpGamePiece.Cube) {
+                    super.setYValue(Constants.armPresetPositionCubeGrabMetersY);
+                    super.setZValue(Constants.armPresetPositionCubeGrabMetersZ);
+                }
                 break;
 
             case ARM_LOW_SCORE:
-                super.setYValue(Constants.armPresetPositionScoreLowMetersY);
-                super.setZValue(Constants.armPresetPositionScoreLowMetersZ);
+                if(input.getTargetGamePiece() == ChargedUpGamePiece.Cone) {
+                    super.setYValue(Constants.armPresetPositionConeScoreLowMetersY);
+                    super.setZValue(Constants.armPresetPositionConeScoreLowMetersZ);
+                }
+                else if(input.getTargetGamePiece() == ChargedUpGamePiece.Cube) {
+                    super.setYValue(Constants.armPresetPositionCubeScoreLowMetersY);
+                    super.setZValue(Constants.armPresetPositionCubeScoreLowMetersZ);
+                }
                 break;
 
             case ARM_MED_SCORE:
-                super.setYValue(Constants.armPresetPositionScoreMediumMetersY);
-                super.setZValue(Constants.armPresetPositionScoreMediumMetersZ);
+                if(input.getTargetGamePiece() == ChargedUpGamePiece.Cone) {
+                    super.setYValue(Constants.armPresetPositionConeScoreMediumMetersY);
+                    super.setZValue(Constants.armPresetPositionConeScoreMediumMetersZ);
+                }
+                else if(input.getTargetGamePiece() == ChargedUpGamePiece.Cube) {
+                    super.setYValue(Constants.armPresetPositionCubeScoreMediumMetersY);
+                    super.setZValue(Constants.armPresetPositionCubeScoreMediumMetersZ);
+                }
                 break;
 
             case ARM_HIGH_SCORE: 
-                super.setYValue(Constants.armPresetPositionScoreHighMetersY);
-                super.setZValue(Constants.armPresetPositionScoreHighMetersZ);
+                if(input.getTargetGamePiece() == ChargedUpGamePiece.Cone) {
+                    super.setYValue(Constants.armPresetPositionConeScoreHighMetersY);
+                    super.setZValue(Constants.armPresetPositionConeScoreHighMetersZ);
+                }
+                else if(input.getTargetGamePiece() == ChargedUpGamePiece.Cube) {
+                    super.setYValue(Constants.armPresetPositionCubeScoreHighMetersY);
+                    super.setZValue(Constants.armPresetPositionCubeScoreHighMetersZ);
+                }
                 break;
 
             default: //use stow position
