@@ -109,6 +109,9 @@ public class AutonomousChooser {
      * @return
      */
     private Command getScoreRoutine(Pose2d NodePosition){
+        // for now we will always assume that we are attempting to score the cube
+        subsystems.getManualInputInterfaces().setTargetGamePieceAsCube();
+
         // Build into/out of node trajectories in real time because they depend on the starting position
         ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
         IntoNodeWaypoints.add(NodePosition);
@@ -137,11 +140,7 @@ public class AutonomousChooser {
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
-            armSequence.addCommands(
-                new ArmToLocationCommand(
-                    subsystems.getArmSubsystem(),
-                    scoreHeight.getSelected(),
-                    subsystems.getManualInputInterfaces()));
+            armSequence.addCommands(this.getArmPositionRoutine(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
 
@@ -186,10 +185,16 @@ public class AutonomousChooser {
      */
     private Command getArmPositionRoutine (ScoringPosition height){
         if (height == ScoringPosition.SCORE_HIGH){
-            return new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE);
+            return new ArmToLocationCommand(
+                subsystems.getArmSubsystem(),
+                ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE,
+                subsystems.getManualInputInterfaces());
         }
         else if (height == ScoringPosition.SCORE_MIDDLE){
-            return new ArmToLocationCommand(subsystems.getArmSubsystem(), ArmToLocationCommand.ArmLocation.ARM_MED_SCORE);
+            return new ArmToLocationCommand(
+                subsystems.getArmSubsystem(),
+                ArmToLocationCommand.ArmLocation.ARM_MED_SCORE,
+                subsystems.getManualInputInterfaces());
         }
         return new InstantCommand();
     }
