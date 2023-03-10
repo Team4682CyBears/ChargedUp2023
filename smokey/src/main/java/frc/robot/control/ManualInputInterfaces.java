@@ -29,10 +29,7 @@ import frc.robot.common.TestTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
-import frc.robot.commands.ArmPlusPickerUptakeCommand;
 import frc.robot.commands.ArmToLocationCommand;
-import frc.robot.commands.ArmToPointCommand;
-import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
 
