@@ -23,6 +23,7 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
+import frc.robot.control.SwerveDriveMode;
 import frc.robot.common.MotorUtils;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -118,6 +119,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final double defaultSpeedReductionFactor = 1.0;
   private double speedReductionFactor = defaultSpeedReductionFactor;
   private double speedReductionFactorIncrement = 0.1;
+
+  private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
 
   /**
    * Constructor for this DrivetrainSubsystem
@@ -354,7 +357,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
      return RecentRolls;
    }
  
-  /**
+   /**
+    * A method to obtain the swerve drive mode
+    * @return the mode
+    */
+   public SwerveDriveMode getSwerveDriveMode() {
+    return swerveDriveMode;
+  }
+
+/**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
   * they do not affect other trajectories
@@ -400,11 +411,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     this.displayDiagnostics();
 
-    // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
-    // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-    SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
-    // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    SwerveModuleState[] states; 
+    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) {
+      states = getImmovableStanceStates();
+    }
+    else { // SwerveDriveMode.NORMAL_DRIVING
+      // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
+      // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
+      states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+      // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    } 
 
     // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
     frontLeftModule.set(
@@ -455,6 +472,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     finally {
       theLock.unlock();
+    }
+  }
+
+  /**
+   * A method to set the swerve drive mode
+   * @param swerveDriveMode
+   */
+  public void setSwerveDriveMode(SwerveDriveMode swerveDriveMode) {
+    this.swerveDriveMode = swerveDriveMode;
+    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) {
+      this.chassisSpeeds = new ChassisSpeeds();
     }
   }
 
@@ -545,6 +573,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND, 
     MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
   }
+
+  private SwerveModuleState[] getImmovableStanceStates(){
+    // set wheels in "X" pattern
+    return new SwerveModuleState[] {
+      // frontLeftModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(45)),
+      // frontRightModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(-45)),
+      // backLeftModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(-45)),
+      // backRightModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(45))
+    }; 
+  };
 
   /**
    * Method that will store roll
