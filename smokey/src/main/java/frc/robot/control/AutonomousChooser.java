@@ -229,7 +229,8 @@ public class AutonomousChooser {
 
     private Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectory()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectoryPart1()));
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getMiddleTrajectoryPart2()));
         command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getBehindToOntoRampTrajectory()));
         return command;
     }

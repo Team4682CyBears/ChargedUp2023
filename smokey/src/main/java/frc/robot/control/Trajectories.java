@@ -19,11 +19,13 @@ public class Trajectories {
     private Trajectory Node2Trajectory;
     private Trajectory RightTrajectory;
     private Trajectory Node8Trajectory;
-    private Trajectory MiddleTrajectory;
+    private Trajectory MiddleTrajectoryPart1;
+    private Trajectory MiddleTrajectoryPart2;
     private Trajectory LeftToOntoRampTrajectory;
     private Trajectory RightToOntoRampTrajectory;
     private Trajectory BehindToOntoRampTrajectory;
     private Trajectory DirectToRampTrajectory;
+    public Pose2d RampFarWaypoint;
 
     public Trajectories(DrivetrainSubsystem drivetrain){
 
@@ -38,13 +40,13 @@ public class Trajectories {
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
-        this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(90));
+        this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(0));
         
         // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
         // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
-        Pose2d RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
-        Pose2d RampNearWaypoint = new Pose2d(3.54, 2.748, Rotation2d.fromDegrees(90));
-        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(90));
+        this.RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(0));
+        Pose2d RampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(180));
  
         // Left waypoints drive from Node 1 or 2 to a location out of the community
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -67,12 +69,6 @@ public class Trajectories {
         BehindToRampWaypoints.add(new Translation2d(5.81, 2.748));
         this.LeftToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(LeftTrajectoryEndPosition, BehindToRampWaypoints, BehindTrajectoryEndPosition, config);
         this.RightToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(RightTrajectoryEndPosition, BehindToRampWaypoints, BehindTrajectoryEndPosition, config);
-
-        // TODO we may have to break this up into multiple trajectories to control velocities over the ramp
-        ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
-        MiddleWaypoints.add(Node5Position);
-        MiddleWaypoints.add(BehindTrajectoryEndPosition);
-        this.MiddleTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
         
         // Drive onto ramp from behind
         ArrayList<Pose2d> BehindToOntoRampWaypoints = new ArrayList<Pose2d>();
@@ -80,9 +76,13 @@ public class Trajectories {
         BehindToOntoRampWaypoints.add(RampNearWaypoint);
         // use fastConfig for this trajectory 
         this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, fastConfig); 
+        System.out.println("Behind to onto ramp trajectory");
+        SwerveTrajectoryGenerator.printTrajectory(BehindToOntoRampTrajectory);
 
-        this.LeftToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
-        this.RightToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);   
+        this.LeftToOntoRampTrajectory = this.LeftToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
+        this.RightToOntoRampTrajectory = this.RightToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
+        System.out.println("Right to onto ramp trajectory");
+        SwerveTrajectoryGenerator.printTrajectory(RightToOntoRampTrajectory);   
 
         // Drive onto ramp from in front 
         ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
@@ -97,6 +97,19 @@ public class Trajectories {
         Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, config);
         
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
+        
+        ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
+        MiddleWaypoints.add(RampFarWaypoint);
+        MiddleWaypoints.add(BehindTrajectoryEndPosition);
+        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
+            .concatenate(InfrontToOntoRampTrajectory);
+        this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory
+            .concatenate(BehindToOntoRampTrajectory);
+        System.out.println("Middle trajectory");
+        SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
+        System.out.println("");
+        SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
     }
 
     public Trajectory getBehindToOntoRampTrajectory() {
@@ -119,8 +132,12 @@ public class Trajectories {
         return LeftTrajectory;
     }
 
-    public Trajectory getMiddleTrajectory() {
-        return MiddleTrajectory;
+    public Trajectory getMiddleTrajectoryPart1() {
+        return MiddleTrajectoryPart1;
+    }
+
+    public Trajectory getMiddleTrajectoryPart2() {
+        return MiddleTrajectoryPart2;
     }
 
     public Pose2d getNode1Position() {
