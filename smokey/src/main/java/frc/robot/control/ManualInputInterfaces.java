@@ -254,7 +254,8 @@ public class ManualInputInterfaces {
               "increment power factor")
             )
           );
-        // right trigger press will put drivetrain in immoveable stance  
+        // right trigger press will put drivetrain in immoveable stance
+        // DO NOT require drivetrainSubsystem here.  We need the default command to continue to decel the robot.    
         this.driverController.rightTrigger().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(

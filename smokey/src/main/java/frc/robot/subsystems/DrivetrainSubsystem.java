@@ -413,7 +413,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.displayDiagnostics();
 
     SwerveModuleState[] states; 
-    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) {
+    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE && chassisSpeedsAreZero()) {
+      // only change to ImmovableStance if chassis is not moving.
+      // otherwise, we could tip the robot moving to this stance when bot is at high velocity
       states = getImmovableStanceStates();
     }
     else { // SwerveDriveMode.NORMAL_DRIVING
@@ -489,9 +491,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void setSwerveDriveMode(SwerveDriveMode swerveDriveMode) {
     this.swerveDriveMode = swerveDriveMode;
-    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) {
-      this.chassisSpeeds = new ChassisSpeeds();
-    }
+    // if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) DO NOT set chassis speeds to 0.0 here.
+    // we need to allow the robot to decel properly so that it doesn't tip.  
   }
 
   /**
@@ -540,6 +541,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return levelChecker;
   }
 
+  private boolean chassisSpeedsAreZero(){
+    return (chassisSpeeds.vxMetersPerSecond == 0.0) 
+    && (chassisSpeeds.vyMetersPerSecond == 0.0) 
+    && (chassisSpeeds.omegaRadiansPerSecond == 0.0);
+  }
+  
   /**
    * Clamps the chassis speeds between a min and max.  
    * Separete min and max for translational (x,y) vs. rotational speeds
