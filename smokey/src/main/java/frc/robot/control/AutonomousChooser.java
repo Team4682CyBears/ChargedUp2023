@@ -23,9 +23,11 @@ import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
-import frc.robot.commands.EveryBotPickerAutoUptakeCommand;
+import frc.robot.commands.EveryBotPickerAutoCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
+import frc.robot.common.ChargedUpGamePiece;
+import frc.robot.common.EveryBotPickerDirection;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.VectorUtils;
 
@@ -151,7 +153,7 @@ public class AutonomousChooser {
             command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
         }
         else if (this.subsystems.getEveryBotPickerSubsystem() != null) {// cube uses uptake command to expell
-            command.addCommands(new EveryBotPickerAutoUptakeCommand(subsystems.getEveryBotPickerSubsystem()));
+            command.addCommands(new EveryBotPickerAutoCommand(ChargedUpGamePiece.Cube, EveryBotPickerDirection.Expel, subsystems.getEveryBotPickerSubsystem()));
         }
 
         // drive out of the score position

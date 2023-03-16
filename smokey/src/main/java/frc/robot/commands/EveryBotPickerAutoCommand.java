@@ -11,27 +11,54 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.common.ChargedUpGamePiece;
+import frc.robot.common.EveryBotPickerDirection;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
-public class EveryBotPickerAutoUptakeCommand extends CommandBase {
+public class EveryBotPickerAutoCommand extends CommandBase {
 
     private EveryBotPickerSubsystem everyBotPickerSub;
     private Timer timer = new Timer();
     private boolean done = false;
     private final double uptakeDurationSeconds = 1.7;
-    private final double uptakeRelativeSpeed = 1.0;
+    private final double expelDurationSeconds = 0.5;
+    private final double uptakeConeRelativeSpeed = 1.0;
+    private final double uptakeCubeRelativeSpeed = -1.0;
+    private final double expelConeRelativeSpeed = -1.0;
+    private final double expelCubeRelativeSpeed = 1.0;
     private final double stoppedRelativeSpeed = 0.0;
+    private double relativeSpeed;
+    private double durationSeconds;
 
     /**
      * Ccnstructor for EveryBotPickerAutoUptakeCommand
      * @param everyBotPickerSubsystem - the subsystem for the everybot picker
-     * @param uptakeSupplier - trigger uptake value
-     * @param expellSupplier - trigger expell value
      */
-    public EveryBotPickerAutoUptakeCommand(EveryBotPickerSubsystem everyBotPickerSubsystem) {
+    public EveryBotPickerAutoCommand(ChargedUpGamePiece gamePiece, EveryBotPickerDirection direction, EveryBotPickerSubsystem everyBotPickerSubsystem) {
         this.everyBotPickerSub = everyBotPickerSubsystem;
         addRequirements(this.everyBotPickerSub);
+
+        if (gamePiece == ChargedUpGamePiece.Cube && direction == EveryBotPickerDirection.Expel) {
+            durationSeconds = expelDurationSeconds;
+            relativeSpeed = expelCubeRelativeSpeed;
+        } 
+        else if (gamePiece == ChargedUpGamePiece.Cube && direction == EveryBotPickerDirection.Uptake) {
+            durationSeconds = uptakeDurationSeconds;
+            relativeSpeed = uptakeCubeRelativeSpeed;
+        }
+        else if (gamePiece == ChargedUpGamePiece.Cone && direction == EveryBotPickerDirection.Expel) {
+            durationSeconds = expelDurationSeconds;
+            relativeSpeed = expelConeRelativeSpeed;
+        }
+        else if (gamePiece == ChargedUpGamePiece.Cone && direction == EveryBotPickerDirection.Uptake) {
+            durationSeconds = uptakeDurationSeconds;
+            relativeSpeed = uptakeConeRelativeSpeed;
+        }
+        else { // invalid input, no action
+            durationSeconds = 0.0;
+            relativeSpeed = stoppedRelativeSpeed;
+        }
     }
 
     /**
@@ -49,12 +76,12 @@ public class EveryBotPickerAutoUptakeCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        if (timer.hasElapsed(this.uptakeDurationSeconds)) {
+        if (timer.hasElapsed(this.durationSeconds)) {
             everyBotPickerSub.setPickerRelativeSpeed(this.stoppedRelativeSpeed);
             done = true;
         }
         else {
-            everyBotPickerSub.setPickerRelativeSpeed(this.uptakeRelativeSpeed);
+            everyBotPickerSub.setPickerRelativeSpeed(this.relativeSpeed);
         }
     }   
 
