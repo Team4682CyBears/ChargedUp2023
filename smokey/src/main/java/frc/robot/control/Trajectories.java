@@ -26,22 +26,41 @@ public class Trajectories {
     private Trajectory RightToOntoRampTrajectory;
     private Trajectory BehindToOntoRampTrajectory;
     private Trajectory DirectToRampTrajectory;
+    public SwerveTrajectoryConfig config;
+    public SwerveTrajectoryConfig firstSegmentConfig;
+    public SwerveTrajectoryConfig middleSegmentConfig;
+    public SwerveTrajectoryConfig lastSegmentConfig;
 
     public Trajectories(DrivetrainSubsystem drivetrain){
 
-        SwerveTrajectoryConfig config = drivetrain.getTrajectoryConfig();
+        SwerveTrajectoryConfig defaultConfig = drivetrain.getTrajectoryConfig();
+        // TODO make our own config with faster accelerations (the ones we use for accel control on stick driving)
+        // if this works out, we should refactor to make the default config in drivetrainSussystem to use these. 
+        config = new SwerveTrajectoryConfig(
+            defaultConfig.getMaxVelocity(), 
+            6.0,
+            defaultConfig.getMaxRotationalVelocity(), 
+            12.0);
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
-        double slowSteadyRampSpeed = 0.4; 
-        SwerveTrajectoryConfig slowSteadyConfig = new SwerveTrajectoryConfig(
-            slowSteadyRampSpeed, 
+        double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
+        SwerveTrajectoryConfig ontoRampConfig = new SwerveTrajectoryConfig(
+            ontoRampSpeed, 
             config.getMaxAcceleration(),
             config.getMaxRotationalVelocity(),
             config.getMaxRotationalAcceleration());
-        slowSteadyConfig.setStartVelocity(slowSteadyRampSpeed);
+        ontoRampConfig.setStartVelocity(ontoRampSpeed);
+        // trajectory configs for joining trajectory segments together without slowing down between segments
+        double trajectoryJoinSpeed = ontoRampSpeed; 
+        firstSegmentConfig = drivetrain.getTrajectoryConfig();
+        firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
+        middleSegmentConfig = drivetrain.getTrajectoryConfig();
+        middleSegmentConfig.setStartVelocity(trajectoryJoinSpeed).setEndVelocity(trajectoryJoinSpeed);
+        lastSegmentConfig = drivetrain.getTrajectoryConfig();
+        lastSegmentConfig.setStartVelocity(trajectoryJoinSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
         this.Node2Position = new Pose2d(1.678, 4.433, Rotation2d.fromDegrees(180));
@@ -87,7 +106,7 @@ public class Trajectories {
         BehindToOntoRampWaypoints.add(BehindTrajectoryEndPosition);
         BehindToOntoRampWaypoints.add(RampNearWaypoint);
         // use slowSteadyConfig for this trajectory 
-        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, slowSteadyConfig); 
+        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, ontoRampConfig); 
 
         this.LeftToOntoRampTrajectory = this.LeftToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
         this.RightToOntoRampTrajectory = this.RightToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
@@ -97,25 +116,26 @@ public class Trajectories {
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
         InfrontToOntoRampWaypoints.add(RampFarWaypoint);
         // use slowSteadyConfig for this trajectory 
-        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, slowSteadyConfig);
+        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, ontoRampConfig);
 
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
         Node5ToFrontOfRampWaypoints.add(Node5Position);
         Node5ToFrontOfRampWaypoints.add(InfrontOfRampPosition);
-        Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, config);
+        Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, middleSegmentConfig);
         
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
         
+        // Construct the middle up and over ramp trajectory
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
-        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, middleSegmentConfig);
         // Drive onto ramp from behind
         ArrayList<Pose2d> MiddlePathBehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathRampNearWaypoint);
         // use slowSteadyConfig for this trajectory 
-        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, slowSteadyConfig); 
+        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, ontoRampConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
@@ -127,6 +147,10 @@ public class Trajectories {
         SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
     }
 
+    public SwerveTrajectoryConfig getConfig() {
+        return config;
+    }
+    
     public Trajectory getBehindToOntoRampTrajectory() {
         return BehindToOntoRampTrajectory;
     }
@@ -135,8 +159,16 @@ public class Trajectories {
         return DirectToRampTrajectory;
     }
 
+    public SwerveTrajectoryConfig getFirstSegmentConfig() {
+        return firstSegmentConfig;
+    }
+
     public Pose2d getInfrontOfRampPosition() {
         return InfrontOfRampPosition;
+    }
+
+    public SwerveTrajectoryConfig getLastSegmentConfig() {
+        return lastSegmentConfig;
     }
 
     public Trajectory getLeftToOntoRampTrajectory() {
@@ -147,6 +179,11 @@ public class Trajectories {
         return LeftTrajectory;
     }
 
+    public SwerveTrajectoryConfig getMiddleSegmentConfig() {
+     
+        return middleSegmentConfig;
+    }
+    
     public Trajectory getMiddleTrajectoryPart1() {
         return MiddleTrajectoryPart1;
     }
