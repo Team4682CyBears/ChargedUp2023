@@ -274,6 +274,28 @@ public class ManualInputInterfaces {
             "normal driving")
           )
         );
+        // left trigger press will put drivetrain in reduced speed mode 
+        this.driverController.leftTrigger().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::setReducedPowerReductionFactor
+            ),
+            new ButtonPressCommand(
+            "driverController.leftTrigger()",
+            "reduced speed")
+          )
+        );
+        // left trigger de-press will revert drivetrain to default speed
+        this.driverController.leftTrigger().onFalse(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              subsystemCollection.getDriveTrainSubsystem()::resetPowerReductionFactor
+            ),
+            new ButtonPressCommand(
+            "driverController.leftTrigger()",
+            "default speed")
+          )
+        );
       }
 
       if(subsystemCollection.getStabilizerSubsystem() != null) {

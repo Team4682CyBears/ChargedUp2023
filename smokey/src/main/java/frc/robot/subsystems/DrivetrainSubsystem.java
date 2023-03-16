@@ -117,6 +117,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private final double maximumSpeedReductionFactor = 1.0;
   private final double defaultSpeedReductionFactor = 1.0;
+  private final double reducedSpeedReductionFactor = 0.2; // used for fine control
   private double speedReductionFactor = defaultSpeedReductionFactor;
   private double speedReductionFactorIncrement = 0.1;
 
@@ -454,6 +455,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void resetPowerReductionFactor() {
     speedReductionFactor = defaultSpeedReductionFactor;
+  }
+
+  /**
+   * A method to set speed to reduced speed factor
+   */
+  public void setReducedPowerReductionFactor() {
+    speedReductionFactor = reducedSpeedReductionFactor;
   }
 
   /**
