@@ -24,6 +24,7 @@ import frc.robot.Constants;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
 import frc.robot.common.MotorUtils;
+import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
@@ -355,15 +356,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
    }
  
   /**
-  * Function to obtain the TrajectoryConfig
+  * Function to obtain the SwerveTrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
   * they do not affect other trajectories
-  * @return a TrajectoryConfig in use within the drive train subsystem
+  * @return a SwerveTrajectoryConfig in use within the drive train subsystem
   */
-  public TrajectoryConfig getTrajectoryConfig() {
-    return new TrajectoryConfig(
+  public SwerveTrajectoryConfig getTrajectoryConfig() {
+    SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
     MAX_VELOCITY_METERS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED).setReversed(false).setKinematics(swerveKinematics);
+    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED, 
+    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    config.setReversed(false).setKinematics(swerveKinematics);
+    return config;
     }
 
   /**

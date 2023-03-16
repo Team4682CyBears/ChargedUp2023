@@ -1,9 +1,9 @@
 package frc.robot.control;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import java.util.ArrayList;
@@ -29,14 +29,18 @@ public class Trajectories {
 
     public Trajectories(DrivetrainSubsystem drivetrain){
 
-        TrajectoryConfig config = drivetrain.getTrajectoryConfig();
+        SwerveTrajectoryConfig config = drivetrain.getTrajectoryConfig();
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
-        TrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
+        SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
         double slowSteadyRampSpeed = 0.4; 
-        TrajectoryConfig slowSteadyConfig = new TrajectoryConfig(slowSteadyRampSpeed, config.getMaxAcceleration());
+        SwerveTrajectoryConfig slowSteadyConfig = new SwerveTrajectoryConfig(
+            slowSteadyRampSpeed, 
+            config.getMaxAcceleration(),
+            config.getMaxRotationalVelocity(),
+            config.getMaxRotationalAcceleration());
         slowSteadyConfig.setStartVelocity(slowSteadyRampSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
