@@ -266,8 +266,9 @@ public class RobotContainer {
     // Deadband
     value = deadband(value, 0.05);
 
-    // Square the axis
-    value = Math.copySign(value * value * value, value);
+    // TODO experiment with different exponent 
+    // setting to linear now that we have accerleration control
+    value = Math.copySign(value, value);
 
     return value;
   }
