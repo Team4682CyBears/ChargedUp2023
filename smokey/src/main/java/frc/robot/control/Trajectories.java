@@ -34,6 +34,10 @@ public class Trajectories {
         // have to get a new config so that changes to this one don't affect the original
         TrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
+        // trajectory config that will start at a slow velocity and drive that same speed throughout
+        double slowSteadyRampSpeed = 0.4; 
+        TrajectoryConfig slowSteadyConfig = new TrajectoryConfig(slowSteadyRampSpeed, config.getMaxAcceleration());
+        slowSteadyConfig.setStartVelocity(slowSteadyRampSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
         this.Node2Position = new Pose2d(1.678, 4.433, Rotation2d.fromDegrees(180));
@@ -74,8 +78,8 @@ public class Trajectories {
         ArrayList<Pose2d> BehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         BehindToOntoRampWaypoints.add(BehindTrajectoryEndPosition);
         BehindToOntoRampWaypoints.add(RampNearWaypoint);
-        // use fastConfig for this trajectory 
-        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, fastConfig); 
+        // use slowSteadyConfig for this trajectory 
+        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, slowSteadyConfig); 
         System.out.println("Behind to onto ramp trajectory");
         SwerveTrajectoryGenerator.printTrajectory(BehindToOntoRampTrajectory);
 
@@ -88,8 +92,8 @@ public class Trajectories {
         ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
         InfrontToOntoRampWaypoints.add(RampFarWaypoint);
-        // use fastConfig for this trajectory 
-        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, fastConfig);
+        // use slowSteadyConfig for this trajectory 
+        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, slowSteadyConfig);
 
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
         Node5ToFrontOfRampWaypoints.add(Node5Position);
