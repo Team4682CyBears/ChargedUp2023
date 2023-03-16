@@ -28,6 +28,7 @@ public class DefaultDriveCommand extends CommandBase {
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private double maxAccelerationMPerS2 = 6.0;
+    private double maxAccelerationRadPerS2 = 14.0;
     // TODO move this to Constants
     private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
@@ -75,8 +76,10 @@ public class DefaultDriveCommand extends CommandBase {
     private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
         double xAccel = (speeds.vxMetersPerSecond - previousChassisSpeeds.vxMetersPerSecond)/deltaTimeSeconds;
         double yAccel = (speeds.vyMetersPerSecond - previousChassisSpeeds.vyMetersPerSecond)/deltaTimeSeconds;
+        double omegaAccel = (speeds.omegaRadiansPerSecond - previousChassisSpeeds.omegaRadiansPerSecond)/deltaTimeSeconds;
         double xVelocityLimited = speeds.vxMetersPerSecond;
         double yVelocityLimited = speeds.vyMetersPerSecond;
+        double omegaVelocityLimited = speeds.omegaRadiansPerSecond;
         // if accelerations over limit
         if (Math.abs(xAccel) > maxAccelerationMPerS2){
             // new velocity is the old velocity + the maximum allowed change toward the new direction
@@ -89,6 +92,11 @@ public class DefaultDriveCommand extends CommandBase {
                 previousChassisSpeeds.vyMetersPerSecond 
                 + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, yAccel);
         }
-        return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, speeds.omegaRadiansPerSecond);
+        if (Math.abs(omegaAccel) > maxAccelerationRadPerS2){
+            omegaVelocityLimited = 
+                previousChassisSpeeds.omegaRadiansPerSecond 
+                + Math.copySign(maxAccelerationRadPerS2 * deltaTimeSeconds, omegaAccel);
+        }
+        return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, omegaVelocityLimited);
     }
 }
