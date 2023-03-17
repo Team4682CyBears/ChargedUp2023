@@ -33,6 +33,8 @@ import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
+import frc.robot.commands.DriveRampDownSpeedCommand;
+import frc.robot.commands.DriveRampUpSpeedCommand;
 
 public class ManualInputInterfaces {
 
@@ -277,23 +279,19 @@ public class ManualInputInterfaces {
             "normal driving")
           )
         );
-        // left trigger press will put drivetrain in reduced speed mode 
+        // left trigger press will ramp down drivetrain to reduced speed mode 
         this.driverController.leftTrigger().onTrue(
           new ParallelCommandGroup(
-            new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::setReducedPowerReductionFactor
-            ),
+            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "reduced speed")
           )
         );
-        // left trigger de-press will revert drivetrain to default speed
+        // left trigger de-press will ramp up drivetrain to max speed
         this.driverController.leftTrigger().onFalse(
           new ParallelCommandGroup(
-            new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::resetPowerReductionFactor
-            ),
+            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "default speed")

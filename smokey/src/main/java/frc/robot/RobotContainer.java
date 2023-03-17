@@ -11,7 +11,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
@@ -68,6 +70,8 @@ public class RobotContainer {
     System.out.println(">>>> Initializing button bindings.");
     this.subsystems.getManualInputInterfaces().initializeButtonCommandBindings();
     System.out.println(">>>> Finished initializing button bindings.");
+
+    this.initializeDebugDashboard();
 
     this.autonomousChooser = new AutonomousChooser(subsystems);
   }
@@ -134,6 +138,13 @@ public class RobotContainer {
   }
 
   /**
+   * A method to init items for the debug dashboard
+   */
+  private void initializeDebugDashboard() {
+    SmartDashboard.putData("Debug: CommandScheduler", CommandScheduler.getInstance());
+  }
+
+  /**
    * A method to init the drive train
    */
   private void initializeDrivetrainSubsystem() {
@@ -144,6 +155,7 @@ public class RobotContainer {
       InstalledHardware.navxInstalled) {
       // The robot's subsystems and commands are defined here...
       subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      SmartDashboard.putData("Debug: DrivetrainSub", subsystems.getDriveTrainSubsystem());
       System.out.println("SUCCESS: initializeDrivetrain");
 
       // Set up the default command for the drivetrain.
@@ -171,6 +183,7 @@ public class RobotContainer {
       InstalledHardware.horizontalArmMotorInstalled) {
       // The robot's subsystems and commands are defined here...
       subsystems.setArmSubsystem(new ArmSubsystem());
+      SmartDashboard.putData("Debug: ArmSub", subsystems.getArmSubsystem());
       System.out.println("SUCCESS: initializeArm");
 
       // Set up the default command for the arm.
@@ -193,6 +206,7 @@ public class RobotContainer {
   private void initializePickerSubsystem() {
     if(InstalledHardware.pickerPneumaticsInstalled) {
       subsystems.setPickerSubsystem(new PickerSubsystem());
+      SmartDashboard.putData("Debug: PickerSub", subsystems.getPickerSubsystem());
       System.out.println("SUCCESS: initializePicker");
     }
     else {
@@ -211,6 +225,7 @@ public class RobotContainer {
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
         () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
+      SmartDashboard.putData("Debug: EveryBotSub", subsystems.getEveryBotPickerSubsystem());
       System.out.println("SUCCESS: initializeEveryBotPicker");
     }
     else {
@@ -224,6 +239,7 @@ public class RobotContainer {
   private void initializeStablizerSubsystem() {
     if(InstalledHardware.stablizerPneumaticsInstalled) {
       subsystems.setStabilizerSubsystem(new StabilizerSubsystem());
+      SmartDashboard.putData("Debug: StabilizerSub", subsystems.getStabilizerSubsystem());
       System.out.println("SUCCESS: initializeStablizer");
     }
     else {

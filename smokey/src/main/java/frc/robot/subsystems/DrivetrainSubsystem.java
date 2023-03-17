@@ -192,6 +192,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * A method to decrement the power reduction factor
+   * with a specified minimum
+   * @param minimum
+   * @return true if minimum has been reached
+   */
+  public boolean decrementPowerReductionFactor(double minimum) {
+    speedReductionFactor = MotorUtils.truncateValue(
+      speedReductionFactor - speedReductionFactorIncrement,
+      Math.max(minimum, speedReductionFactorIncrement),
+      maximumSpeedReductionFactor);
+    return speedReductionFactor == Math.max(minimum, speedReductionFactorIncrement);
+  }
+
+  /**
    * Method avaliable so that callers can update the chassis speeds to induce changes in robot movement
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
@@ -263,6 +277,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     swerveNavx.getQuaternionY(),
     swerveNavx.getQuaternionZ());
     return (q);
+  }
+
+  /**
+   * A method to return the reduced speed reduction factor
+   * @return
+   */
+  public double getReducedSpeedReductionFactor() {
+    return reducedSpeedReductionFactor;
   }
 
   /**
@@ -366,7 +388,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return swerveDriveMode;
   }
 
-/**
+  /**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
   * they do not affect other trajectories
@@ -394,6 +416,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public boolean isLevel() {
     return this.areAllLevel(RecentPitches) && this.areAllLevel(RecentRolls);
+  }
+
+  /**
+   * A method to determine if the power reduction factor is maximum
+   * @return true if is maximum, false otherwise
+   */
+  public boolean isMaxPowerReductionFactor() {
+    return speedReductionFactor == maximumSpeedReductionFactor;
   }
 
   /**
@@ -457,13 +487,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void resetPowerReductionFactor() {
     speedReductionFactor = defaultSpeedReductionFactor;
-  }
-
-  /**
-   * A method to set speed to reduced speed factor
-   */
-  public void setReducedPowerReductionFactor() {
-    speedReductionFactor = reducedSpeedReductionFactor;
   }
 
   /**
