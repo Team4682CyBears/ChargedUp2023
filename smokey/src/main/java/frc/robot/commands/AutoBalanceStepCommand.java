@@ -22,7 +22,7 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double xVelocity = 0.0;
   private double yVelocity = 0.0;
   private double rotVelocity = 0.0;
-  // wait duration needs to be sufficiently long to allow the ramp to settle for the navx to take another reading
+  // setting wait duration to 0 implements a continuous motion
   private double waitDurationSecondsValue = 0.0;
   private double driveDurationSecondsValue = 0.2;  
   // higher velocity values caused the robot to slip on the polycarb and not advance as far

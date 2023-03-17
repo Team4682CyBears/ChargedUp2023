@@ -86,8 +86,8 @@ public class Trajectories {
         ArrayList<Pose2d> BehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         BehindToOntoRampWaypoints.add(BehindTrajectoryEndPosition);
         BehindToOntoRampWaypoints.add(RampNearWaypoint);
-        // use slowSteadyConfig for this trajectory 
-        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, slowSteadyConfig); 
+        // use fastConfig for this trajectory 
+        this.BehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(BehindToOntoRampWaypoints, fastConfig); 
 
         this.LeftToOntoRampTrajectory = this.LeftToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
         this.RightToOntoRampTrajectory = this.RightToOntoRampTrajectory.concatenate(BehindToOntoRampTrajectory);
@@ -96,7 +96,7 @@ public class Trajectories {
         ArrayList<Pose2d> InfrontToOntoRampWaypoints = new ArrayList<Pose2d>();
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
         InfrontToOntoRampWaypoints.add(RampFarWaypoint);
-        // use slowSteadyConfig for this trajectory 
+        // use fastConfig for this trajectory 
         Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, fastConfig);
 
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
@@ -114,7 +114,7 @@ public class Trajectories {
         ArrayList<Pose2d> MiddlePathBehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathRampNearWaypoint);
-        // use slowSteadyConfig for this trajectory 
+        // use fastConfig for this trajectory 
         Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
