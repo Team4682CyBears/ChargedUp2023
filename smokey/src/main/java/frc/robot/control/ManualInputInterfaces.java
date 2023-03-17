@@ -514,7 +514,7 @@ public class ManualInputInterfaces {
               ArmLocation.ARM_STOW,
               this),
             new ButtonPressCommand(
-              "coDriverController.rightTrigger()",
+              "coDriverController.rightBumper()",
               "arm stow")
             ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );

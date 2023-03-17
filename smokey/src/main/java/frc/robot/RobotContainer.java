@@ -268,7 +268,7 @@ public class RobotContainer {
 
     // TODO experiment with different exponent 
     // setting to linear now that we have accerleration control
-    value = Math.copySign(value, value);
+    value = Math.copySign(value * value, value);
 
     return value;
   }
