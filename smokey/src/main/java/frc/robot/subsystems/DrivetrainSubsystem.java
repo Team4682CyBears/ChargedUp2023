@@ -23,6 +23,7 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
+import frc.robot.control.SwerveDriveMode;
 import frc.robot.common.MotorUtils;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -118,6 +119,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final double defaultSpeedReductionFactor = 1.0;
   private double speedReductionFactor = defaultSpeedReductionFactor;
   private double speedReductionFactorIncrement = 0.1;
+
+  private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
 
   /**
    * Constructor for this DrivetrainSubsystem
@@ -354,7 +357,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
      return RecentRolls;
    }
  
-  /**
+   /**
+    * A method to obtain the swerve drive mode
+    * @return the mode
+    */
+   public SwerveDriveMode getSwerveDriveMode() {
+    return swerveDriveMode;
+  }
+
+/**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
   * they do not affect other trajectories
@@ -400,11 +411,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     this.displayDiagnostics();
 
-    // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
-    // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-    SwerveModuleState[] states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
-    // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    SwerveModuleState[] states; 
+    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE && chassisSpeedsAreZero()) {
+      // only change to ImmovableStance if chassis is not moving.
+      // otherwise, we could tip the robot moving to this stance when bot is at high velocity
+      states = getImmovableStanceStates();
+    }
+    else { // SwerveDriveMode.NORMAL_DRIVING
+      // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
+      // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
+      states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+      // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    } 
 
     // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
     frontLeftModule.set(
@@ -459,6 +478,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * A method to set the swerve drive mode
+   * @param swerveDriveMode
+   */
+  public void setSwerveDriveMode(SwerveDriveMode swerveDriveMode) {
+    this.swerveDriveMode = swerveDriveMode;
+    // if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) DO NOT set chassis speeds to 0.0 here.
+    // we need to allow the robot to decel properly so that it doesn't tip.  
+  }
+
+  /**
    * sets the Yaw to a specific angle
    * @param offsetDegrees
    */
@@ -504,6 +533,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return levelChecker;
   }
 
+  private boolean chassisSpeedsAreZero(){
+    return (chassisSpeeds.vxMetersPerSecond == 0.0) 
+    && (chassisSpeeds.vyMetersPerSecond == 0.0) 
+    && (chassisSpeeds.omegaRadiansPerSecond == 0.0);
+  }
+  
   /**
    * Clamps the chassis speeds between a min and max.  
    * Separete min and max for translational (x,y) vs. rotational speeds
@@ -545,6 +580,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND, 
     MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
   }
+
+  private SwerveModuleState[] getImmovableStanceStates(){
+    // set wheels in "X" pattern
+    return new SwerveModuleState[] {
+      // frontLeftModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(45)),
+      // frontRightModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(-45)),
+      // backLeftModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(-45)),
+      // backRightModule
+      new SwerveModuleState(0.0, Rotation2d.fromDegrees(45))
+    }; 
+  };
 
   /**
    * Method that will store roll
