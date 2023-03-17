@@ -31,19 +31,15 @@ public class Trajectories {
     public SwerveTrajectoryConfig middleSegmentConfig;
     public SwerveTrajectoryConfig lastSegmentConfig;
 
-    public Trajectories(DrivetrainSubsystem drivetrain){
+    private DrivetrainSubsystem drivetrain;
 
-        SwerveTrajectoryConfig defaultConfig = drivetrain.getTrajectoryConfig();
-        // TODO make our own config with faster accelerations (the ones we use for accel control on stick driving)
-        // if this works out, we should refactor to make the default config in drivetrainSussystem to use these. 
-        config = new SwerveTrajectoryConfig(
-            defaultConfig.getMaxVelocity(), 
-            6.0,
-            defaultConfig.getMaxRotationalVelocity(), 
-            12.0);
+    public Trajectories(DrivetrainSubsystem drivetrain){
+        this.drivetrain = drivetrain; 
+
+        config = getBaseTrajectoryConfig();
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
-        SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
+        SwerveTrajectoryConfig fastConfig = getBaseTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
         double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
@@ -55,11 +51,11 @@ public class Trajectories {
         ontoRampConfig.setStartVelocity(ontoRampSpeed);
         // trajectory configs for joining trajectory segments together without slowing down between segments
         double trajectoryJoinSpeed = ontoRampSpeed; 
-        firstSegmentConfig = drivetrain.getTrajectoryConfig();
+        firstSegmentConfig = getBaseTrajectoryConfig();
         firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
-        middleSegmentConfig = drivetrain.getTrajectoryConfig();
+        middleSegmentConfig = getBaseTrajectoryConfig();
         middleSegmentConfig.setStartVelocity(trajectoryJoinSpeed).setEndVelocity(trajectoryJoinSpeed);
-        lastSegmentConfig = drivetrain.getTrajectoryConfig();
+        lastSegmentConfig = getBaseTrajectoryConfig();
         lastSegmentConfig.setStartVelocity(trajectoryJoinSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
@@ -230,5 +226,15 @@ public class Trajectories {
 
     public Trajectory getRightTrajectory() {
         return RightTrajectory;
+    }
+
+    private SwerveTrajectoryConfig getBaseTrajectoryConfig(){
+        // TODO make our own config with faster accelerations (the ones we use for accel control on stick driving)
+        // if this works out, we should refactor to make the default config in drivetrainSubsystem to use these. 
+        return new SwerveTrajectoryConfig(
+            drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 
+            6.0,
+            drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+            12.0);
     }
 }   

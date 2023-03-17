@@ -236,7 +236,8 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectoryPart1()));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getMiddleTrajectoryPart2()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getBehindToOntoRampTrajectory()));
+        // supplying null trajectory since onto ramp portion already included in above.  
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), new Trajectory()));
         return command;
     }
 
