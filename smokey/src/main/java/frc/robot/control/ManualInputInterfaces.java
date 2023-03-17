@@ -254,6 +254,29 @@ public class ManualInputInterfaces {
               "increment power factor")
             )
           );
+        // right trigger press will put drivetrain in immoveable stance
+        // DO NOT require drivetrainSubsystem here.  We need the default command to continue to decel the robot.    
+        this.driverController.rightTrigger().onTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              () -> subsystemCollection.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.IMMOVABLE_STANCE)
+            ),
+            new ButtonPressCommand(
+            "driverController.rightTrigger()",
+            "immoveable stance")
+          )
+        );
+        // right trigger de-press will put drivetrain in normal drive mode  
+        this.driverController.rightTrigger().onFalse(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              () -> subsystemCollection.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.NORMAL_DRIVING)
+            ),
+            new ButtonPressCommand(
+            "driverController.rightTrigger()",
+            "normal driving")
+          )
+        );
       }
 
       if(subsystemCollection.getStabilizerSubsystem() != null) {
