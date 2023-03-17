@@ -13,6 +13,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.control.SubsystemCollection;
+import frc.robot.control.SwerveDriveMode;
 
 /**
  * Class to form a command to stop all subsystems
@@ -54,6 +55,7 @@ public class AllStopCommand extends CommandBase {
         }
         if(this.subsystems.getDriveTrainSubsystem() != null) {
             this.subsystems.getDriveTrainSubsystem().drive(new ChassisSpeeds(0.0,0.0,0.0));
+            this.subsystems.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.NORMAL_DRIVING);
         }
         if(this.subsystems.getPickerSubsystem() != null) {
             // safer to be deployed as we are less likely to drop a game piece this way

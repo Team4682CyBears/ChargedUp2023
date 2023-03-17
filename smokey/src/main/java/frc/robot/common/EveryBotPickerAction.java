@@ -2,7 +2,7 @@
 // Bishop Blanchet Robotics
 // Home of the Cybears
 // FRC - Charged Up - 2023
-// File: public enum EveryBotPickerDirection.java
+// File: public enum EveryBotPickerAction.java
 // Intent: Forms enum to hold picker direction.
 // ************************************************************
 
@@ -10,7 +10,9 @@
 
 package frc.robot.common;
 
-public enum EveryBotPickerDirection {
-    Uptake,
-    Expel
+public enum EveryBotPickerAction {
+    CubeUptake,
+    ConeUptake,
+    CubeExpel,
+    ConeExpel
 }

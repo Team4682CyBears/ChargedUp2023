@@ -12,7 +12,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.common.ChargedUpGamePiece;
-import frc.robot.common.EveryBotPickerDirection;
+import frc.robot.common.EveryBotPickerAction;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -35,30 +35,31 @@ public class EveryBotPickerAutoCommand extends CommandBase {
      * Ccnstructor for EveryBotPickerAutoUptakeCommand
      * @param everyBotPickerSubsystem - the subsystem for the everybot picker
      */
-    public EveryBotPickerAutoCommand(ChargedUpGamePiece gamePiece, EveryBotPickerDirection direction, EveryBotPickerSubsystem everyBotPickerSubsystem) {
+    public EveryBotPickerAutoCommand(EveryBotPickerAction action, EveryBotPickerSubsystem everyBotPickerSubsystem) {
         this.everyBotPickerSub = everyBotPickerSubsystem;
         addRequirements(this.everyBotPickerSub);
 
-        if (gamePiece == ChargedUpGamePiece.Cube && direction == EveryBotPickerDirection.Expel) {
-            durationSeconds = expelDurationSeconds;
-            relativeSpeed = expelCubeRelativeSpeed;
-        } 
-        else if (gamePiece == ChargedUpGamePiece.Cube && direction == EveryBotPickerDirection.Uptake) {
-            durationSeconds = uptakeDurationSeconds;
-            relativeSpeed = uptakeCubeRelativeSpeed;
-        }
-        else if (gamePiece == ChargedUpGamePiece.Cone && direction == EveryBotPickerDirection.Expel) {
-            durationSeconds = expelDurationSeconds;
-            relativeSpeed = expelConeRelativeSpeed;
-        }
-        else if (gamePiece == ChargedUpGamePiece.Cone && direction == EveryBotPickerDirection.Uptake) {
-            durationSeconds = uptakeDurationSeconds;
-            relativeSpeed = uptakeConeRelativeSpeed;
-        }
-        else { // invalid input, no action
-            durationSeconds = 0.0;
-            relativeSpeed = stoppedRelativeSpeed;
-        }
+        switch (action){
+            case CubeExpel:
+                durationSeconds = expelDurationSeconds;
+                relativeSpeed = expelCubeRelativeSpeed;
+                break;
+            case CubeUptake:
+                durationSeconds = uptakeDurationSeconds;
+                relativeSpeed = uptakeCubeRelativeSpeed;
+                break;
+            case ConeExpel:
+                durationSeconds = expelDurationSeconds;
+                relativeSpeed = expelConeRelativeSpeed;
+                break;
+            case ConeUptake:
+                durationSeconds = uptakeDurationSeconds;
+                relativeSpeed = uptakeConeRelativeSpeed;
+                break;
+            default: // invalid input, no action
+                durationSeconds = 0.0;
+                relativeSpeed = stoppedRelativeSpeed;
+            }
     }
 
     /**
