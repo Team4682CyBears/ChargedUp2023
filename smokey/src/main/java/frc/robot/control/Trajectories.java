@@ -35,7 +35,7 @@ public class Trajectories {
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
-        double slowSteadyRampSpeed = 0.4; 
+        double slowSteadyRampSpeed = 0.8; 
         SwerveTrajectoryConfig slowSteadyConfig = new SwerveTrajectoryConfig(
             slowSteadyRampSpeed, 
             config.getMaxAcceleration(),
@@ -58,7 +58,7 @@ public class Trajectories {
         // behind ramp position for node 1,2,8,9 paths
         Pose2d BehindTrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 5 path
-        Pose2d MiddlePathOverRampPosition = new Pose2d(5.27, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathOverRampPosition = new Pose2d(5.9, 2.748, Rotation2d.fromDegrees(180));
         
         // Left waypoints drive from Node 1 or 2 to a location out of the community
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -97,7 +97,7 @@ public class Trajectories {
         InfrontToOntoRampWaypoints.add(InfrontOfRampPosition);
         InfrontToOntoRampWaypoints.add(RampFarWaypoint);
         // use slowSteadyConfig for this trajectory 
-        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, slowSteadyConfig);
+        Trajectory InfrontToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, fastConfig);
 
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
         Node5ToFrontOfRampWaypoints.add(Node5Position);
@@ -115,7 +115,7 @@ public class Trajectories {
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathRampNearWaypoint);
         // use slowSteadyConfig for this trajectory 
-        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, slowSteadyConfig); 
+        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
