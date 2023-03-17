@@ -46,12 +46,10 @@ public class ArmToLocationCommand extends ArmToPointCommand {
 
             case ARM_GRAB:
                 if(input.getTargetGamePiece() == ChargedUpGamePiece.Cone) {
-                    System.out.println("Setting CONE Grab");
                     super.setYValue(Constants.armPresetPositionConeGrabMetersY);
                     super.setZValue(Constants.armPresetPositionConeGrabMetersZ);
                 }
                 else if(input.getTargetGamePiece() == ChargedUpGamePiece.Cube) {
-                    System.out.println("Setting CUBE Grab");
                     super.setYValue(Constants.armPresetPositionCubeGrabMetersY);
                     super.setZValue(Constants.armPresetPositionCubeGrabMetersZ);
                 }
@@ -95,7 +93,6 @@ public class ArmToLocationCommand extends ArmToPointCommand {
                 super.setZValue(Constants.armPresetPositionStowMetersZ);
                 break;
         }        
-
     }
 
 

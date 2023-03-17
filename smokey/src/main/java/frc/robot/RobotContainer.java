@@ -72,8 +72,9 @@ public class RobotContainer {
     System.out.println(">>>> Finished initializing button bindings.");
 
     this.initializeDebugDashboard();
-
     this.autonomousChooser = new AutonomousChooser(subsystems);
+    // can add buttons to run commands directly from the dashboard like this:
+    // SmartDashboard.putData("Example Command", exampleCommand);
   }
  
   /**
@@ -282,8 +283,7 @@ public class RobotContainer {
     // Deadband
     value = deadband(value, 0.05);
 
-    // TODO experiment with different exponent 
-    // setting to linear now that we have accerleration control
+    // Joystick input exponent
     value = Math.copySign(value * value, value);
 
     return value;

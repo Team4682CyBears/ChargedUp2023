@@ -74,29 +74,26 @@ public class DefaultDriveCommand extends CommandBase {
     }
 
     private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
-        double xAccel = (speeds.vxMetersPerSecond - previousChassisSpeeds.vxMetersPerSecond)/deltaTimeSeconds;
-        double yAccel = (speeds.vyMetersPerSecond - previousChassisSpeeds.vyMetersPerSecond)/deltaTimeSeconds;
-        double omegaAccel = (speeds.omegaRadiansPerSecond - previousChassisSpeeds.omegaRadiansPerSecond)/deltaTimeSeconds;
-        double xVelocityLimited = speeds.vxMetersPerSecond;
-        double yVelocityLimited = speeds.vyMetersPerSecond;
-        double omegaVelocityLimited = speeds.omegaRadiansPerSecond;
-        // if accelerations over limit
-        if (Math.abs(xAccel) > maxAccelerationMPerS2){
-            // new velocity is the old velocity + the maximum allowed change toward the new direction
-            xVelocityLimited = 
-                previousChassisSpeeds.vxMetersPerSecond 
-                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, xAccel);
-        }
-        if (Math.abs(yAccel) > maxAccelerationMPerS2){
-            yVelocityLimited = 
-                previousChassisSpeeds.vyMetersPerSecond 
-                + Math.copySign(maxAccelerationMPerS2 * deltaTimeSeconds, yAccel);
-        }
-        if (Math.abs(omegaAccel) > maxAccelerationRadPerS2){
-            omegaVelocityLimited = 
-                previousChassisSpeeds.omegaRadiansPerSecond 
-                + Math.copySign(maxAccelerationRadPerS2 * deltaTimeSeconds, omegaAccel);
-        }
+        double xVelocityLimited = limitAxisSpeed(speeds.vxMetersPerSecond, previousChassisSpeeds.vxMetersPerSecond, maxAccelerationMPerS2);
+        double yVelocityLimited = limitAxisSpeed(speeds.vyMetersPerSecond, previousChassisSpeeds.vyMetersPerSecond, maxAccelerationMPerS2);
+        double omegaVelocityLimited = limitAxisSpeed(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond, maxAccelerationRadPerS2);
         return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, omegaVelocityLimited);
+    }
+
+    /**
+     * Limits speed based on max allowable acceleration
+     * @param commandedSpeed
+     * @param previousSpeed
+     * @param maxAccel
+     * @return limited speed
+     */
+    private double limitAxisSpeed(double commandedSpeed, double previousSpeed, double maxAccel){
+        double accel = (commandedSpeed - previousSpeed)/deltaTimeSeconds;
+        double speedLimited = commandedSpeed;
+        if (Math.abs(accel) > maxAccel){
+            // new velocity is the old velocity + the maximum allowed change toward the new direction
+            speedLimited = previousSpeed + Math.copySign(maxAccel * deltaTimeSeconds, accel);
+        }
+        return speedLimited;
     }
 }

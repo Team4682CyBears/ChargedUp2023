@@ -285,7 +285,7 @@ public class ManualInputInterfaces {
             new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
-            "reduced speed")
+            "ramp down to reduced speed")
           )
         );
         // left trigger de-press will ramp up drivetrain to max speed
@@ -294,7 +294,7 @@ public class ManualInputInterfaces {
             new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
-            "default speed")
+            "ramp up to default speed")
           )
         );
       }
