@@ -42,6 +42,7 @@ public class DriveRampUpSpeedCommand extends CommandBase {
      */
     @Override
     public void execute() {
+        // Repeatedly call increment after every delay until the drivetrain is at the maximum
         if (timer.hasElapsed(this.powerIncrementDelaySeconds)) {
             drivetrainSub.incrementPowerReductionFactor();
             timer.reset();

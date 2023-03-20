@@ -43,6 +43,7 @@ public class DriveRampDownSpeedCommand extends CommandBase {
      */
     @Override
     public void execute() {
+        // Repeatedly call decrement after every delay until the drivetrain is at the minimum
         if (timer.hasElapsed(this.powerIncrementDelaySeconds)) {
             done = drivetrainSub.decrementPowerReductionFactor(drivetrainSub.getReducedSpeedReductionFactor());
             timer.reset();
