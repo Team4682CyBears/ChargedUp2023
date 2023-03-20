@@ -117,11 +117,12 @@ public class ManualInputInterfaces {
   {
     // use the co drivers right trigger
     double inputValue = 0.0;
+    // TODO - need help to know signs for both
     if(this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cone) {
-      inputValue = coDriverController.getRightTriggerAxis();
+      inputValue = coDriverController.getRightTriggerAxis() * -1.0;
     }
     else if (this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cube) {
-      inputValue = coDriverController.getRightTriggerAxis() * -1.0;
+      inputValue = coDriverController.getRightTriggerAxis();
     }
     return inputValue;
   }
@@ -134,11 +135,12 @@ public class ManualInputInterfaces {
   {
     // use the co drivers left trigger
     double inputValue = 0.0;
+    // TODO - need help to know signs for both
     if(this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cone) {
-      inputValue = coDriverController.getLeftTriggerAxis() * -1.0;
+      inputValue = coDriverController.getLeftTriggerAxis();
     }
     else if (this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cube) {
-      inputValue = coDriverController.getLeftTriggerAxis();
+      inputValue = coDriverController.getLeftTriggerAxis() * -1.0;
     }
     return inputValue;
   }
