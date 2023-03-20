@@ -49,36 +49,6 @@
               "_glyph": 148,
               "_showGlyph": false
             }
-          },
-          "3,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/ConeMode",
-              "_title": "SmartDashboard/ConeMode",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#FFFF00FF",
-              "Colors/Color when false": "#000000FF"
-            }
-          },
-          "3,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/CubeMode",
-              "_title": "SmartDashboard/CubeMode",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#FF00FFFF",
-              "Colors/Color when false": "#000000FF"
-            }
           }
         }
       }
@@ -294,7 +264,8 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul"
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/EveryBotMotorOvercurrentProtection": true
             }
           }
         }
