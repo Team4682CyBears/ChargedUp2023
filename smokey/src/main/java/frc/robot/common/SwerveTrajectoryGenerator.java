@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.Trajectory.State;
@@ -51,7 +50,7 @@ public class SwerveTrajectoryGenerator {
      * @param config
      * @return trajectory 
      */
-    public static Trajectory generateTrajectory(Pose2d start, List<Translation2d> interiorWaypoints, Pose2d end, TrajectoryConfig config){
+    public static Trajectory generateTrajectory(Pose2d start, List<Translation2d> interiorWaypoints, Pose2d end, SwerveTrajectoryConfig config){
         Rotation2d origStartingAngle = start.getRotation();
         Rotation2d origEndingAngle = end.getRotation();
         // calaculte new headings for the start and end points 
@@ -79,7 +78,7 @@ public class SwerveTrajectoryGenerator {
      * @param config
      * @return trajectory
      */
-    public static Trajectory generateTrajectory(ArrayList<Pose2d> waypoints, TrajectoryConfig config){
+    public static Trajectory generateTrajectory(ArrayList<Pose2d> waypoints, SwerveTrajectoryConfig config){
         int len = waypoints.size();
         Rotation2d origStartingAngle = waypoints.get(0).getRotation();
         Rotation2d origEndingAngle = waypoints.get(len-1).getRotation();
@@ -178,9 +177,9 @@ public class SwerveTrajectoryGenerator {
      * @param endAngle
      * @return trapezoid profile
      */
-    public static TrapezoidProfile GenerateRotationTrapezoidProfile(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
+    public static TrapezoidProfile GenerateRotationTrapezoidProfile(SwerveTrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
         TrapezoidProfile.Constraints thetaProfileConstraints = new TrapezoidProfile.
-        Constraints(config.getMaxVelocity(),config.getMaxAcceleration());
+        Constraints(config.getMaxRotationalVelocity(),config.getMaxRotationalAcceleration());
         TrapezoidProfile thetaProfile = new TrapezoidProfile(
             thetaProfileConstraints, 
             new TrapezoidProfile.State(endAngle.getRadians(), 0.0),
@@ -195,7 +194,7 @@ public class SwerveTrajectoryGenerator {
      * @param endAngle
      * @return the total rotational time
      */
-    public static double CalculateRotationTime(TrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
+    public static double CalculateRotationTime(SwerveTrajectoryConfig config, Rotation2d startAngle, Rotation2d endAngle){
         TrapezoidProfile thetaProfile = GenerateRotationTrapezoidProfile(config, startAngle, endAngle);
         return thetaProfile.totalTime();
     }
