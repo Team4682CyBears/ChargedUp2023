@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 
 /**
  * A class with trajcetories for testing swerve drives.
@@ -29,12 +28,12 @@ public class TestTrajectories {
     public Trajectory traverseForwardArc;
     public Trajectory traverseBackwardArc;
     public Pose2d traverseBackwardArcStartPosition = new Pose2d(2.0, 0.0, Rotation2d.fromDegrees(0.0));
-    private TrajectoryConfig config; 
+    private SwerveTrajectoryConfig config; 
 
     /**
     * constructs trajcetories for testing swerve drives.
     */
-    public TestTrajectories(TrajectoryConfig config){
+    public TestTrajectories(SwerveTrajectoryConfig config){
         this.config = config; 
         traverseSimpleForward = buildTraverseSimpleForward();
         traverseSimpleLeft = buildTraverseSimpleLeft();

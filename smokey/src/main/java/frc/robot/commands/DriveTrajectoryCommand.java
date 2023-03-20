@@ -59,7 +59,7 @@ public class DriveTrajectoryCommand extends CommandBase{
     
     // setup theta PID controller and holonomic controller
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
-    DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+    DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
     DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
     thetaPidController = new ProfiledPIDController(4.5, 0.001, 0.0, movementConstraints);
     //TODO looks like HolonomicDriveController enablesContinuousInput.  Try removing this and re-testing.  
