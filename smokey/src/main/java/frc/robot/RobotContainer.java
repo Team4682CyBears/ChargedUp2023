@@ -73,7 +73,9 @@ public class RobotContainer {
 
     this.initializeDebugDashboard();
     this.autonomousChooser = new AutonomousChooser(subsystems);
-    // can add buttons to run commands directly from the dashboard like this:
+    // TODO refactor the commands in ManualInputInterfaces:
+    // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
+    // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
   }
  
