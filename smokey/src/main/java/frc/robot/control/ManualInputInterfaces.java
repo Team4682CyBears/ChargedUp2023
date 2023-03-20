@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.*;
 import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
@@ -54,7 +53,6 @@ public class ManualInputInterfaces {
    */
   public ManualInputInterfaces(SubsystemCollection currentCollection){
     subsystemCollection = currentCollection;
-    displayTargetGamePiece();
   }
 
   /**
@@ -158,14 +156,12 @@ public class ManualInputInterfaces {
    */
   public void setTargetGamePieceAsCone() {
     this.coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cone;
-    displayTargetGamePiece();
   }
   /**
    * A method to set the target game piece as Cube
    */
   public void setTargetGamePieceAsCube() {
     this.coDriverControllerGamePieceTarget = ChargedUpGamePiece.Cube;
-    displayTargetGamePiece();
   }
 
   /**
@@ -473,14 +469,6 @@ public class ManualInputInterfaces {
     );
   }
 
-  /**
-   * displays target game piece on smartdashboard
-   */
-  private void displayTargetGamePiece() {
-    SmartDashboard.putBoolean("ConeMode", this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cone);
-    SmartDashboard.putBoolean("CubeMode", this.coDriverControllerGamePieceTarget == ChargedUpGamePiece.Cube);
-    }
-  
   /**
    * A method to do the transformation of current robot position to another position
    * @param xTranslation
