@@ -240,7 +240,8 @@ public class ManualInputInterfaces {
         this.driverController.leftBumper().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::decrementPowerReductionFactor),
+              subsystemCollection.getDriveTrainPowerSubsystem()::decrementPowerReductionFactor,
+              subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
               "driverController.leftBumper()",
               "decrement power factor")
@@ -250,7 +251,8 @@ public class ManualInputInterfaces {
         this.driverController.rightBumper().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::incrementPowerReductionFactor),
+              subsystemCollection.getDriveTrainPowerSubsystem()::incrementPowerReductionFactor,
+              subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
               "driverController.rightBumper()",
               "increment power factor")
@@ -282,7 +284,7 @@ public class ManualInputInterfaces {
         // left trigger press will ramp down drivetrain to reduced speed mode 
         this.driverController.leftTrigger().onTrue(
           new ParallelCommandGroup(
-            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
+            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp down to reduced speed")
@@ -291,7 +293,7 @@ public class ManualInputInterfaces {
         // left trigger de-press will ramp up drivetrain to max speed
         this.driverController.leftTrigger().onFalse(
           new ParallelCommandGroup(
-            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainSubsystem()),
+            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp up to default speed")

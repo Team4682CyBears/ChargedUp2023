@@ -11,20 +11,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.DrivetrainPowerSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class DriveRampUpSpeedCommand extends CommandBase {
 
-    private DrivetrainSubsystem drivetrainSub;
+    private DrivetrainPowerSubsystem drivetrainPowerSubsystem;
     private Timer timer = new Timer();
     private final double powerIncrementDelaySeconds = 0.5;
 
 
-    public DriveRampUpSpeedCommand(DrivetrainSubsystem drivetrainSub) {
-        this.drivetrainSub = drivetrainSub;
-        // DO NOT declare drivetrainSub as requirement.  
-        // We need default drive commands to keep working while this command runs
+    public DriveRampUpSpeedCommand(DrivetrainPowerSubsystem drivetrainSub) {
+        this.drivetrainPowerSubsystem = drivetrainSub;
+        addRequirements(this.drivetrainPowerSubsystem);
     }
 
     /**
@@ -32,7 +31,7 @@ public class DriveRampUpSpeedCommand extends CommandBase {
      */
     @Override
     public void initialize() {
-        drivetrainSub.incrementPowerReductionFactor();
+        drivetrainPowerSubsystem.incrementPowerReductionFactor();
         timer.reset();
         timer.start();
     }
@@ -44,7 +43,7 @@ public class DriveRampUpSpeedCommand extends CommandBase {
     public void execute() {
         // Repeatedly call increment after every delay until the drivetrain is at the maximum
         if (timer.hasElapsed(this.powerIncrementDelaySeconds)) {
-            drivetrainSub.incrementPowerReductionFactor();
+            drivetrainPowerSubsystem.incrementPowerReductionFactor();
             timer.reset();
             timer.start();
         }
@@ -60,6 +59,6 @@ public class DriveRampUpSpeedCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return drivetrainSub.isMaxPowerReductionFactor();
+        return drivetrainPowerSubsystem.isMaxPowerReductionFactor();
     }
 }

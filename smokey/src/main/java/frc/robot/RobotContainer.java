@@ -25,6 +25,7 @@ import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
 import frc.robot.control.SubsystemCollection;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DrivetrainPowerSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
@@ -158,6 +159,7 @@ public class RobotContainer {
       InstalledHardware.navxInstalled) {
       // The robot's subsystems and commands are defined here...
       subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      subsystems.setDriveTrainPowerSubsystem(new DrivetrainPowerSubsystem(subsystems.getDriveTrainSubsystem()));
       SmartDashboard.putData("Debug: DrivetrainSub", subsystems.getDriveTrainSubsystem());
       System.out.println("SUCCESS: initializeDrivetrain");
 

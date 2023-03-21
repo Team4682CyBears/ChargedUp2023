@@ -116,11 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  private final double maximumSpeedReductionFactor = 1.0;
-  private final double defaultSpeedReductionFactor = 1.0;
-  private final double reducedSpeedReductionFactor = 0.2; // used for fine control
-  private double speedReductionFactor = defaultSpeedReductionFactor;
-  private double speedReductionFactorIncrement = 0.1;
+  private double speedReductionFactor = 1.0;
 
   private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
 
@@ -183,30 +179,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * Method to decrement the power reduction factor
-   */
-  public void decrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor - speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
-  }
-
-  /**
-   * A method to decrement the power reduction factor
-   * with a specified minimum
-   * @param minimum
-   * @return true if minimum has been reached
-   */
-  public boolean decrementPowerReductionFactor(double minimum) {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor - speedReductionFactorIncrement,
-      Math.max(minimum, speedReductionFactorIncrement),
-      maximumSpeedReductionFactor);
-    return speedReductionFactor == Math.max(minimum, speedReductionFactorIncrement);
-  }
-
-  /**
    * Method avaliable so that callers can update the chassis speeds to induce changes in robot movement
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
@@ -223,6 +195,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
       swerveNavx.getYaw() + this.yawOffsetDegrees);
+  }
+
+  /**
+   * Method to get the current speed reduction factor
+   * @return - the current speed reduction factor
+   */
+  public double getSpeedReductionFactor() {
+    return this.speedReductionFactor;
+  }
+
+  /**
+   * Method to set the current speed reduction factor to a new value
+   * @param value - the new speed reduction factor
+   */
+  public void setSpeedReductionFactor(double value) {
+    this.speedReductionFactor = MotorUtils.truncateValue(value, 0.0, 1.0);
   }
 
   /**
@@ -278,14 +266,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     swerveNavx.getQuaternionY(),
     swerveNavx.getQuaternionZ());
     return (q);
-  }
-
-  /**
-   * A method to return the reduced speed reduction factor
-   * @return
-   */
-  public double getReducedSpeedReductionFactor() {
-    return reducedSpeedReductionFactor;
   }
 
   /**
@@ -406,29 +386,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
   /**
-   * Method to increment the power reduction factor
-   */
-  public void incrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor + speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
-  }
-
-  /**
    * Determines if the navx is level.  
    * @return true if level, false otherwise
    */
   public boolean isLevel() {
     return this.areAllLevel(RecentPitches) && this.areAllLevel(RecentRolls);
-  }
-
-  /**
-   * A method to determine if the power reduction factor is maximum
-   * @return true if is maximum, false otherwise
-   */
-  public boolean isMaxPowerReductionFactor() {
-    return speedReductionFactor == maximumSpeedReductionFactor;
   }
 
   /**
@@ -485,13 +447,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
     System.out.println("Is the robot level? -------->" + this.isLevel());
     System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
-  }
- 
-  /**
-   * Method to reset the power reduction factor
-   */
-  public void resetPowerReductionFactor() {
-    speedReductionFactor = defaultSpeedReductionFactor;
   }
 
   /**

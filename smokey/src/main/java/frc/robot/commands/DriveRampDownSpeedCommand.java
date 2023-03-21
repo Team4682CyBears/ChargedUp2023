@@ -11,21 +11,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.DrivetrainPowerSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class DriveRampDownSpeedCommand extends CommandBase {
 
-    private DrivetrainSubsystem drivetrainSub;
+    private DrivetrainPowerSubsystem drivetrainPowerSubsystem;
     private Timer timer = new Timer();
     private boolean done = false; 
     private final double powerIncrementDelaySeconds = 0.5;
 
 
-    public DriveRampDownSpeedCommand(DrivetrainSubsystem drivetrainSub) {
-        this.drivetrainSub = drivetrainSub;
-        // DO NOT declare drivetrainSub as requirement.  
-        // We need default drive commands to keep working while this command runs
+    public DriveRampDownSpeedCommand(DrivetrainPowerSubsystem drivetrainPowerSub) {
+        this.drivetrainPowerSubsystem = drivetrainPowerSub;
+        addRequirements(this.drivetrainPowerSubsystem);
     }
 
     /**
@@ -33,7 +32,7 @@ public class DriveRampDownSpeedCommand extends CommandBase {
      */
     @Override
     public void initialize() {
-        done = drivetrainSub.decrementPowerReductionFactor(drivetrainSub.getReducedSpeedReductionFactor());
+        done = drivetrainPowerSubsystem.decrementPowerReductionFactor(drivetrainPowerSubsystem.getReducedSpeedReductionFactor());
         timer.reset();
         timer.start();
     }
@@ -45,7 +44,7 @@ public class DriveRampDownSpeedCommand extends CommandBase {
     public void execute() {
         // Repeatedly call decrement after every delay until the drivetrain is at the minimum
         if (timer.hasElapsed(this.powerIncrementDelaySeconds)) {
-            done = drivetrainSub.decrementPowerReductionFactor(drivetrainSub.getReducedSpeedReductionFactor());
+            done = drivetrainPowerSubsystem.decrementPowerReductionFactor(drivetrainPowerSubsystem.getReducedSpeedReductionFactor());
             timer.reset();
             timer.start();
         }
