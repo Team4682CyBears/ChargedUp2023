@@ -19,7 +19,7 @@ public class DriveRampDownSpeedCommand extends CommandBase {
     private DrivetrainPowerSubsystem drivetrainPowerSubsystem;
     private Timer timer = new Timer();
     private boolean done = false; 
-    private final double powerIncrementDelaySeconds = 0.5;
+    private final double powerIncrementDelaySeconds = 0.1;
 
 
     public DriveRampDownSpeedCommand(DrivetrainPowerSubsystem drivetrainPowerSub) {
