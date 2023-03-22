@@ -71,7 +71,7 @@ public class Trajectories {
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
         Pose2d MiddlePathRampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 1,2,8,9 paths
-        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.27, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 5 path
         Pose2d MiddlePathOverRampPosition = new Pose2d(5.9, 2.748, Rotation2d.fromDegrees(180));
         
@@ -117,7 +117,7 @@ public class Trajectories {
         ArrayList<Pose2d> Node5ToFrontOfRampWaypoints = new ArrayList<Pose2d>();
         Node5ToFrontOfRampWaypoints.add(Node5Position);
         Node5ToFrontOfRampWaypoints.add(InfrontOfRampPosition);
-        Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, middleSegmentConfig);
+        Trajectory Node5ToFrontOfRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(Node5ToFrontOfRampWaypoints, config);
         
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
         
@@ -125,7 +125,7 @@ public class Trajectories {
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
-        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, middleSegmentConfig);
+        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
         // Drive onto ramp from behind
         ArrayList<Pose2d> MiddlePathBehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
@@ -233,8 +233,8 @@ public class Trajectories {
         // if this works out, we should refactor to make the default config in drivetrainSubsystem to use these. 
         return new SwerveTrajectoryConfig(
             drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 
-            6.0,
+            1.0, // 6.0,
             drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-            12.0);
+            2.0); //12.0);
     }
 }   
