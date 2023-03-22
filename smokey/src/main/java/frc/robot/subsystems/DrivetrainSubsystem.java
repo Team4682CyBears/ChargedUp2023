@@ -377,7 +377,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       MAX_VELOCITY_METERS_PER_SECOND, 
       1.0, // 6.0,
       MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-      2.0); //12.0);
+      6.0); //12.0);
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
   }
