@@ -26,6 +26,8 @@ public class Trajectories {
     private Trajectory RightToOntoRampTrajectory;
     private Trajectory BehindToOntoRampTrajectory;
     private Trajectory DirectToRampTrajectory;
+    private Trajectory MiddlePathBehindToOntoRampTrajectory;
+    
     public SwerveTrajectoryConfig config;
     public SwerveTrajectoryConfig firstSegmentConfig;
     public SwerveTrajectoryConfig middleSegmentConfig;
@@ -69,7 +71,7 @@ public class Trajectories {
         // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
         this.RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(0));
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
-        Pose2d MiddlePathRampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathRampNearWaypoint = new Pose2d(3.64, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 1,2,8,9 paths
         Pose2d BehindTrajectoryEndPosition = new Pose2d(5.27, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 5 path
@@ -131,16 +133,17 @@ public class Trajectories {
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathRampNearWaypoint);
         // use fastConfig for this trajectory 
-        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
+        this.MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
-        this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory
-            .concatenate(MiddlePathBehindToOntoRampTrajectory);
+        this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory;
         System.out.println("Middle trajectory");
         SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
         System.out.println("");
         SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
+        System.out.println("");
+        SwerveTrajectoryGenerator.printTrajectory(MiddlePathBehindToOntoRampTrajectory);
     }
 
     public SwerveTrajectoryConfig getConfig() {
@@ -173,6 +176,10 @@ public class Trajectories {
 
     public Trajectory getLeftTrajectory() {
         return LeftTrajectory;
+    }
+
+    public Trajectory getMiddlePathBehindToOntoRampTrajectory() {
+        return MiddlePathBehindToOntoRampTrajectory;
     }
 
     public SwerveTrajectoryConfig getMiddleSegmentConfig() {
