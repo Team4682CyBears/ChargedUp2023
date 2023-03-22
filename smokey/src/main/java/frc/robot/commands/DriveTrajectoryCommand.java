@@ -15,7 +15,6 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +24,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class DriveTrajectoryCommand extends CommandBase{
@@ -58,9 +58,10 @@ public class DriveTrajectoryCommand extends CommandBase{
     addRequirements(drivetrainSubsystem);
     
     // setup theta PID controller and holonomic controller
+    SwerveTrajectoryConfig config = drivetrain.getTrajectoryConfig();
     Constraints movementConstraints = new TrapezoidProfile.Constraints(
-    DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-    DrivetrainSubsystem.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    config.getMaxRotationalVelocity(),
+    config.getMaxRotationalAcceleration());
     thetaPidController = new ProfiledPIDController(4.5, 0.001, 0.0, movementConstraints);
     //TODO looks like HolonomicDriveController enablesContinuousInput.  Try removing this and re-testing.  
     thetaPidController.enableContinuousInput(-Math.PI, Math.PI);

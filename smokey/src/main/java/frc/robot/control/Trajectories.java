@@ -36,10 +36,10 @@ public class Trajectories {
     public Trajectories(DrivetrainSubsystem drivetrain){
         this.drivetrain = drivetrain; 
 
-        config = getBaseTrajectoryConfig();
+        config = drivetrain.getTrajectoryConfig();
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
-        SwerveTrajectoryConfig fastConfig = getBaseTrajectoryConfig();
+        SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
         double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
@@ -51,11 +51,11 @@ public class Trajectories {
         ontoRampConfig.setStartVelocity(ontoRampSpeed);
         // trajectory configs for joining trajectory segments together without slowing down between segments
         double trajectoryJoinSpeed = ontoRampSpeed; 
-        firstSegmentConfig = getBaseTrajectoryConfig();
+        firstSegmentConfig = drivetrain.getTrajectoryConfig();
         firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
-        middleSegmentConfig = getBaseTrajectoryConfig();
+        middleSegmentConfig = drivetrain.getTrajectoryConfig();
         middleSegmentConfig.setStartVelocity(trajectoryJoinSpeed).setEndVelocity(trajectoryJoinSpeed);
-        lastSegmentConfig = getBaseTrajectoryConfig();
+        lastSegmentConfig = drivetrain.getTrajectoryConfig();
         lastSegmentConfig.setStartVelocity(trajectoryJoinSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
@@ -226,15 +226,5 @@ public class Trajectories {
 
     public Trajectory getRightTrajectory() {
         return RightTrajectory;
-    }
-
-    private SwerveTrajectoryConfig getBaseTrajectoryConfig(){
-        // TODO make our own config with faster accelerations (the ones we use for accel control on stick driving)
-        // if this works out, we should refactor to make the default config in drivetrainSubsystem to use these. 
-        return new SwerveTrajectoryConfig(
-            drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 
-            1.0, // 6.0,
-            drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-            2.0); //12.0);
     }
 }   

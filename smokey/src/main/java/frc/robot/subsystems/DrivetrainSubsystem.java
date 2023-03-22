@@ -374,13 +374,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   */
   public SwerveTrajectoryConfig getTrajectoryConfig() {
     SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
-    MAX_VELOCITY_METERS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED, 
-    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+      MAX_VELOCITY_METERS_PER_SECOND, 
+      1.0, // 6.0,
+      MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+      2.0); //12.0);
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
-    }
+  }
 
   /**
    * Method to increment the power reduction factor
