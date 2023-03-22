@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
-import frc.robot.commands.AutoBalanceStepCommand;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.EveryBotPickerAutoCommand;
 import frc.robot.commands.ManipulatePickerCommand;
@@ -213,7 +213,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), toRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
+            command.addCommands(new AutoBalanceCommand(subsystems.getDriveTrainSubsystem()));
         }
         return command;
     }
@@ -221,7 +221,7 @@ public class AutonomousChooser {
         private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getDirectToRampTrajectory()));
-        command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new AutoBalanceCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 
