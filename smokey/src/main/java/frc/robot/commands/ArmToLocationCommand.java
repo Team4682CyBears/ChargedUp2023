@@ -16,6 +16,8 @@ import frc.robot.control.ManualInputInterfaces;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class ArmToLocationCommand extends ArmToPointCommand {
+    ArmLocation location;
+    ManualInputInterfaces input;
 
     /**
      * A command capable to push the arm to a point in space based on the points 'well known name'
@@ -24,7 +26,18 @@ public class ArmToLocationCommand extends ArmToPointCommand {
      */
     public ArmToLocationCommand(ArmSubsystem arm, ArmLocation location, ManualInputInterfaces input) {
         super(arm, 0.0, 0.0);
-        
+        this.location = location;
+        this.input = input; 
+        setPositions();
+    }
+
+    public void initialize(){
+        // reset positions in case cube/cone has changed since command was constructed
+        setPositions();
+        super.initialize();
+    }
+
+    private void setPositions(){
         switch(location){
             case ARM_STOW:
                 super.setYValue(Constants.armPresetPositionStowMetersY);
