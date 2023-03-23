@@ -91,9 +91,9 @@ public class ArmSubsystem extends SubsystemBase
     private double requestedHorizontalArmExtension = 0.0;
     private double requestedVerticalArmExtension = 0.0;
 
-    private final long armSensorRepeatZeroMinimumThreshold = 25; // 25/50 seconds or about 0.5 seconds
-    private long verticalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
-    private long horizontalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
+    private final int armSensorRepeatZeroMinimumThreshold = 25; // 25/50 seconds or about 0.5 seconds
+    private int verticalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
+    private int horizontalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
 
     /* *********************************************************************
     CONSTRUCTORS
