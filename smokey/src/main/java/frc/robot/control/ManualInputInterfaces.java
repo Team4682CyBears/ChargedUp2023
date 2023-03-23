@@ -34,6 +34,8 @@ import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
+import frc.robot.commands.DriveRampDownSpeedCommand;
+import frc.robot.commands.DriveRampUpSpeedCommand;
 
 public class ManualInputInterfaces {
 
@@ -239,7 +241,8 @@ public class ManualInputInterfaces {
         this.driverController.leftBumper().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::decrementPowerReductionFactor),
+              subsystemCollection.getDriveTrainPowerSubsystem()::decrementPowerReductionFactor,
+              subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
               "driverController.leftBumper()",
               "decrement power factor")
@@ -249,7 +252,8 @@ public class ManualInputInterfaces {
         this.driverController.rightBumper().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
-              subsystemCollection.getDriveTrainSubsystem()::incrementPowerReductionFactor),
+              subsystemCollection.getDriveTrainPowerSubsystem()::incrementPowerReductionFactor,
+              subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
               "driverController.rightBumper()",
               "increment power factor")
@@ -276,6 +280,24 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
             "driverController.rightTrigger()",
             "normal driving")
+          )
+        );
+        // left trigger press will ramp down drivetrain to reduced speed mode 
+        this.driverController.leftTrigger().onTrue(
+          new ParallelCommandGroup(
+            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new ButtonPressCommand(
+            "driverController.leftTrigger()",
+            "ramp down to reduced speed")
+          )
+        );
+        // left trigger de-press will ramp up drivetrain to max speed
+        this.driverController.leftTrigger().onFalse(
+          new ParallelCommandGroup(
+            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new ButtonPressCommand(
+            "driverController.leftTrigger()",
+            "ramp up to default speed")
           )
         );
       }
@@ -493,7 +515,7 @@ public class ManualInputInterfaces {
               ArmLocation.ARM_STOW,
               this),
             new ButtonPressCommand(
-              "coDriverController.rightTrigger()",
+              "coDriverController.rightBumper()",
               "arm stow")
             ).andThen(new RumbleCommand(coDriverControllerForRumbleOnly, Constants.rumbleTimeSeconds))
           );

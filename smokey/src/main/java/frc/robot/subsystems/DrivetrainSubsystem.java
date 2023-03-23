@@ -116,10 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  private final double maximumSpeedReductionFactor = 1.0;
-  private final double defaultSpeedReductionFactor = 1.0;
-  private double speedReductionFactor = defaultSpeedReductionFactor;
-  private double speedReductionFactorIncrement = 0.1;
+  private double speedReductionFactor = 1.0;
 
   private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
 
@@ -182,16 +179,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
-   * Method to decrement the power reduction factor
-   */
-  public void decrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor - speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
-  }
-
-  /**
    * Method avaliable so that callers can update the chassis speeds to induce changes in robot movement
    * @param updatedChassisSpeeds - the updated chassis speeds (x, y and rotation)
    */
@@ -208,6 +195,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
       swerveNavx.getPitch(), 
       swerveNavx.getRoll(), 
       swerveNavx.getYaw() + this.yawOffsetDegrees);
+  }
+
+  /**
+   * Method to get the current speed reduction factor
+   * @return - the current speed reduction factor
+   */
+  public double getSpeedReductionFactor() {
+    return this.speedReductionFactor;
+  }
+
+  /**
+   * Method to set the current speed reduction factor to a new value
+   * @param value - the new speed reduction factor
+   */
+  public void setSpeedReductionFactor(double value) {
+    this.speedReductionFactor = MotorUtils.truncateValue(value, 0.0, 1.0);
   }
 
   /**
@@ -366,7 +369,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return swerveDriveMode;
   }
 
-/**
+  /**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
   * they do not affect other trajectories
@@ -380,16 +383,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
       8.0); //12.0);
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
-  }
-
-  /**
-   * Method to increment the power reduction factor
-   */
-  public void incrementPowerReductionFactor() {
-    speedReductionFactor = MotorUtils.truncateValue(
-      speedReductionFactor + speedReductionFactorIncrement,
-      speedReductionFactorIncrement,
-      maximumSpeedReductionFactor);
   }
 
   /**
@@ -454,13 +447,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
     System.out.println("Is the robot level? -------->" + this.isLevel());
     System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
-  }
- 
-  /**
-   * Method to reset the power reduction factor
-   */
-  public void resetPowerReductionFactor() {
-    speedReductionFactor = defaultSpeedReductionFactor;
   }
 
   /**
