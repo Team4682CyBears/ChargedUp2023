@@ -91,6 +91,10 @@ public class ArmSubsystem extends SubsystemBase
     private double requestedHorizontalArmExtension = 0.0;
     private double requestedVerticalArmExtension = 0.0;
 
+    private final long armSensorRepeatZeroMinimumThreshold = 25; // 25/50 seconds or about 0.5 seconds
+    private long verticalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
+    private long horizontalArmSensorOutsideZeroCounter = armSensorRepeatZeroMinimumThreshold;
+
     /* *********************************************************************
     CONSTRUCTORS
     ************************************************************************/
@@ -230,7 +234,9 @@ public class ArmSubsystem extends SubsystemBase
         // Horizontal
         if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalMotorSpeed < 0.0) {
           this.horizontalMotor.set(0.0);
-          this.horizontalEncoder.setPosition(0.0);
+          if(this.horizontalArmSensorOutsideZeroCounter >= this.armSensorRepeatZeroMinimumThreshold) {
+            this.horizontalEncoder.setPosition(0.0);
+          }
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalMotorSpeed > 0.0) {
           this.horizontalMotor.set(0.0);
@@ -246,7 +252,9 @@ public class ArmSubsystem extends SubsystemBase
         // Vertical
         if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalMotorSpeed < 0.0) {
           this.verticalMotor.set(0.0);
-          this.verticalEncoder.setPosition(0.0);
+          if(this.verticalArmSensorOutsideZeroCounter >= this.armSensorRepeatZeroMinimumThreshold) {
+            this.verticalEncoder.setPosition(0.0);
+          }
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
           this.verticalMotor.set(0.0);
@@ -266,7 +274,9 @@ public class ArmSubsystem extends SubsystemBase
         // Horizontal
         if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalArmExtension <= 0.0) {
           this.horizontalMotor.set(0.0);
-          this.horizontalEncoder.setPosition(0.0);
+          if(this.horizontalArmSensorOutsideZeroCounter >= this.armSensorRepeatZeroMinimumThreshold) {
+            this.horizontalEncoder.setPosition(0.0);
+          }
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalArmExtension >= maximumHorizontalArmExtensionMeters) {
           this.horizontalMotor.set(0.0);
@@ -291,7 +301,9 @@ public class ArmSubsystem extends SubsystemBase
         // Vertical
         if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalArmExtension <= 0.0) {
           this.verticalMotor.set(0.0);
-          this.verticalEncoder.setPosition(0.0);
+          if(this.verticalArmSensorOutsideZeroCounter >= this.armSensorRepeatZeroMinimumThreshold) {
+            this.verticalEncoder.setPosition(0.0);
+          }
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalArmExtension >= maximumVerticalArmExtensionMeters) {
           this.verticalMotor.set(0.0);
@@ -304,7 +316,22 @@ public class ArmSubsystem extends SubsystemBase
             this.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
             ControlType.kSmartMotion);
         }
+      }
 
+      // in the event the sensor is tripped we want to zero the 'outside zero' counter(s)
+      // horizontal
+      if(isHorizontalArmAtOrBelowLowStop) {
+        horizontalArmSensorOutsideZeroCounter = 0;
+      }
+      else {
+        ++horizontalArmSensorOutsideZeroCounter;
+      }
+      // vertical
+      if(isVerticalArmAtOrBelowLowStop) {
+        verticalArmSensorOutsideZeroCounter = 0;
+      }
+      else {
+        ++verticalArmSensorOutsideZeroCounter;
       }
     }
 
