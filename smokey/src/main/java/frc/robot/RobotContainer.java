@@ -11,12 +11,15 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
@@ -78,6 +81,10 @@ public class RobotContainer {
     // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
+
+    // Command to drive the chassis for zeroing the swerve modules.
+    SmartDashboard.putData("Drive Forward Robot Centric", 
+      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.0, 3.0));
   }
  
   /**
