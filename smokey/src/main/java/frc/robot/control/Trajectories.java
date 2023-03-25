@@ -33,7 +33,7 @@ public class Trajectories {
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
-        fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.65); // less than max speed
+        fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.6); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
         double slowSteadyRampSpeed = 0.8; 
         SwerveTrajectoryConfig slowSteadyConfig = new SwerveTrajectoryConfig(
@@ -48,7 +48,7 @@ public class Trajectories {
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
-        this.InfrontOfRampPosition = new Pose2d(2.2, 2.75, Rotation2d.fromDegrees(0));
+        this.InfrontOfRampPosition = new Pose2d(2.0, 2.75, Rotation2d.fromDegrees(0));
         
         // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
         // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
