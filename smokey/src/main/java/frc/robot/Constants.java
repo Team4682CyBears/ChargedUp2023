@@ -95,8 +95,8 @@ public final class Constants {
     public static final double armPresetPositionStowMetersY = 0.470;
     public static final double armPresetPositionStowMetersZ = 1.050 - Units.inchesToMeters(2.0);
 
-    public static final double armPresetPositionCubeGrabMetersY = 0.7873 + Units.inchesToMeters(1.0);
-    public static final double armPresetPositionCubeGrabMetersZ = 0.8840 - Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeGrabMetersY = 0.7873 + Units.inchesToMeters(0.5);
+    public static final double armPresetPositionCubeGrabMetersZ = 0.8840 - Units.inchesToMeters(0.5);
     public static final double armPresetPositionCubeScoreHighMetersY = 1.368 - Units.inchesToMeters(1);
     public static final double armPresetPositionCubeScoreHighMetersZ = 1.089 - Units.inchesToMeters(1);
     public static final double armPresetPositionCubeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
@@ -144,6 +144,6 @@ public final class Constants {
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
     public static final double overcurrentRumbleTimeSeconds = 0.25;
     public static final int EveryBotMotorPdpPortId = 8;
-    public static final double EveryBotMotorMaximuCurrentAmps = 35.5;
+    public static final double EveryBotMotorMaximuCurrentAmps = 45.5;
 
 }
