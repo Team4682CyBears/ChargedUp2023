@@ -179,9 +179,9 @@ public class RobotContainer {
       // Right stick X axis -> rotation
       subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
         subsystems.getDriveTrainSubsystem(),
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -subsystems.getManualInputInterfaces().getInputSpinDriveX() * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        () -> -modifyAxisSquare(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxisSquare(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxisLinear(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ));
     }
     else {
@@ -236,8 +236,8 @@ public class RobotContainer {
       subsystems.setEveryBotPickerSubsystem(new EveryBotPickerSubsystem());
       subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new EveryBotPickerDefaultCommand(
         subsystems.getEveryBotPickerSubsystem(),
-        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
-        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
+        () -> modifyAxisSquare(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
+        () -> modifyAxisSquare(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
       SmartDashboard.putData("Debug: EveryBotSub", subsystems.getEveryBotPickerSubsystem());
       System.out.println("SUCCESS: initializeEveryBotPicker");
@@ -292,12 +292,22 @@ public class RobotContainer {
     }
   }
 
-  private static double modifyAxis(double value) {
+  private static double modifyAxisSquare(double value) {
     // Deadband
     value = deadband(value, 0.05);
 
     // Joystick input exponent
     value = Math.copySign(value * value, value);
+
+    return value;
+  }
+
+  private static double modifyAxisLinear(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+
+    // Joystick input exponent
+    value = Math.copySign(value, value);
 
     return value;
   }
