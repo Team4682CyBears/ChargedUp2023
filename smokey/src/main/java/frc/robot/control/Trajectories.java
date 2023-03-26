@@ -48,11 +48,11 @@ public class Trajectories {
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
-        this.InfrontOfRampPosition = new Pose2d(2.0, 2.75, Rotation2d.fromDegrees(0));
+        this.InfrontOfRampPosition = new Pose2d(2.0, 2.75, Rotation2d.fromDegrees(90));
         
         // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
         // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
-        this.RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(0));
+        this.RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
         Pose2d MiddlePathRampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
         // behind ramp position for node 1,2,8,9 paths
