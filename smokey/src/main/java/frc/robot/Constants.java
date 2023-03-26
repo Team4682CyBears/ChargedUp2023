@@ -104,10 +104,10 @@ public final class Constants {
     public static final double armPresetPositionCubeScoreLowMetersY = 0.848;
     public static final double armPresetPositionCubeScoreLowMetersZ = 0.732;
 
-    public static final double armPresetPositionConeGrabMetersY = 0.9163 + Units.inchesToMeters(4.5);
+    public static final double armPresetPositionConeGrabMetersY = 0.9163 + Units.inchesToMeters(3.5);
     public static final double armPresetPositionConeGrabMetersZ = 0.9444 + Units.inchesToMeters(3.5);
-    public static final double armPresetPositionConeScoreHighMetersY = 1.368 - Units.inchesToMeters(0.2);
-    public static final double armPresetPositionConeScoreHighMetersZ = 1.089 - Units.inchesToMeters(0.2);
+    public static final double armPresetPositionConeScoreHighMetersY = 1.295 - Units.inchesToMeters(5.5);
+    public static final double armPresetPositionConeScoreHighMetersZ = 1.185 + Units.inchesToMeters(2.0);
     public static final double armPresetPositionConeScoreMediumMetersY = 0.951 - Units.inchesToMeters(1.5);
     public static final double armPresetPositionConeScoreMediumMetersZ = 0.809 + Units.inchesToMeters(1.5);
     public static final double armPresetPositionConeScoreLowMetersY = 0.848;
