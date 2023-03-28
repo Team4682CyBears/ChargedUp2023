@@ -92,27 +92,26 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    // TODO - need to reset all of these now!!!!
-    public static final double armPresetPositionStowMetersHorizontalExtension = Units.inchesToMeters(1.0);
-    public static final double armPresetPositionStowMetersVerticalExtension = Units.inchesToMeters(11.0);
+    public static final double armPresetPositionStowMetersHorizontalExtension = 0.0819;
+    public static final double armPresetPositionStowMetersVerticalExtension = 0.1952;
 
-    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeGrabMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreMediumMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreMediumMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = 0.3041;
+    public static final double armPresetPositionCubeGrabMetersVerticalExtension = 0.0691;
+    public static final double armPresetPositionCubeScoreHighMetersHorizontalExtension = 0.7262;
+    public static final double armPresetPositionCubeScoreHighMetersVerticalExtension = 0.0058;
+    public static final double armPresetPositionCubeScoreMediumMetersHorizontalExtension = 0.1880;
+    public static final double armPresetPositionCubeScoreMediumMetersVerticalExtension = 0.0308;
+    public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = 0.0979;
+    public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = 0.0224;
 
-    public static final double armPresetPositionConeGrabMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeGrabMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreMediumMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreMediumMetersVerticalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreLowMetersHorizontalExtension = Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreLowMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192;
+    public static final double armPresetPositionConeGrabMetersVerticalExtension = 0.0589;
+    public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = 0.6694;
+    public static final double armPresetPositionConeScoreHighMetersVerticalExtension = 0.0672;
+    public static final double armPresetPositionConeScoreMediumMetersHorizontalExtension = 0.2230;
+    public static final double armPresetPositionConeScoreMediumMetersVerticalExtension = 0.0375;
+    public static final double armPresetPositionConeScoreLowMetersHorizontalExtension = 0.0979;
+    public static final double armPresetPositionConeScoreLowMetersVerticalExtension = 0.0224;
 
     // *******************************************************************
     // pneumatics constants

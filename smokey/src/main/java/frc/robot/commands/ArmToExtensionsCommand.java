@@ -56,7 +56,6 @@ public class ArmToExtensionsCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        // when the point in space is invalid just be done
         this.armSubsystem.setArmExtensions(horizontalExtensionValue, verticalExtensionValue);
     }
 
