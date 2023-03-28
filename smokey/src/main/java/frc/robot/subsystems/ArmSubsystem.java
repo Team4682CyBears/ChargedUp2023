@@ -42,10 +42,10 @@ public class ArmSubsystem extends SubsystemBase
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches;
+    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches = 0.2032 meters;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
-    private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 ... 30.125 inches;
+    private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 = 30.125 inches = 0.7652 meters;
     private static final double toleranceHorizontalArmExtensionMeters = 0.003;
 
     // the various geometry aspects of the arm setup // 
