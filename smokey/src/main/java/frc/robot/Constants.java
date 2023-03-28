@@ -92,26 +92,27 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    public static final double armPresetPositionStowMetersY = 0.470;
-    public static final double armPresetPositionStowMetersZ = 1.050 - Units.inchesToMeters(2.0);
+    // TODO - need to reset all of these now!!!!
+    public static final double armPresetPositionStowMetersHorizontalExtension = Units.inchesToMeters(1.0);
+    public static final double armPresetPositionStowMetersVerticalExtension = Units.inchesToMeters(11.0);
 
-    public static final double armPresetPositionCubeGrabMetersY = 0.7873 + Units.inchesToMeters(1.0);
-    public static final double armPresetPositionCubeGrabMetersZ = 0.8840 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersY = 1.368 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersZ = 1.089 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionCubeScoreMediumMetersZ = 0.809 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreLowMetersY = 0.848;
-    public static final double armPresetPositionCubeScoreLowMetersZ = 0.732;
+    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeGrabMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreHighMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreHighMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreMediumMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreMediumMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = Units.inchesToMeters(0.0);
 
-    public static final double armPresetPositionConeGrabMetersY = 0.9163 + Units.inchesToMeters(3.0);
-    public static final double armPresetPositionConeGrabMetersZ = 0.9444 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersY = 1.368 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersZ = 1.089 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionConeScoreMediumMetersZ = 0.809 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreLowMetersY = 0.848;
-    public static final double armPresetPositionConeScoreLowMetersZ = 0.732;
+    public static final double armPresetPositionConeGrabMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeGrabMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreHighMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreMediumMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreMediumMetersVerticalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreLowMetersHorizontalExtension = Units.inchesToMeters(0.0);
+    public static final double armPresetPositionConeScoreLowMetersVerticalExtension = Units.inchesToMeters(0.0);
 
     // *******************************************************************
     // pneumatics constants
