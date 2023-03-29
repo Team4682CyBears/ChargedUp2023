@@ -416,25 +416,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
       states = getImmovableStanceStates();
     }
     else { // SwerveDriveMode.NORMAL_DRIVING
+      // apply the speed reduction factor to the chassis speeds
+      ChassisSpeeds reducedChassisSpeeds = new ChassisSpeeds(
+        chassisSpeeds.vxMetersPerSecond * this.speedReductionFactor, 
+        chassisSpeeds.vyMetersPerSecond * this.speedReductionFactor, 
+        // different speed reduction factor for rotation
+        chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.25));
       // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
       // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-      states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+      states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds);
       // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
       SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
     } 
 
     // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
     frontLeftModule.set(
-      states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
       states[0].angle.getRadians());
     frontRightModule.set(
-      states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
       states[1].angle.getRadians());
     backLeftModule.set(
-      states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
       states[2].angle.getRadians());
     backRightModule.set(
-      states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE * this.speedReductionFactor,
+      states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
       states[3].angle.getRadians());
   }
 

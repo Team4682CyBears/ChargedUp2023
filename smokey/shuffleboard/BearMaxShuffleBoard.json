@@ -294,7 +294,8 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul"
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/EveryBotMotorOvercurrentProtection": true
             }
           }
         }
@@ -302,9 +303,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -6.0,
-    "y": 3.0,
-    "width": 1519.0,
+    "x": 100.0,
+    "y": 92.0,
+    "width": 1551.0,
     "height": 828.0
   }
 }
