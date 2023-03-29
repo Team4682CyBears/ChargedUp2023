@@ -25,6 +25,7 @@ import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
 import frc.robot.control.SwerveDriveMode;
 import frc.robot.common.MotorUtils;
+import frc.robot.common.SwerveDriveRotationMode;
 import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -119,6 +120,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double speedReductionFactor = 1.0;
 
   private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
+  private SwerveDriveRotationMode swerveDriveRotationMode = SwerveDriveRotationMode.Normal;
 
   /**
    * Constructor for this DrivetrainSubsystem
@@ -418,7 +420,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     else { // SwerveDriveMode.NORMAL_DRIVING
       // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
       // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-      states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+      if (swerveDriveRotationMode == SwerveDriveRotationMode.FinePlacement) {
+        states = swerveKinematics.toSwerveModuleStates(chassisSpeeds, Constants.centerOfSnout);
+      } 
+      else { // normal rotation mode 
+        states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+      }
       // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
       SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
     } 
@@ -476,6 +483,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.swerveDriveMode = swerveDriveMode;
     // if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) DO NOT set chassis speeds to 0.0 here.
     // we need to allow the robot to decel properly so that it doesn't tip.  
+  }
+
+
+  /**
+   * A method to set the swerve rotation mode
+   * @param swerveDriveRotationMode
+   */
+  public void setSwerveDriveRotationMode(SwerveDriveRotationMode swerveDriveRotationMode) {
+    this.swerveDriveRotationMode = swerveDriveRotationMode;
   }
 
   /**

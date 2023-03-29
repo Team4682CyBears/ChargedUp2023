@@ -33,6 +33,7 @@ import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
+import frc.robot.commands.DriveFinePlacementCommand;
 import frc.robot.commands.DriveRampDownSpeedCommand;
 import frc.robot.commands.DriveRampUpSpeedCommand;
 
@@ -222,6 +223,20 @@ public class ManualInputInterfaces {
               "auto balance")
             )
           );
+
+          this.driverController.povLeft().onTrue(
+            new DriveFinePlacementCommand(
+              localDrive, 
+              -1 * Constants.FinePlacementRotationalVelocity
+              )
+            ); 
+          
+          this.driverController.povRight().onTrue(
+            new DriveFinePlacementCommand(
+              localDrive, 
+              Constants.FinePlacementRotationalVelocity
+              )
+            ); 
     }
 
       // x button press will stop all      
