@@ -11,12 +11,15 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
@@ -78,6 +81,12 @@ public class RobotContainer {
     // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
+
+    // Command to drive the chassis for zeroing the swerve modules.
+    SmartDashboard.putData("Drive Forward Robot Centric", 
+      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.0, 3.0));
+    SmartDashboard.putData("Drive Forward with rotation", 
+      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.2, 3.0));
   }
  
   /**
@@ -170,9 +179,9 @@ public class RobotContainer {
       // Right stick X axis -> rotation
       subsystems.getDriveTrainSubsystem().setDefaultCommand(new DefaultDriveCommand(
         subsystems.getDriveTrainSubsystem(),
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        () -> -modifyAxisSquare(subsystems.getManualInputInterfaces().getInputArcadeDriveY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxisSquare(subsystems.getManualInputInterfaces().getInputArcadeDriveX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxisSquare(subsystems.getManualInputInterfaces().getInputSpinDriveX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
       ));
     }
     else {
@@ -227,8 +236,8 @@ public class RobotContainer {
       subsystems.setEveryBotPickerSubsystem(new EveryBotPickerSubsystem());
       subsystems.getEveryBotPickerSubsystem().setDefaultCommand(new EveryBotPickerDefaultCommand(
         subsystems.getEveryBotPickerSubsystem(),
-        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
-        () -> modifyAxis(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
+        () -> modifyAxisSquare(subsystems.getManualInputInterfaces().getInputEveryBotUptakeTrigger()),
+        () -> modifyAxisSquare(subsystems.getManualInputInterfaces().getInputEveryBotExpellTrigger())
       ));
       SmartDashboard.putData("Debug: EveryBotSub", subsystems.getEveryBotPickerSubsystem());
       System.out.println("SUCCESS: initializeEveryBotPicker");
@@ -283,12 +292,22 @@ public class RobotContainer {
     }
   }
 
-  private static double modifyAxis(double value) {
+  private static double modifyAxisSquare(double value) {
     // Deadband
     value = deadband(value, 0.05);
 
     // Joystick input exponent
     value = Math.copySign(value * value, value);
+
+    return value;
+  }
+
+  private static double modifyAxisLinear(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+
+    // Joystick input exponent
+    value = Math.copySign(value, value);
 
     return value;
   }

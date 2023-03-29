@@ -35,22 +35,22 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 1; 
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 2; 
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 3; 
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(147.92 + 344.26); 
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(147.92 + 344.26 + 307.26); 
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 4; 
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 5; 
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 6; 
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(108.15 + 282.74); 
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(108.15 + 282.74 + 0.264); 
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 7; 
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 8; 
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 9; 
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(77.639 + 259.80 + 180.0); 
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(77.639 + 259.80 + 180.0 + 348.71 + 8.0); 
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 10; 
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 11; 
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 12; 
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-32.881 + 172.88 + 180.0); 
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(-32.881 + 172.88 + 180.0 + 4.83); 
 
     // *****************************************************************
     // arm constants
@@ -92,26 +92,26 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    public static final double armPresetPositionStowMetersY = 0.470;
-    public static final double armPresetPositionStowMetersZ = 1.050 - Units.inchesToMeters(2.0);
+    public static final double armPresetPositionStowMetersHorizontalExtension = 0.0819;
+    public static final double armPresetPositionStowMetersVerticalExtension = 0.1952;
 
-    public static final double armPresetPositionCubeGrabMetersY = 0.7873 + Units.inchesToMeters(1.0);
-    public static final double armPresetPositionCubeGrabMetersZ = 0.8840 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersY = 1.368 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreHighMetersZ = 1.089 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionCubeScoreMediumMetersZ = 0.809 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionCubeScoreLowMetersY = 0.848;
-    public static final double armPresetPositionCubeScoreLowMetersZ = 0.732;
+    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = 0.3041;
+    public static final double armPresetPositionCubeGrabMetersVerticalExtension = 0.0691;
+    public static final double armPresetPositionCubeScoreHighMetersHorizontalExtension = 0.7262;
+    public static final double armPresetPositionCubeScoreHighMetersVerticalExtension = 0.0058;
+    public static final double armPresetPositionCubeScoreMediumMetersHorizontalExtension = 0.1880;
+    public static final double armPresetPositionCubeScoreMediumMetersVerticalExtension = 0.0308;
+    public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = 0.0979;
+    public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = 0.0224;
 
-    public static final double armPresetPositionConeGrabMetersY = 0.9163 + Units.inchesToMeters(3.0);
-    public static final double armPresetPositionConeGrabMetersZ = 0.9444 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersY = 1.368 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreHighMetersZ = 1.089 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreMediumMetersY = 0.951 - Units.inchesToMeters(2.0);
-    public static final double armPresetPositionConeScoreMediumMetersZ = 0.809 - Units.inchesToMeters(0.0);
-    public static final double armPresetPositionConeScoreLowMetersY = 0.848;
-    public static final double armPresetPositionConeScoreLowMetersZ = 0.732;
+    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192;
+    public static final double armPresetPositionConeGrabMetersVerticalExtension = 0.0589;
+    public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = 0.6694;
+    public static final double armPresetPositionConeScoreHighMetersVerticalExtension = 0.0672;
+    public static final double armPresetPositionConeScoreMediumMetersHorizontalExtension = 0.2230;
+    public static final double armPresetPositionConeScoreMediumMetersVerticalExtension = 0.0375;
+    public static final double armPresetPositionConeScoreLowMetersHorizontalExtension = 0.0979;
+    public static final double armPresetPositionConeScoreLowMetersVerticalExtension = 0.0224;
 
     // *******************************************************************
     // pneumatics constants
@@ -144,6 +144,6 @@ public final class Constants {
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
     public static final double overcurrentRumbleTimeSeconds = 0.25;
     public static final int EveryBotMotorPdpPortId = 8;
-    public static final double EveryBotMotorMaximuCurrentAmps = 35.5;
+    public static final double EveryBotMotorMaximuCurrentAmps = 45.5;
 
 }
