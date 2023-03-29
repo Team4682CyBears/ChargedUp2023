@@ -56,6 +56,7 @@ public class ArmToExtensionsCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        done = false;
         this.armSubsystem.setArmExtensions(horizontalExtensionValue, verticalExtensionValue);
     }
 
