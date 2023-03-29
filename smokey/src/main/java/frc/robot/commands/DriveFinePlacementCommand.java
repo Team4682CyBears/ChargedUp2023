@@ -51,6 +51,7 @@ public class DriveFinePlacementCommand extends CommandBase {
     public void end(boolean interrupted) {
         drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         drivetrainSubsystem.setSwerveDriveRotationMode(SwerveDriveRotationMode.Normal);
+        System.out.println("Fine Placement Ended");
     }
 
 }

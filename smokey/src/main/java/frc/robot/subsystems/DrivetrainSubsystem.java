@@ -421,7 +421,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
       // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
       if (swerveDriveRotationMode == SwerveDriveRotationMode.FinePlacement) {
-        states = swerveKinematics.toSwerveModuleStates(chassisSpeeds, Constants.centerOfSnout);
+        states = swerveKinematics.toSwerveModuleStates(chassisSpeeds, Constants.FinePlacementRotationalCenter);
       } 
       else { // normal rotation mode 
         states = swerveKinematics.toSwerveModuleStates(chassisSpeeds);

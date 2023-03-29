@@ -224,14 +224,14 @@ public class ManualInputInterfaces {
             )
           );
 
-          this.driverController.povLeft().onTrue(
+          this.driverController.povRight().whileTrue(
             new DriveFinePlacementCommand(
               localDrive, 
               -1 * Constants.FinePlacementRotationalVelocity
               )
             ); 
           
-          this.driverController.povRight().onTrue(
+          this.driverController.povLeft().whileTrue(
             new DriveFinePlacementCommand(
               localDrive, 
               Constants.FinePlacementRotationalVelocity
