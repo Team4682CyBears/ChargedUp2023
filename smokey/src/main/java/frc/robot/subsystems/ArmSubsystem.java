@@ -249,15 +249,17 @@ public class ArmSubsystem extends SubsystemBase
       // magnetic sensor triggered 
       // arm deployed >= limit (e.g., maximumXXXArmExtensionMeters)
       double currentHorizontalExtensionInMeters = this.getCurrentHorizontalArmExtensionInMeters();
+      boolean isHorizontalArmAtOrBelowLowStop = (currentHorizontalExtensionInMeters <= 0.0);
       boolean isHorizontalArmAtOrAboveHighStop = currentHorizontalExtensionInMeters >= maximumHorizontalArmExtensionMeters;
       double currentVerticalExtensionInMeters = this.getCurrentVerticalArmExtensionInMeters();
+      boolean isVerticalArmAtOrBelowLowStop = (currentVerticalExtensionInMeters <= 0.0);
       boolean isVerticalArmAtOrAboveHighStop = currentVerticalExtensionInMeters >= maximumVerticalArmExtensionMeters;
 
       // if we are in speed mode always set motor speeds using motor set
       if(this.inSpeedMode) {
 
         // Horizontal
-        if(this.requestedHorizontalMotorSpeed < 0.0) {
+        if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalMotorSpeed < 0.0) {
           this.horizontalMotor.set(0.0);
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalMotorSpeed > 0.0) {
@@ -272,7 +274,7 @@ public class ArmSubsystem extends SubsystemBase
         }
         
         // Vertical
-        if(this.requestedVerticalMotorSpeed < 0.0) {
+        if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalMotorSpeed < 0.0) {
           this.verticalMotor.set(0.0);
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
@@ -291,7 +293,7 @@ public class ArmSubsystem extends SubsystemBase
         movementWithinTolerance = isHorizontalWithinTolerance && isVerticalWithinTolerance;
 
         // Horizontal
-        if(this.requestedHorizontalArmExtension <= 0.0) {
+        if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalArmExtension <= 0.0) {
           this.horizontalMotor.set(0.0);
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalArmExtension >= maximumHorizontalArmExtensionMeters) {
@@ -315,7 +317,7 @@ public class ArmSubsystem extends SubsystemBase
         }
 
         // Vertical
-        if(this.requestedVerticalArmExtension <= 0.0) {
+        if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalArmExtension <= 0.0) {
           this.verticalMotor.set(0.0);
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalArmExtension >= maximumVerticalArmExtensionMeters) {
