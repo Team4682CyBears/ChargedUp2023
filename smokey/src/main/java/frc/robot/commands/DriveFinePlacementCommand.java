@@ -18,6 +18,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class DriveFinePlacementCommand extends CommandBase {
     private final DrivetrainSubsystem drivetrainSubsystem;
 
+    //*
+    // Change the Rotational Velocity
+    */
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private double rotationalVelocity = 0.0;
 
@@ -28,10 +31,14 @@ public class DriveFinePlacementCommand extends CommandBase {
         addRequirements(drivetrainSubsystem);
     }
 
+// It sets Swerve Drive Rotation Mode to Fine Placement.
+
     @Override
     public void initialize() {
         drivetrainSubsystem.setSwerveDriveRotationMode(SwerveDriveRotationMode.FinePlacement);
     }
+
+// Sets vx and xy Meter Per Speed with the rotationalVelocity and GyroscopreRotation
 
     @Override
     public void execute() {       
@@ -47,11 +54,12 @@ public class DriveFinePlacementCommand extends CommandBase {
         drivetrainSubsystem.drive(commandedChassisSpeeds);        
     }
 
+// End the rotate and change it back to normal
+
     @Override
     public void end(boolean interrupted) {
         drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
         drivetrainSubsystem.setSwerveDriveRotationMode(SwerveDriveRotationMode.Normal);
-        System.out.println("Fine Placement Ended");
     }
 
 }
