@@ -76,10 +76,24 @@ public class DefaultDriveCommand extends CommandBase {
     private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
         double xVelocityLimited = limitAxisSpeed(speeds.vxMetersPerSecond, previousChassisSpeeds.vxMetersPerSecond, maxAccelerationMPerS2);
         double yVelocityLimited = limitAxisSpeed(speeds.vyMetersPerSecond, previousChassisSpeeds.vyMetersPerSecond, maxAccelerationMPerS2);
-        double omegaVelocityLimited = limitAxisSpeed(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond, maxAccelerationRadPerS2);
+        // apply rotational velocity limititation only when accelerating. 
+        double omegaVelocityLimited = speeds.omegaRadiansPerSecond;
+        if (isAccelerating(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond)){
+            omegaVelocityLimited = limitAxisSpeed(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond, maxAccelerationRadPerS2);
+        }
         return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, omegaVelocityLimited);
     }
 
+    /**
+     * Returns true if the speed is accelerating
+     * @param commandedSpeed
+     * @param previousSpeed
+     * @return
+     */
+    private boolean isAccelerating(double commandedSpeed, double previousSpeed){
+        return commandedSpeed > previousSpeed;
+    }
+    
     /**
      * Limits speed based on max allowable acceleration
      * @param commandedSpeed
