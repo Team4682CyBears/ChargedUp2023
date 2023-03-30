@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.common.*;
+import frc.robot.control.InstalledHardware;
+
 import java.util.*;
 
 //import javax.lang.model.util.ElementScanner14;
@@ -82,9 +84,9 @@ public class ArmSubsystem extends SubsystemBase
     private double kPVertical, kIVertical, kDVertical, kIzVertical, kFFVertical, kMaxOutputVertical, kMinOutputVertical, maxRPMVertical, maxVelVertical, minVelVertical, maxAccVertical, allowedErrVertical;
     private boolean motorsInitalizedForSmartMotion = false;
 
-    private DigitalInput verticalArmBottomMageneticSensor = new DigitalInput(Constants.VirticalArmBottomMagneticSensor);
-    private DigitalInput verticalArmMiddleMageneticSensor = new DigitalInput(Constants.VirticalArmMiddleMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+    private DigitalInput verticalArmBottomMageneticSensor = null;
+    private DigitalInput verticalArmMiddleMageneticSensor = null;
+    private DigitalInput horizontalArmMageneticSensor = null;
 
     private boolean isHorizontalMotorInverted = false;
     private boolean isVerticalMotorInverted = true;
@@ -112,23 +114,32 @@ public class ArmSubsystem extends SubsystemBase
       // init smart motion and set positions if mag sensors are set
       this.initializeMotorsSmartMotion();
 
-      verticalArmBottomCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
-        verticalEncoder,
-        verticalArmBottomMageneticSensor,
-        ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
-        true);
+      if(InstalledHardware.verticalArmBottomSensorInstalled) {
+        verticalArmBottomMageneticSensor = new DigitalInput(Constants.VirticalArmBottomMagneticSensor);
+        verticalArmBottomCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          verticalEncoder,
+          verticalArmBottomMageneticSensor,
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
+          true);
+      }
 
-      verticalArmMiddleCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
-        verticalEncoder,
-        verticalArmBottomMageneticSensor,
-        ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
-        false);
+      if(InstalledHardware.verticalArmMiddleSensorInstalled) {
+        verticalArmMiddleMageneticSensor = new DigitalInput(Constants.VirticalArmMiddleMagneticSensor);
+        verticalArmMiddleCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          verticalEncoder,
+          verticalArmMiddleMageneticSensor,
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
+          false);
+      }
 
-      horizontalArmCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
-        horizontalEncoder,
-        horizontalArmMageneticSensor,
-        ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
-        true);
+      if(InstalledHardware.horizontalArmSensorInstalled) {
+        horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+        horizontalArmCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          horizontalEncoder,
+          horizontalArmMageneticSensor,
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.horizontalArmSensorPlacementAlongExtensionMeters),
+          true);
+      }
 
       CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -211,7 +222,7 @@ public class ArmSubsystem extends SubsystemBase
      * @return true if the arm motor encoder has been reset due to DIO, else false
      */
     public boolean hasHorizontalArmEncoderBeenResetViaSensor(){
-      return this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset();
+      return InstalledHardware.horizontalArmSensorInstalled && this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset();
     }
 
     /**
@@ -219,8 +230,8 @@ public class ArmSubsystem extends SubsystemBase
      * @return true if the arm motor encoder has been reset due to DIO, else false
      */
     public boolean hasVerticalArmEncoderBeenResetViaSensor(){
-      return this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset() || 
-        this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset();
+      return (InstalledHardware.verticalArmBottomSensorInstalled && this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset()) || 
+        (InstalledHardware.verticalArmMiddleSensorInstalled && this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
     }
     
     /**
@@ -371,8 +382,9 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
     private double getCurrentHorizontalArmExtensionInMeters() {
-      return ArmSubsystem.convertHorizontalArmExtensionFromTicksToMeters(
-        this.horizontalArmCorrectableEncoder.getCurrentEncoderPosition());
+      return InstalledHardware.horizontalArmSensorInstalled ?
+        ArmSubsystem.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalArmCorrectableEncoder.getCurrentEncoderPosition()) :
+        ArmSubsystem.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalEncoder.getPosition());
     }
 
     /**
@@ -380,10 +392,17 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
     private double getCurrentVerticalArmExtensionInMeters() {
+
       // throw low on floor - just need to make sure encoder gets reset in event at low sensor
-      this.verticalArmBottomCorrectableEncoder.getCurrentEncoderPosition();
-      return ArmSubsystem.convertVerticalArmExtensionFromTicksToMeters(
-        this.verticalArmMiddleCorrectableEncoder.getCurrentEncoderPosition());
+      if(InstalledHardware.verticalArmBottomSensorInstalled) {
+        this.verticalArmBottomCorrectableEncoder.getCurrentEncoderPosition();
+      }
+
+      double verticalArmExtension = InstalledHardware.verticalArmMiddleSensorInstalled ?
+        ArmSubsystem.convertVerticalArmExtensionFromTicksToMeters(this.verticalArmMiddleCorrectableEncoder.getCurrentEncoderPosition()) :
+        ArmSubsystem.convertVerticalArmExtensionFromTicksToMeters(this.verticalEncoder.getPosition());
+
+      return verticalArmExtension;
     }
 
     /**
