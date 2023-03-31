@@ -12,18 +12,23 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.common.SwerveDriveRotationMode;
+import frc.robot.common.SwerveDriveCenterOfRotation;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
+/**
+ * A class to drive the robot in fine placement mode
+ */
 public class DriveFinePlacementCommand extends CommandBase {
     private final DrivetrainSubsystem drivetrainSubsystem;
 
-    //*
-    // Change the Rotational Velocity
-    */
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private double rotationalVelocity = 0.0;
 
+    /**
+     * Constructor for a command to drive the robot in fine placement mode.
+     * @param drivetrainSubsystem
+     * @param rotationalVelocity
+     */
     public DriveFinePlacementCommand(DrivetrainSubsystem drivetrainSubsystem,
         double rotationalVelocity) {
         this.drivetrainSubsystem = drivetrainSubsystem;
@@ -31,15 +36,18 @@ public class DriveFinePlacementCommand extends CommandBase {
         addRequirements(drivetrainSubsystem);
     }
 
-// It sets Swerve Drive Rotation Mode to Fine Placement.
 
+    /**
+     *  A method to initialize a command to drive the robot in fine placement mode.
+     */
     @Override
     public void initialize() {
-        drivetrainSubsystem.setSwerveDriveRotationMode(SwerveDriveRotationMode.FinePlacement);
+        drivetrainSubsystem.setSwerveDriveCenterOfRotation(SwerveDriveCenterOfRotation.RobotFront);
     }
 
-// Sets vx and xy Meter Per Speed with the rotationalVelocity and GyroscopreRotation
-
+    /**
+     * A method that is called every time the scheduler runs while the command is scheduled.
+     */
     @Override
     public void execute() {       
         // field-oriented rotational-only movement
@@ -54,12 +62,13 @@ public class DriveFinePlacementCommand extends CommandBase {
         drivetrainSubsystem.drive(commandedChassisSpeeds);        
     }
 
-// End the rotate and change it back to normal
-
+    /**
+     * A method that is called when the command completes.
+     */
     @Override
     public void end(boolean interrupted) {
         drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        drivetrainSubsystem.setSwerveDriveRotationMode(SwerveDriveRotationMode.Normal);
+        drivetrainSubsystem.setSwerveDriveCenterOfRotation(SwerveDriveCenterOfRotation.RobotCenter);
     }
 
 }

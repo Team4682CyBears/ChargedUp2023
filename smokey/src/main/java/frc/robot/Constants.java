@@ -94,7 +94,7 @@ public final class Constants {
     //*****************************************
     // Fine placement constants
     // Center of rotation for fine placement
-    public static final Translation2d FinePlacementRotationalCenter = new Translation2d(DRIVETRAIN_WHEELBASE_METERS/2 + snoutDepth + Units.inchesToMeters(10), 0.0);
+    public static final Translation2d RobotFrontRotationalCenter = new Translation2d(DRIVETRAIN_WHEELBASE_METERS/2 + snoutDepth + Units.inchesToMeters(10), 0.0);
     // velocity for fine placement
     public static final double FinePlacementRotationalVelocity = 0.7;
 

@@ -10,7 +10,7 @@
 
 package frc.robot.common;
 
-public enum SwerveDriveRotationMode{
-    Normal,
-    FinePlacement
+public enum SwerveDriveCenterOfRotation{
+    RobotCenter,
+    RobotFront
 }
