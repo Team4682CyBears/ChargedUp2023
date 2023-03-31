@@ -28,7 +28,7 @@ public class DefaultDriveCommand extends CommandBase {
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private double maxAccelerationMPerS2 = 6.0;
-    private double maxAccelerationRadPerS2 = 14.0;
+    private double maxAccelerationRadPerS2 = 10.0;
     // TODO move this to Constants
     private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
