@@ -299,7 +299,8 @@ public class ManualInputInterfaces {
         // left trigger press will ramp down drivetrain to reduced speed mode 
         this.driverController.leftTrigger().onTrue(
           new ParallelCommandGroup(
-            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new InstantCommand(subsystemCollection.getDriveTrainPowerSubsystem()::setReducedPowerReductionFactor,
+            subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp down to reduced speed")
@@ -308,7 +309,8 @@ public class ManualInputInterfaces {
         // left trigger de-press will ramp up drivetrain to max speed
         this.driverController.leftTrigger().onFalse(
           new ParallelCommandGroup(
-            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new InstantCommand(subsystemCollection.getDriveTrainPowerSubsystem()::resetPowerReductionFactor,
+            subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp up to default speed")
