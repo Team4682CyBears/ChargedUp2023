@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.common.*;
+import frc.robot.control.InstalledHardware;
+
 import java.util.*;
 
 //import javax.lang.model.util.ElementScanner14;
@@ -42,11 +44,15 @@ public class ArmSubsystem extends SubsystemBase
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches = 0.2032 meters;
+    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(7.5); // 8 inches = 0.2032 meters;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 = 30.125 inches = 0.7652 meters;
     private static final double toleranceHorizontalArmExtensionMeters = 0.003;
+
+    private static final double verticalArmBottomSensorPlacementAlongExtensionMeters = Units.inchesToMeters(0.0);
+    private static final double verticalArmMiddleSensorPlacementAlongExtensionMeters = Units.inchesToMeters(7.5);
+    private static final double horizontalArmSensorPlacementAlongExtensionMeters = Units.inchesToMeters(0.0);
 
     // the various geometry aspects of the arm setup // 
     private static final double lengthFloorToHorizontalArmPivotMeters = Units.inchesToMeters(3.0); // 3 inches
@@ -78,8 +84,9 @@ public class ArmSubsystem extends SubsystemBase
     private double kPVertical, kIVertical, kDVertical, kIzVertical, kFFVertical, kMaxOutputVertical, kMinOutputVertical, maxRPMVertical, maxVelVertical, minVelVertical, maxAccVertical, allowedErrVertical;
     private boolean motorsInitalizedForSmartMotion = false;
 
-    private DigitalInput verticalArmMageneticSensor = new DigitalInput(Constants.VirticalArmMagneticSensor);
-    private DigitalInput horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+    private DigitalInput verticalArmBottomMageneticSensor = null;
+    private DigitalInput verticalArmMiddleMageneticSensor = null;
+    private DigitalInput horizontalArmMageneticSensor = null;
 
     private boolean isHorizontalMotorInverted = false;
     private boolean isVerticalMotorInverted = true;
@@ -90,6 +97,10 @@ public class ArmSubsystem extends SubsystemBase
     private double requestedVerticalMotorSpeed = 0.0;
     private double requestedHorizontalArmExtension = 0.0;
     private double requestedVerticalArmExtension = 0.0;
+
+    CorrectableEncoderRevNeoPlusDigitalIoPort verticalArmBottomCorrectableEncoder = null;
+    CorrectableEncoderRevNeoPlusDigitalIoPort verticalArmMiddleCorrectableEncoder = null;
+    CorrectableEncoderRevNeoPlusDigitalIoPort horizontalArmCorrectableEncoder = null;
 
     /* *********************************************************************
     CONSTRUCTORS
@@ -102,13 +113,32 @@ public class ArmSubsystem extends SubsystemBase
 
       // init smart motion and set positions if mag sensors are set
       this.initializeMotorsSmartMotion();
-      boolean isHorizontalArmAtOrBelowLowStop = (this.horizontalArmMageneticSensor.get() == false);
-      boolean isVerticalArmAtOrBelowLowStop = (this.verticalArmMageneticSensor.get() == false);
-      if(isHorizontalArmAtOrBelowLowStop){
-        this.horizontalEncoder.setPosition(0.0);
+
+      if(InstalledHardware.verticalArmBottomSensorInstalled) {
+        verticalArmBottomMageneticSensor = new DigitalInput(Constants.VirticalArmBottomMagneticSensor);
+        verticalArmBottomCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          verticalEncoder,
+          verticalArmBottomMageneticSensor,
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
+          true);
       }
-      if(isVerticalArmAtOrBelowLowStop){
-        this.verticalEncoder.setPosition(0.0);
+
+      if(InstalledHardware.verticalArmMiddleSensorInstalled) {
+        verticalArmMiddleMageneticSensor = new DigitalInput(Constants.VirticalArmMiddleMagneticSensor);
+        verticalArmMiddleCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          verticalEncoder,
+          verticalArmMiddleMageneticSensor,
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
+          false);
+      }
+
+      if(InstalledHardware.horizontalArmSensorInstalled) {
+        horizontalArmMageneticSensor = new DigitalInput(Constants.HorizontalArmMagneticSensor);
+        horizontalArmCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
+          horizontalEncoder,
+          horizontalArmMageneticSensor,
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.horizontalArmSensorPlacementAlongExtensionMeters),
+          true);
       }
 
       CommandScheduler.getInstance().registerSubsystem(this);
@@ -188,19 +218,20 @@ public class ArmSubsystem extends SubsystemBase
     }
 
     /**
-     * Method to confirm if the horizontal arm is at sensor reference position
-     * @return true if the arm is at the sensor reference position
+     * Method to confirm if the horizontal arm has had its encoder ever been reset due to DIO sensor
+     * @return true if the arm motor encoder has been reset due to DIO, else false
      */
-    public boolean isHorizontalArmAtSensorReference(){
-      return (this.horizontalArmMageneticSensor.get() == false);
+    public boolean hasHorizontalArmEncoderBeenResetViaSensor(){
+      return InstalledHardware.horizontalArmSensorInstalled && this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset();
     }
 
     /**
-     * Method to confirm if the vertical arm is at sensor reference position
-     * @return true if the arm is at the sensor reference position
+     * Method to confirm if the vertical arm has had its encoder ever been reset due to DIO sensor
+     * @return true if the arm motor encoder has been reset due to DIO, else false
      */
-    public boolean isVerticalArmAtSensorReference(){
-      return (this.verticalArmMageneticSensor.get() == false);
+    public boolean hasVerticalArmEncoderBeenResetViaSensor(){
+      return (InstalledHardware.verticalArmBottomSensorInstalled && this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset()) || 
+        (InstalledHardware.verticalArmMiddleSensorInstalled && this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
     }
     
     /**
@@ -218,10 +249,10 @@ public class ArmSubsystem extends SubsystemBase
       // magnetic sensor triggered 
       // arm deployed >= limit (e.g., maximumXXXArmExtensionMeters)
       double currentHorizontalExtensionInMeters = this.getCurrentHorizontalArmExtensionInMeters();
-      boolean isHorizontalArmAtOrBelowLowStop = (this.horizontalArmMageneticSensor.get() == false);
+      boolean isHorizontalArmAtOrBelowLowStop = (currentHorizontalExtensionInMeters <= 0.0);
       boolean isHorizontalArmAtOrAboveHighStop = currentHorizontalExtensionInMeters >= maximumHorizontalArmExtensionMeters;
       double currentVerticalExtensionInMeters = this.getCurrentVerticalArmExtensionInMeters();
-      boolean isVerticalArmAtOrBelowLowStop = (this.verticalArmMageneticSensor.get() == false);
+      boolean isVerticalArmAtOrBelowLowStop = (currentVerticalExtensionInMeters <= 0.0);
       boolean isVerticalArmAtOrAboveHighStop = currentVerticalExtensionInMeters >= maximumVerticalArmExtensionMeters;
 
       // if we are in speed mode always set motor speeds using motor set
@@ -230,7 +261,6 @@ public class ArmSubsystem extends SubsystemBase
         // Horizontal
         if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalMotorSpeed < 0.0) {
           this.horizontalMotor.set(0.0);
-          this.horizontalEncoder.setPosition(0.0);
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalMotorSpeed > 0.0) {
           this.horizontalMotor.set(0.0);
@@ -246,7 +276,6 @@ public class ArmSubsystem extends SubsystemBase
         // Vertical
         if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalMotorSpeed < 0.0) {
           this.verticalMotor.set(0.0);
-          this.verticalEncoder.setPosition(0.0);
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
           this.verticalMotor.set(0.0);
@@ -266,7 +295,6 @@ public class ArmSubsystem extends SubsystemBase
         // Horizontal
         if(isHorizontalArmAtOrBelowLowStop && this.requestedHorizontalArmExtension <= 0.0) {
           this.horizontalMotor.set(0.0);
-          this.horizontalEncoder.setPosition(0.0);
         }
         else if(isHorizontalArmAtOrAboveHighStop && this.requestedHorizontalArmExtension >= maximumHorizontalArmExtensionMeters) {
           this.horizontalMotor.set(0.0);
@@ -279,19 +307,18 @@ public class ArmSubsystem extends SubsystemBase
           double frogSpellExtensionDistance = 
             (currentHorizontalExtensionInMeters + this.requestedHorizontalArmExtension) / 2;
           horizontalPidController.setReference(
-            this.convertHorizontalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
+            ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
             ControlType.kSmartMotion);
         }
         else {
           horizontalPidController.setReference(
-            this.convertHorizontalArmExtensionFromMetersToTicks(this.requestedHorizontalArmExtension),
+            ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(this.requestedHorizontalArmExtension),
             ControlType.kSmartMotion);
         }
 
         // Vertical
         if(isVerticalArmAtOrBelowLowStop && this.requestedVerticalArmExtension <= 0.0) {
           this.verticalMotor.set(0.0);
-          this.verticalEncoder.setPosition(0.0);
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalArmExtension >= maximumVerticalArmExtensionMeters) {
           this.verticalMotor.set(0.0);
@@ -301,7 +328,7 @@ public class ArmSubsystem extends SubsystemBase
         }
         else {
           verticalPidController.setReference(
-            this.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
+            ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(this.requestedVerticalArmExtension),
             ControlType.kSmartMotion);
         }
 
@@ -321,7 +348,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param targetPositionTicks - the arms extension distance in ticks
      * @return the distance in meters the arm extension is epected for coresponding ticks
      */
-    private double convertHorizontalArmExtensionFromTicksToMeters(double targetPositionTicks) {
+    private static double convertHorizontalArmExtensionFromTicksToMeters(double targetPositionTicks) {
       return targetPositionTicks / Constants.RevNeoEncoderTicksPerRevolution * horizontalArmMovementInMetersPerMotorRotation;
     }
 
@@ -330,7 +357,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param targetPositionTicks - the arms extension distance in ticks
      * @return the distance in meters the arm extension is epected for coresponding ticks
      */
-    private double convertVerticalArmExtensionFromTicksToMeters(double targetPositionTicks) {
+    private static double convertVerticalArmExtensionFromTicksToMeters(double targetPositionTicks) {
       return targetPositionTicks / Constants.RevNeoEncoderTicksPerRevolution * verticalArmMovementInMetersPerMotorRotation;
     }
 
@@ -339,7 +366,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param targetPositionMeters - the arms extension distance in meters
      * @return the distance in motor encoder ticks epected for the arm extension in meters
      */
-    private double convertHorizontalArmExtensionFromMetersToTicks(double extensionInMeters) {
+    private static double convertHorizontalArmExtensionFromMetersToTicks(double extensionInMeters) {
       return extensionInMeters * Constants.RevNeoEncoderTicksPerRevolution / horizontalArmMovementInMetersPerMotorRotation;
     }
 
@@ -348,7 +375,7 @@ public class ArmSubsystem extends SubsystemBase
      * @param targetPositionMeters - the arms extension distance in meters
      * @return the distance in motor encoder ticks epected for the arm extension in meters
      */
-    private double convertVerticalArmExtensionFromMetersToTicks(double extensionInMeters) {
+    private static double convertVerticalArmExtensionFromMetersToTicks(double extensionInMeters) {
       return extensionInMeters * Constants.RevNeoEncoderTicksPerRevolution / verticalArmMovementInMetersPerMotorRotation;
     }
 
@@ -357,7 +384,9 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
     private double getCurrentHorizontalArmExtensionInMeters() {
-      return this.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalEncoder.getPosition());
+      return InstalledHardware.horizontalArmSensorInstalled ?
+        ArmSubsystem.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalArmCorrectableEncoder.getCurrentEncoderPosition()) :
+        ArmSubsystem.convertHorizontalArmExtensionFromTicksToMeters(this.horizontalEncoder.getPosition());
     }
 
     /**
@@ -365,7 +394,17 @@ public class ArmSubsystem extends SubsystemBase
      * @return the distance in meters the arm is expected to be deployed based on current motor encoder values
      */
     private double getCurrentVerticalArmExtensionInMeters() {
-      return this.convertVerticalArmExtensionFromTicksToMeters(this.verticalEncoder.getPosition());
+
+      // throw low on floor - just need to make sure encoder gets reset in event at low sensor
+      if(InstalledHardware.verticalArmBottomSensorInstalled) {
+        this.verticalArmBottomCorrectableEncoder.getCurrentEncoderPosition();
+      }
+
+      double verticalArmExtension = InstalledHardware.verticalArmMiddleSensorInstalled ?
+        ArmSubsystem.convertVerticalArmExtensionFromTicksToMeters(this.verticalArmMiddleCorrectableEncoder.getCurrentEncoderPosition()) :
+        ArmSubsystem.convertVerticalArmExtensionFromTicksToMeters(this.verticalEncoder.getPosition());
+
+      return verticalArmExtension;
     }
 
     /**
@@ -409,7 +448,8 @@ public class ArmSubsystem extends SubsystemBase
      */
     private void refreshArmPosition() {
       SmartDashboard.putBoolean("horizontalArmSensor", this.horizontalArmMageneticSensor.get());
-      SmartDashboard.putBoolean("VerticalArmSensor", this.verticalArmMageneticSensor.get());
+      SmartDashboard.putBoolean("VerticalArmBottomSensor", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomMageneticSensor.get() : false);
+      SmartDashboard.putBoolean("VerticalArmMiddleSensor", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleMageneticSensor.get() : false);
       SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
