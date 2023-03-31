@@ -55,16 +55,16 @@ public class ArmToReferencePositionCommand extends CommandBase {
         else {
             double verticalSpeed = 0.0;
             double horizontalSpeed = 0.0;
-            boolean horizontalAtSensor = this.armSubsystem.isHorizontalArmAtSensorReference();
-            boolean verticalAtSensor = this.armSubsystem.isVerticalArmAtSensorReference();
-            if(horizontalAtSensor == false) {
+            boolean horizontalEncoderResetViaSensor = this.armSubsystem.hasHorizontalArmEncoderBeenResetViaSensor();
+            boolean verticalEncoderResetViaSensor = this.armSubsystem.hasVerticalArmEncoderBeenResetViaSensor();
+            if(horizontalEncoderResetViaSensor == false) {
                 horizontalSpeed = horizontalRetractSpeed;
             }
-            if(verticalAtSensor == false) {
+            if(verticalEncoderResetViaSensor == false) {
                 verticalSpeed = verticalRetractSpeed;
             }
             this.armSubsystem.setArmSpeeds(horizontalSpeed, verticalSpeed);
-            this.done = horizontalAtSensor && verticalAtSensor;
+            this.done = horizontalEncoderResetViaSensor && verticalEncoderResetViaSensor;
             if(this.done) {
                 System.out.println("ArmToReferencePositionCommand is DONE!");
             }
