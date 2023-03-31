@@ -44,14 +44,14 @@ public class ArmSubsystem extends SubsystemBase
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(8.0); // 8 inches = 0.2032 meters;
+    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(7.5); // 8 inches = 0.2032 meters;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 = 30.125 inches = 0.7652 meters;
     private static final double toleranceHorizontalArmExtensionMeters = 0.003;
 
     private static final double verticalArmBottomSensorPlacementAlongExtensionMeters = Units.inchesToMeters(0.0);
-    private static final double verticalArmMiddleSensorPlacementAlongExtensionMeters = Units.inchesToMeters(6.0); // TODO - figure out this value!!!!!
+    private static final double verticalArmMiddleSensorPlacementAlongExtensionMeters = Units.inchesToMeters(7.5);
     private static final double horizontalArmSensorPlacementAlongExtensionMeters = Units.inchesToMeters(0.0);
 
     // the various geometry aspects of the arm setup // 
@@ -448,8 +448,8 @@ public class ArmSubsystem extends SubsystemBase
      */
     private void refreshArmPosition() {
       SmartDashboard.putBoolean("horizontalArmSensor", this.horizontalArmMageneticSensor.get());
-      SmartDashboard.putBoolean("VerticalArmBottomSensor", this.verticalArmBottomMageneticSensor.get());
-      SmartDashboard.putBoolean("VerticalArmMiddleSensor", this.verticalArmMiddleMageneticSensor.get());
+      SmartDashboard.putBoolean("VerticalArmBottomSensor", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomMageneticSensor.get() : false);
+      SmartDashboard.putBoolean("VerticalArmMiddleSensor", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleMageneticSensor.get() : false);
       SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
