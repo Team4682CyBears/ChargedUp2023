@@ -1,4 +1,4 @@
-// ************************************************************
+// ***********************************************************
 // Bishop Blanchet Robotics
 // Home of the Cybears
 // FRC - Charged Up - 2023
@@ -59,4 +59,9 @@ public class InstalledHardware
 
     // EveryBot Picker Related Hardware
     public static final boolean everyBotPickerInstalled = true;
+
+    // Arm Sensor Related Hardware
+    public static final boolean verticalArmBottomSensorInstalled = false;
+    public static final boolean verticalArmMiddleSensorInstalled = true;
+    public static final boolean horizontalArmSensorInstalled = true;
 }
