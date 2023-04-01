@@ -22,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.EveryBotPickerAutoCommand;
 import frc.robot.commands.ManipulatePickerCommand;

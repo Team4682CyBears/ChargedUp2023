@@ -81,7 +81,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
   private static final int CommandSchedulerPeriodMilliseconds = 20;
-  private final double deltaTimeSeconds = CommandSchedulerPeriodMilliseconds/1000; // 20ms scheduler time tick
+  private final double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
 
