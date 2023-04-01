@@ -153,7 +153,7 @@ public class AutonomousChooser {
         // move arm score into selected position
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
-            //armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
+            armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
             armSequence.addCommands(this.getArmPositionRoutine(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
