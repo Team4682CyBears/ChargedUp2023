@@ -119,6 +119,7 @@ public class ArmSubsystem extends SubsystemBase
         verticalArmBottomCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
           verticalEncoder,
           verticalArmBottomMageneticSensor,
+          0.0,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
           true);
       }
@@ -129,6 +130,7 @@ public class ArmSubsystem extends SubsystemBase
           verticalEncoder,
           verticalArmMiddleMageneticSensor,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2,
           false);
       }
 
@@ -138,6 +140,7 @@ public class ArmSubsystem extends SubsystemBase
           horizontalEncoder,
           horizontalArmMageneticSensor,
           ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.horizontalArmSensorPlacementAlongExtensionMeters),
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.maximumHorizontalArmExtensionMeters) / 2,
           true);
       }
 
@@ -447,9 +450,14 @@ public class ArmSubsystem extends SubsystemBase
      * A function intended to be called from perodic to update the robots centroid position on the field.
      */
     private void refreshArmPosition() {
-      SmartDashboard.putBoolean("horizontalArmSensor", this.horizontalArmMageneticSensor.get());
+      SmartDashboard.putBoolean("HorizontalArmSensor", this.horizontalArmMageneticSensor.get());
       SmartDashboard.putBoolean("VerticalArmBottomSensor", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomMageneticSensor.get() : false);
-      SmartDashboard.putBoolean("VerticalArmMiddleSensor", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleMageneticSensor.get() : false);
+      SmartDashboard.putBoolean("VerticalArmMiddleSensor", this.verticalArmMiddleMageneticSensor.get());
+      SmartDashboard.putBoolean("HorizontalArmSensorEncoderEverReset", this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset());
+      SmartDashboard.putBoolean("VerticalArmBottomSensorEncoderEverReset", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset() : false);
+      SmartDashboard.putBoolean("VerticalArmMiddleSensorEncoderEverReset", this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
+      SmartDashboard.putBoolean("hasHorizontalArmEncoderBeenResetViaSensor", this.hasHorizontalArmEncoderBeenResetViaSensor());
+      SmartDashboard.putBoolean("hasVerticalArmEncoderBeenResetViaSensor",  this.hasVerticalArmEncoderBeenResetViaSensor());
       SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());

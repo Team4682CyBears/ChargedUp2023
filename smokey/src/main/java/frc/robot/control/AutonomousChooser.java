@@ -144,7 +144,7 @@ public class AutonomousChooser {
         // move arm score into selected position
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
-            armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
+            //armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
             armSequence.addCommands(this.getArmPositionRoutine(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
@@ -213,7 +213,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         if (DoBalance == AutonomousBalance.DO_BALANCE){
             command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), toRampTrajectory));
-            command.addCommands(new AutoBalanceCommand(subsystems.getDriveTrainSubsystem()));
+            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         }
         return command;
     }
@@ -221,7 +221,7 @@ public class AutonomousChooser {
         private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getDirectToRampTrajectory()));
-        command.addCommands(new AutoBalanceCommand(subsystems.getDriveTrainSubsystem()));
+        command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 

@@ -51,6 +51,7 @@ public class ArmToReferencePositionCommand extends CommandBase {
         if (timer.hasElapsed(this.retractMaximumTime) || this.done == true) {
           this.done = true;
           this.armSubsystem.setArmSpeeds(0.0, 0.0);
+          System.out.println("Arm to reference: Timer has elapsed!");
         }
         else {
             double verticalSpeed = 0.0;
@@ -66,7 +67,7 @@ public class ArmToReferencePositionCommand extends CommandBase {
             this.armSubsystem.setArmSpeeds(horizontalSpeed, verticalSpeed);
             this.done = horizontalEncoderResetViaSensor && verticalEncoderResetViaSensor;
             if(this.done) {
-                System.out.println("ArmToReferencePositionCommand is DONE!");
+                System.out.println("ArmToReferencePositionCommand is DONE! at timer " + timer.get());
             }
         }
     }
