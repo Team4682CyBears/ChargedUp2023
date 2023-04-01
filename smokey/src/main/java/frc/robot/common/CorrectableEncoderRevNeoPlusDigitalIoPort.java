@@ -11,7 +11,6 @@
 package frc.robot.common;
 
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEncoder {
@@ -27,29 +26,21 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
      * encoder position based on state change of DIO
      * @param revNeoEncoder - the REV Neo motor encoder
      * @param stateDevice - the DIO state device
-     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state 
-     * @param initalizeEncoderPositionOnDioTriggered - when true and the device is currently triggered the initial position will be set 
-     * changes between the current and previous calls into getCurrentEncoderPosition
+     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state changes between the current and previous calls into getCurrentEncoderPosition
+     * @param encoderInitialPositionTicks - the initial set point to use for the motors encoder 
      */
     public CorrectableEncoderRevNeoPlusDigitalIoPort(
         RelativeEncoder revNeoEncoder,
         DigitalInput stateDevice,
         double encoderTicksAtStateChange,
-        double encoderInitialPositionTicks,
-        boolean initalizeEncoderPositionOnDioTriggered) {
+        double encoderInitialPositionTicks) {
 
         revNeoMotorEncoder = revNeoEncoder;
         dioStateDevice = stateDevice;
         encoderTicksAtStateChangeSetPoint = encoderTicksAtStateChange;
 
         lastState = dioStateDevice.get();
-
         this.revNeoMotorEncoder.setPosition(encoderInitialPositionTicks);
-
-        if(initalizeEncoderPositionOnDioTriggered == true && lastState == false) {
-            this.revNeoMotorEncoder.setPosition(this.encoderTicksAtStateChangeSetPoint);
-            motorEncoderPositionReset = true;
-        }
     }
 
     /**

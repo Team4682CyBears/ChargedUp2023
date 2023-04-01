@@ -23,9 +23,7 @@ public class ArmToReferencePositionCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private Timer timer = new Timer();
     private boolean done = false;
-    private final double retractMaximumTime = 3.0;
-    private final double horizontalRetractSpeed = -1.0;
-    private final double verticalRetractSpeed = -1.0;
+    private final double referenceMaximumTime = 3.0;
 
     /**
      * The constructor to create a default command for the arm subsystem.
@@ -48,27 +46,16 @@ public class ArmToReferencePositionCommand extends CommandBase {
     @Override
     public void execute() {
 
-        if (timer.hasElapsed(this.retractMaximumTime) || this.done == true) {
-          this.done = true;
-          this.armSubsystem.setArmSpeeds(0.0, 0.0);
-          System.out.println("Arm to reference: Timer has elapsed!");
+        if (armSubsystem.haveArmsFoundSensorReset()) {
+            this.done = true;
+            System.out.println("Arm to reference: Arms Found Sensor Reset!  Time (seconds) == " + timer.get());
+        }
+        else if(timer.hasElapsed(this.referenceMaximumTime)) {
+            this.done = true;
+            System.out.println("Arm to reference: Timer has elapsed!  Time (seconds) == " + timer.get());
         }
         else {
-            double verticalSpeed = 0.0;
-            double horizontalSpeed = 0.0;
-            boolean horizontalEncoderResetViaSensor = this.armSubsystem.hasHorizontalArmEncoderBeenResetViaSensor();
-            boolean verticalEncoderResetViaSensor = this.armSubsystem.hasVerticalArmEncoderBeenResetViaSensor();
-            if(horizontalEncoderResetViaSensor == false) {
-                horizontalSpeed = horizontalRetractSpeed;
-            }
-            if(verticalEncoderResetViaSensor == false) {
-                verticalSpeed = verticalRetractSpeed;
-            }
-            this.armSubsystem.setArmSpeeds(horizontalSpeed, verticalSpeed);
-            this.done = horizontalEncoderResetViaSensor && verticalEncoderResetViaSensor;
-            if(this.done) {
-                System.out.println("ArmToReferencePositionCommand is DONE! at timer " + timer.get());
-            }
+            armSubsystem.moveArmsToSensorReset();
         }
     }
 
@@ -76,7 +63,8 @@ public class ArmToReferencePositionCommand extends CommandBase {
     public void end(boolean interrupted) {
         this.armSubsystem.setArmSpeeds(0.0, 0.0);
         if(interrupted) {
-          done = true;
+            done = true;
+            System.out.println("Arm to reference: Interrupted!  Time (seconds) == " + timer.get());
         }
     }
     

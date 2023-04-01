@@ -67,6 +67,11 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 1.0 inches
     private static final double neoMotorSpeedReductionFactorVeryCloseToStop = 0.25; 
 
+    private static final double verticalArmSensorResetRetractSpeed = -0.7;
+    private static final double verticalArmSensorResetExtendSpeed = 1.0;
+    private static final double horizontalArmSensorResetRetractSpeed = -0.7;
+    private static final double horizontalArmSensorResetExtendSpeed = 1.0;
+
     // TODO - use something less than 1.0 for testing
     private static final double neoMotorSpeedReductionFactor = 1.0;
 
@@ -119,9 +124,8 @@ public class ArmSubsystem extends SubsystemBase
         verticalArmBottomCorrectableEncoder = new CorrectableEncoderRevNeoPlusDigitalIoPort(
           verticalEncoder,
           verticalArmBottomMageneticSensor,
-          0.0,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
-          true);
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2);
       }
 
       if(InstalledHardware.verticalArmMiddleSensorInstalled) {
@@ -130,8 +134,7 @@ public class ArmSubsystem extends SubsystemBase
           verticalEncoder,
           verticalArmMiddleMageneticSensor,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
-          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2,
-          false);
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2);
       }
 
       if(InstalledHardware.horizontalArmSensorInstalled) {
@@ -140,8 +143,7 @@ public class ArmSubsystem extends SubsystemBase
           horizontalEncoder,
           horizontalArmMageneticSensor,
           ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.horizontalArmSensorPlacementAlongExtensionMeters),
-          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.maximumHorizontalArmExtensionMeters) / 2,
-          true);
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.maximumHorizontalArmExtensionMeters) / 2);
       }
 
       CommandScheduler.getInstance().registerSubsystem(this);
@@ -221,20 +223,59 @@ public class ArmSubsystem extends SubsystemBase
     }
 
     /**
-     * Method to confirm if the horizontal arm has had its encoder ever been reset due to DIO sensor
-     * @return true if the arm motor encoder has been reset due to DIO, else false
+     * Method to confirm both arms have found their sensor reset positions
+     * @return true if both arms have moved past their sensor reset positions
      */
-    public boolean hasHorizontalArmEncoderBeenResetViaSensor(){
-      return InstalledHardware.horizontalArmSensorInstalled && this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset();
+    public boolean haveArmsFoundSensorReset(){
+      return ( InstalledHardware.horizontalArmSensorInstalled && this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset() ) &&
+      (
+        (InstalledHardware.verticalArmBottomSensorInstalled && this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset()) || 
+        (InstalledHardware.verticalArmMiddleSensorInstalled && this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset())
+      );
     }
 
     /**
-     * Method to confirm if the vertical arm has had its encoder ever been reset due to DIO sensor
-     * @return true if the arm motor encoder has been reset due to DIO, else false
+     * Method to move both arms toward the sensor reset positions of each arm
+     * will automatically stop the arm movements when sensor reset has occurred
      */
-    public boolean hasVerticalArmEncoderBeenResetViaSensor(){
-      return (InstalledHardware.verticalArmBottomSensorInstalled && this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset()) || 
-        (InstalledHardware.verticalArmMiddleSensorInstalled && this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
+    public void moveArmsToSensorReset() {
+      
+      // get ready for the arm drive speeds
+      double horizontalSpeed = 0.0;
+      double verticalSpeed = 0.0;
+
+      // first horizontal arm
+      if(InstalledHardware.horizontalArmSensorInstalled && // the sensor must be present to ever get any horizontal speed other than zero
+         this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset() == false) { // when the motor encoder has been reset, no need to move the arm
+          // extend if the sensor is currently triggered
+          // retract if the sensor is NOT currently triggered
+          horizontalSpeed =
+            (this.horizontalArmMageneticSensor.get() == false) ? // sensor light is illuminated when .get returns false
+            ArmSubsystem.horizontalArmSensorResetExtendSpeed :
+            ArmSubsystem.horizontalArmSensorResetRetractSpeed;
+      }
+
+      // second vertical arm
+      if(InstalledHardware.verticalArmMiddleSensorInstalled && // sensor must be present to get any speed
+         this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset() == false) { // when the motor encoder has been reset, no need to move the arm
+          // extend if the sensor is currently triggered
+          // retract if the sensor is NOT currently triggered
+          verticalSpeed =
+            (this.verticalArmMiddleMageneticSensor.get() == false) ? // sensor light is illuminated when .get returns false
+            ArmSubsystem.verticalArmSensorResetExtendSpeed :
+            ArmSubsystem.verticalArmSensorResetRetractSpeed;
+      }
+      else if(InstalledHardware.verticalArmBottomSensorInstalled && // sensor must be present to get any speed
+        this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset() == false) { // when the motor encoder has been reset, no need to move the arm
+          // extend if the sensor is currently triggered
+          // retract if the sensor is NOT currently triggered
+          verticalSpeed =
+            (this.verticalArmBottomMageneticSensor.get() == false) ? // sensor light is illuminated when .get returns false
+            ArmSubsystem.verticalArmSensorResetExtendSpeed :
+            ArmSubsystem.verticalArmSensorResetRetractSpeed;
+      }
+
+      this.setArmSpeeds(horizontalSpeed, verticalSpeed);
     }
     
     /**
@@ -450,14 +491,13 @@ public class ArmSubsystem extends SubsystemBase
      * A function intended to be called from perodic to update the robots centroid position on the field.
      */
     private void refreshArmPosition() {
-      SmartDashboard.putBoolean("HorizontalArmSensor", this.horizontalArmMageneticSensor.get());
+      SmartDashboard.putBoolean("HorizontalArmSensor", InstalledHardware.horizontalArmSensorInstalled ? this.horizontalArmMageneticSensor.get() : false);
       SmartDashboard.putBoolean("VerticalArmBottomSensor", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomMageneticSensor.get() : false);
-      SmartDashboard.putBoolean("VerticalArmMiddleSensor", this.verticalArmMiddleMageneticSensor.get());
-      SmartDashboard.putBoolean("HorizontalArmSensorEncoderEverReset", this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset());
+      SmartDashboard.putBoolean("VerticalArmMiddleSensor", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleMageneticSensor.get() : false);
+      SmartDashboard.putBoolean("HorizontalArmSensorEncoderEverReset", InstalledHardware.horizontalArmSensorInstalled ? this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset() : false);
       SmartDashboard.putBoolean("VerticalArmBottomSensorEncoderEverReset", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset() : false);
-      SmartDashboard.putBoolean("VerticalArmMiddleSensorEncoderEverReset", this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
-      SmartDashboard.putBoolean("hasHorizontalArmEncoderBeenResetViaSensor", this.hasHorizontalArmEncoderBeenResetViaSensor());
-      SmartDashboard.putBoolean("hasVerticalArmEncoderBeenResetViaSensor",  this.hasVerticalArmEncoderBeenResetViaSensor());
+      SmartDashboard.putBoolean("VerticalArmMiddleSensorEncoderEverReset", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset() : false);
+      SmartDashboard.putBoolean("haveArmsFoundSensorReset", this.haveArmsFoundSensorReset());
       SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
       SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
       SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
