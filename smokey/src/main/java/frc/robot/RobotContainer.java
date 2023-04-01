@@ -17,12 +17,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.ArmToLocationCommand;
+import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.control.AutonomousChooser;
 import frc.robot.control.InstalledHardware;
 import frc.robot.control.ManualInputInterfaces;
@@ -87,6 +90,8 @@ public class RobotContainer {
       new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.0, 3.0));
     SmartDashboard.putData("Drive Forward with rotation", 
       new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.2, 3.0));
+    SmartDashboard.putData("Arms to reference position", 
+      new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
   }
  
   /**

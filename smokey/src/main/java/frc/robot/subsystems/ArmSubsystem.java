@@ -18,6 +18,8 @@ import com.revrobotics.CANSparkMax.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,7 +32,7 @@ import java.util.*;
 
 //import javax.lang.model.util.ElementScanner14;
 
-public class ArmSubsystem extends SubsystemBase
+public class ArmSubsystem extends SubsystemBase implements Sendable
 {
     /* *********************************************************************
     CONSTANTS
@@ -44,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase
     
     // the extension distances of the arms - in meters
     private static final double minimumVerticalArmExtensionMeters = 0.0;
-    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(7.5); // 8 inches = 0.2032 meters;
+    private static final double maximumVerticalArmExtensionMeters = Units.inchesToMeters(7.75); // 8 inches = 0.2032 meters;
     private static final double toleranceVerticalArmExtensionMeters = 0.001;
     private static final double minimumHorizontalArmExtensionMeters = 0.0;
     private static final double maximumHorizontalArmExtensionMeters = Units.inchesToMeters(70.0 - 40.25); // 70.0 - 40.25 = 30.125 inches = 0.7652 meters;
@@ -225,6 +227,36 @@ public class ArmSubsystem extends SubsystemBase
       return this.inSpeedMode == false && this.movementWithinTolerance;
     }
 
+    /** Method to send ArmSubsystem telemetry to shuffleboard*/
+    @Override
+    public void initSendable(SendableBuilder builder) {
+      if(InstalledHardware.horizontalArmSensorInstalled){
+        SmartDashboard.putBoolean("HorizontalArmSensor",  this.horizontalArmMageneticSensor.get());
+        SmartDashboard.putBoolean("HorizontalArmSensorEncoderEverReset", this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset());
+      }
+      if(InstalledHardware.verticalArmBottomSensorInstalled){
+        SmartDashboard.putBoolean("VerticalArmBottomSensor", this.verticalArmBottomMageneticSensor.get());
+        SmartDashboard.putBoolean("VerticalArmBottomSensorEncoderEverReset", this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset());
+      }
+      if(InstalledHardware.verticalArmMiddleSensorInstalled) {
+        SmartDashboard.putBoolean("VerticalArmMiddleSensor",  this.verticalArmMiddleMageneticSensor.get());
+        SmartDashboard.putBoolean("VerticalArmMiddleSensorEncoderEverReset", this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset());
+      }
+      SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
+      SmartDashboard.putNumber("ExtensionVerticalArmMeters", this.getCurrentVerticalArmExtensionInMeters());
+
+      // removing for now as currently unnecessary
+      /* 
+      SmartDashboard.putBoolean("haveArmsFoundSensorReset", this.haveArmsFoundSensorReset());
+      SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
+      SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
+      SmartDashboard.putNumber("ArmAngleRadians", this.getCurrentHorizontalArmAngleRadians());
+      SmartDashboard.putNumber("ArmAngleDegrees", this.getCurrentHorizontalArmAngleDegrees());
+      SmartDashboard.putNumber("ArmHeightMetersZ", this.getCurrentArmsHeightInMeters());
+      SmartDashboard.putNumber("ArmDistanceMetersY", this.getCurrentArmsDistanceInMeters());
+      */
+    }
+
     /**
      * Method to confirm both arms have found their sensor reset positions
      * @return true if both arms have moved past their sensor reset positions
@@ -288,8 +320,7 @@ public class ArmSubsystem extends SubsystemBase
     public void periodic() {
 
       // confirm that the smart motion is setup - no-op after it is setup first time
-      this.initializeMotorsSmartMotion();
-      this.refreshArmPosition();
+      this.initializeMotorsSmartMotion();      
 
       // determine if the movement is in the stop range
       // stop range implies any of the following:
@@ -488,27 +519,6 @@ public class ArmSubsystem extends SubsystemBase
      */
     private double getCurrentArmsDistanceInMeters() {
       return Math.cos(this.getCurrentHorizontalArmAngleRadians()) * (lengthMinimumHorizontalArmMeters + this.getCurrentHorizontalArmExtensionInMeters());
-    }
-
-    /**
-     * A function intended to be called from perodic to update the robots centroid position on the field.
-     */
-    private void refreshArmPosition() {
-      SmartDashboard.putBoolean("HorizontalArmSensor", InstalledHardware.horizontalArmSensorInstalled ? this.horizontalArmMageneticSensor.get() : false);
-      SmartDashboard.putBoolean("VerticalArmBottomSensor", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomMageneticSensor.get() : false);
-      SmartDashboard.putBoolean("VerticalArmMiddleSensor", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleMageneticSensor.get() : false);
-      SmartDashboard.putBoolean("HorizontalArmSensorEncoderEverReset", InstalledHardware.horizontalArmSensorInstalled ? this.horizontalArmCorrectableEncoder.getMotorEncoderEverReset() : false);
-      SmartDashboard.putBoolean("VerticalArmBottomSensorEncoderEverReset", InstalledHardware.verticalArmBottomSensorInstalled ? this.verticalArmBottomCorrectableEncoder.getMotorEncoderEverReset() : false);
-      SmartDashboard.putBoolean("VerticalArmMiddleSensorEncoderEverReset", InstalledHardware.verticalArmMiddleSensorInstalled ? this.verticalArmMiddleCorrectableEncoder.getMotorEncoderEverReset() : false);
-      SmartDashboard.putBoolean("haveArmsFoundSensorReset", this.haveArmsFoundSensorReset());
-      SmartDashboard.putNumber("HorizontalArmMotorTicks", this.horizontalEncoder.getPosition());
-      SmartDashboard.putNumber("VerticalArmMotorTicks", this.verticalEncoder.getPosition());
-      SmartDashboard.putNumber("ExtensionHorizontalArmMeters", this.getCurrentHorizontalArmExtensionInMeters());
-      SmartDashboard.putNumber("ExtensionVerticalArmMeters", this.getCurrentVerticalArmExtensionInMeters());
-      SmartDashboard.putNumber("ArmAngleRadians", this.getCurrentHorizontalArmAngleRadians());
-      SmartDashboard.putNumber("ArmAngleDegrees", this.getCurrentHorizontalArmAngleDegrees());
-      SmartDashboard.putNumber("ArmHeightMetersZ", this.getCurrentArmsHeightInMeters());
-      SmartDashboard.putNumber("ArmDistanceMetersY", this.getCurrentArmsDistanceInMeters());
     }
 
     // a method devoted to establishing proper startup of the jaws motors
