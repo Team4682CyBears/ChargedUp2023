@@ -11,6 +11,7 @@
 package frc.robot.control;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -40,8 +41,15 @@ public class AutonomousChooser {
     private SubsystemCollection subsystems;
     private final SendableChooser<AutonomousPath> autonomousPathChooser = new SendableChooser<>();
     private final SendableChooser<AutonomousBalance> balanceChooser = new SendableChooser<>();
-    private final SendableChooser<ScoringPosition> scoreHeight = new SendableChooser<>();
+    private final SendableChooser<ScoringPosition> scoreHeightChooser = new SendableChooser<>();
     private Trajectories trajectories;
+    private Command leftRoutine;
+    private Command rightRoutine;
+    private Command middleRoutine;
+    private Command directRoutine;
+    private Command node2Routine;
+    private Command node8Routine;
+    private Command testScoreRoutine;
     
     //Robot to travel in the negative x direction
     //want to make sure snout is deelply engaged in the node, so overdrive by tolerence amount
@@ -70,12 +78,21 @@ public class AutonomousChooser {
             balanceChooser.setDefaultOption("Do Balance", AutonomousBalance.DO_BALANCE);
             balanceChooser.addOption("Do NOT Balance", AutonomousBalance.DO_NOT_BALANCE);
     
-            scoreHeight.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
-            scoreHeight.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
+            scoreHeightChooser.setDefaultOption("Score High", ScoringPosition.SCORE_HIGH);
+            scoreHeightChooser.addOption("Score Middle", ScoringPosition.SCORE_MIDDLE);
     
             SmartDashboard.putData(autonomousPathChooser);
             SmartDashboard.putData(balanceChooser);
-            SmartDashboard.putData(scoreHeight);
+            SmartDashboard.putData(scoreHeightChooser);
+
+            // construct all the commands here so that they are ready when called. 
+            this.leftRoutine = getLeftRoutine();
+            this.rightRoutine = getRightRoutine();
+            this.middleRoutine = getMiddleRoutine();
+            this.directRoutine = getDirectRoutine();
+            this.node2Routine = getNode2Routine();
+            this.node8Routine = getNode8Routine();
+            this.testScoreRoutine = this.getScoreRoutine(trajectories.getNode5Position(), trajectories.getConfig());
         }
         else {
             System.out.println(">>>> NO auto trajectories because no drive train subsystem");
@@ -90,19 +107,19 @@ public class AutonomousChooser {
     public Command getCommand() {
         switch (autonomousPathChooser.getSelected()) {
             case LEFT_PATH :
-                return this.getLeftRoutine();
+                return this.leftRoutine;
             case RIGHT_PATH :
-                return this.getRightRoutine();
+                return this.rightRoutine;
             case MIDDLE_PATH :
-                return this.getMiddleRoutine();
+                return this.middleRoutine;
             case DIRECT_PATH :
-                return this.getDirectRoutine();
+                return this.directRoutine;
             case NODE2_ROUTINE:
-                return this.getNode2Routine();
+                return this.node2Routine;
             case NODE8_ROUTINE:
-                return this.getNode8Routine();
+                return this.node8Routine;
             case TEST_NODE5_SCORE_ROUTINE:
-                return this.getScoreRoutine(trajectories.getNode5Position(), trajectories.getConfig());
+                return this.testScoreRoutine;
         }
         return new InstantCommand();
     }
@@ -122,24 +139,17 @@ public class AutonomousChooser {
         IntoNodeWaypoints.add(NodePosition);
         IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         // use the default config for IntoNodeTrajectory
-        Timer timer = new Timer();
-        timer.reset();
-        timer.start();
         Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             IntoNodeWaypoints, 
             subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
-        System.out.println("Generating into node trajectory.. ellapsed time: " + timer.get());
 
         ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
         OutOfNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         OutOfNodeWaypoints.add(NodePosition);
         // use the supplied config for OutOfNodeTrajectory
-        timer.reset();
-        timer.start();
         Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             OutOfNodeWaypoints, 
             config);
-        System.out.println("Generating out of node trajectory.. ellapsed time: " + timer.get());
 
         SequentialCommandGroup command = new SequentialCommandGroup();
         setRobotPose(command, NodePosition);
@@ -154,7 +164,7 @@ public class AutonomousChooser {
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
             armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
-            armSequence.addCommands(this.getArmPositionRoutine(scoreHeight.getSelected()));
+            armSequence.addCommands(this.getArmPositionRoutine(scoreHeightChooser));
             intoNodeAndHighScore.addCommands(armSequence);
         }
 
@@ -194,40 +204,45 @@ public class AutonomousChooser {
     /**
      * A method to move the arm to the specified scoring position. 
      * Caller is responsible for checking that the Arm Subsystem is installed. 
-     * @param height
+     * @param scoreHeightChooser
      * @return command
      */
-    private Command getArmPositionRoutine (ScoringPosition height){
-        if (height == ScoringPosition.SCORE_HIGH){
-            return new ArmToLocationCommand(
-                subsystems.getArmSubsystem(),
-                ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE,
-                subsystems.getManualInputInterfaces());
-        }
-        else if (height == ScoringPosition.SCORE_MIDDLE){
-            return new ArmToLocationCommand(
-                subsystems.getArmSubsystem(),
-                ArmToLocationCommand.ArmLocation.ARM_MED_SCORE,
-                subsystems.getManualInputInterfaces());
-        }
-        return new InstantCommand();
+    private Command getArmPositionRoutine (SendableChooser<ScoringPosition> scoreHeightChooser){
+        return new SelectCommand(
+            Map.ofEntries(
+              Map.entry(ScoringPosition.SCORE_HIGH, 
+              new ArmToLocationCommand(
+                  subsystems.getArmSubsystem(),
+                  ArmToLocationCommand.ArmLocation.ARM_HIGH_SCORE,
+                  subsystems.getManualInputInterfaces())),
+              Map.entry(ScoringPosition.SCORE_MIDDLE,
+              new ArmToLocationCommand(
+                  subsystems.getArmSubsystem(),
+                  ArmToLocationCommand.ArmLocation.ARM_MED_SCORE,
+                  subsystems.getManualInputInterfaces()))),
+            scoreHeightChooser::getSelected);
     }
 
     /**
      * Builds a command list for the balance routine, or will not if we toggle it so
-     * @param DoBalance the enum for wether the balance routine should be run
+     * @param balanceChooser
+     * @param trajectory - the trajectory onto the ramp
      * @return command
      */
-    private Command getBalanceRoutine (AutonomousBalance DoBalance, Trajectory toRampTrajectory){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-        if (DoBalance == AutonomousBalance.DO_BALANCE){
-            command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), toRampTrajectory));
-            command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
-        }
-        return command;
+    private Command getBalanceRoutine (SendableChooser<AutonomousBalance> balanceChooser, Trajectory toRampTrajectory){
+        return new SelectCommand(
+            Map.ofEntries(
+                Map.entry(AutonomousBalance.DO_BALANCE, 
+                new SequentialCommandGroup(
+                    new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), toRampTrajectory),
+                    new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()))),
+                Map.entry(AutonomousBalance.DO_NOT_BALANCE,
+                new InstantCommand())
+            ), 
+            balanceChooser::getSelected);
     }
 
-        private Command getDirectRoutine(){
+    private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getDirectToRampTrajectory()));
         command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
@@ -237,7 +252,7 @@ public class AutonomousChooser {
     private Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode1Position(), trajectories.getLeftTrajectory()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getLeftToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
@@ -245,28 +260,28 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectoryPart1()));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getMiddleTrajectoryPart2()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getMiddlePathBehindToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getMiddlePathBehindToOntoRampTrajectory()));
         return command;
     }
 
     private Command getNode2Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode2Position(), trajectories.getNode2Trajectory()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getLeftToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
     private Command getNode8Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode8Position(), trajectories.getNode8Trajectory()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getRightToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
 
     private Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode9Position(), trajectories.getRightTrajectory()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getRightToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
 
