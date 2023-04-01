@@ -33,9 +33,11 @@ import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveFinePlacementCommand;
 import frc.robot.commands.DriveRampDownSpeedCommand;
 import frc.robot.commands.DriveRampUpSpeedCommand;
+import frc.robot.commands.DriveTimeCommand;
 
 public class ManualInputInterfaces {
 
@@ -273,26 +275,26 @@ public class ManualInputInterfaces {
               "increment power factor")
             )
           );
-        // right trigger press will put drivetrain in immoveable stance
+        // start press will put drivetrain in immoveable stance
         // DO NOT require drivetrainSubsystem here.  We need the default command to continue to decel the robot.    
-        this.driverController.rightTrigger().onTrue(
+        this.driverController.start().onTrue(
           new ParallelCommandGroup(
             new InstantCommand(
               () -> subsystemCollection.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.IMMOVABLE_STANCE)
             ),
             new ButtonPressCommand(
-            "driverController.rightTrigger()",
+            "driverController.start()",
             "immoveable stance")
           )
         );
-        // right trigger de-press will put drivetrain in normal drive mode  
-        this.driverController.rightTrigger().onFalse(
+        // start button release will put drivetrain in normal drive mode  
+        this.driverController.start().onFalse(
           new ParallelCommandGroup(
             new InstantCommand(
               () -> subsystemCollection.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.NORMAL_DRIVING)
             ),
             new ButtonPressCommand(
-            "driverController.rightTrigger()",
+            "driverController.start()",
             "normal driving")
           )
         );
@@ -314,6 +316,18 @@ public class ManualInputInterfaces {
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp up to default speed")
+          )
+        );
+        // start press will put drivetrain into ultra fine yaw mode
+        // DO NOT require drivetrainSubsystem here.  We need the default command to continue to decel the robot.    
+        this.driverController.rightTrigger().whileTrue(
+          new ParallelCommandGroup(
+            new InstantCommand(
+              () -> subsystemCollection.getDriveTrainSubsystem().setSwerveDriveMode(SwerveDriveMode.IMMOVABLE_STANCE)
+            ),
+            new ButtonPressCommand(
+            "driverController.rightTrigger()",
+            "ultra fine yaw mode")
           )
         );
       }
