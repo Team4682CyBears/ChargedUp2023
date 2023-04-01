@@ -11,7 +11,6 @@
 package frc.robot.common;
 
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEncoder {
@@ -27,16 +26,19 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
      * encoder position based on state change of DIO
      * @param revNeoEncoder - the REV Neo motor encoder
      * @param stateDevice - the DIO state device
-     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state 
-     * @param initalizeEncoderPositionOnDioTriggered - when true and the device is currently triggered the initial position will be set 
+     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state
      * changes between the current and previous calls into getCurrentEncoderPosition
+     * @param sensorTriggeredEncoderInitialPositionTicks - the initial set point to use for the motors
+     * encoder when sensor IS triggered to start 
+     * @param sensorNotTriggeredEncoderInitialPositionTicks - the initial set point to use for the motors
+     * encoder when sensor is NOT triggered to start 
      */
     public CorrectableEncoderRevNeoPlusDigitalIoPort(
         RelativeEncoder revNeoEncoder,
         DigitalInput stateDevice,
         double encoderTicksAtStateChange,
-        double encoderInitialPositionTicks,
-        boolean initalizeEncoderPositionOnDioTriggered) {
+        double sensorTriggeredEncoderInitialPositionTicks,
+        double sensorNotTriggeredEncoderInitialPositionTicks) {
 
         revNeoMotorEncoder = revNeoEncoder;
         dioStateDevice = stateDevice;
@@ -44,11 +46,12 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
 
         lastState = dioStateDevice.get();
 
-        this.revNeoMotorEncoder.setPosition(encoderInitialPositionTicks);
-
-        if(initalizeEncoderPositionOnDioTriggered == true && lastState == false) {
-            this.revNeoMotorEncoder.setPosition(this.encoderTicksAtStateChangeSetPoint);
-            motorEncoderPositionReset = true;
+        // dio state of false is 'triggered' (as in LED is illuminated for 2023 sensors)
+        if(lastState == false) {
+            this.revNeoMotorEncoder.setPosition(sensorTriggeredEncoderInitialPositionTicks);
+        }
+        else {
+            this.revNeoMotorEncoder.setPosition(sensorNotTriggeredEncoderInitialPositionTicks);
         }
     }
 

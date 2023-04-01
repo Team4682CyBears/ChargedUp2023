@@ -190,64 +190,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "0,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/ArmAngleDegrees",
-              "_title": "SmartDashboard/ArmAngleDegrees",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
-            }
-          },
-          "2,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/ArmAngleRadians",
-              "_title": "SmartDashboard/ArmAngleRadians",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
-            }
-          },
-          "0,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ArmDistanceMetersY",
-              "_title": "SmartDashboard/ArmDistanceMetersY",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ArmHeightMetersZ",
-              "_title": "SmartDashboard/ArmHeightMetersZ",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "0,3": {
             "size": [
               3,
@@ -268,7 +210,7 @@
               "Visible data/SmartDashboard/EveryBotMotorOvercurrentProtection": true
             }
           },
-          "5,3": {
+          "0,2": {
             "size": [
               2,
               1
@@ -281,7 +223,7 @@
               "_showGlyph": false
             }
           },
-          "7,3": {
+          "2,2": {
             "size": [
               2,
               1
@@ -294,7 +236,7 @@
               "_showGlyph": false
             }
           },
-          "4,1": {
+          "0,1": {
             "size": [
               2,
               1
@@ -309,7 +251,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "4,0": {
+          "0,0": {
             "size": [
               2,
               1
@@ -324,7 +266,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,0": {
+          "2,0": {
             "size": [
               2,
               1
@@ -339,37 +281,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/hasHorizontalArmEncoderBeenResetViaSensor",
-              "_title": "SmartDashboard/hasHorizontalArmEncoderBeenResetViaSensor",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "8,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/hasVerticalArmEncoderBeenResetViaSensor",
-              "_title": "SmartDashboard/hasVerticalArmEncoderBeenResetViaSensor",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,1": {
+          "2,1": {
             "size": [
               2,
               1
@@ -383,15 +295,28 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "4,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///SmartDashboard/Arms to reference position",
+              "_title": "SmartDashboard/Arms to reference position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": 37.0,
-    "y": 0.0,
-    "width": 1551.0,
-    "height": 828.0
+    "x": -7.333333492279053,
+    "y": -7.333333492279053,
+    "width": 1518.6666259765625,
+    "height": 969.3333129882812
   }
 }

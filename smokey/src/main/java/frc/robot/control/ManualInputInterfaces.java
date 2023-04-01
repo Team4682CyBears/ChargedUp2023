@@ -34,6 +34,7 @@ import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
+import frc.robot.commands.DriveFinePlacementCommand;
 import frc.robot.commands.DriveRampDownSpeedCommand;
 import frc.robot.commands.DriveRampUpSpeedCommand;
 
@@ -223,6 +224,20 @@ public class ManualInputInterfaces {
               "auto balance")
             )
           );
+
+          this.driverController.povRight().whileTrue(
+            new DriveFinePlacementCommand(
+              localDrive, 
+              -1 * Constants.FinePlacementRotationalVelocity
+              )
+            ); 
+          
+          this.driverController.povLeft().whileTrue(
+            new DriveFinePlacementCommand(
+              localDrive, 
+              Constants.FinePlacementRotationalVelocity
+              )
+            ); 
     }
 
       // x button press will stop all      
@@ -285,7 +300,8 @@ public class ManualInputInterfaces {
         // left trigger press will ramp down drivetrain to reduced speed mode 
         this.driverController.leftTrigger().onTrue(
           new ParallelCommandGroup(
-            new DriveRampDownSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new InstantCommand(subsystemCollection.getDriveTrainPowerSubsystem()::setReducedPowerReductionFactor,
+            subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp down to reduced speed")
@@ -294,7 +310,8 @@ public class ManualInputInterfaces {
         // left trigger de-press will ramp up drivetrain to max speed
         this.driverController.leftTrigger().onFalse(
           new ParallelCommandGroup(
-            new DriveRampUpSpeedCommand(subsystemCollection.getDriveTrainPowerSubsystem()),
+            new InstantCommand(subsystemCollection.getDriveTrainPowerSubsystem()::resetPowerReductionFactor,
+            subsystemCollection.getDriveTrainPowerSubsystem()),
             new ButtonPressCommand(
             "driverController.leftTrigger()",
             "ramp up to default speed")

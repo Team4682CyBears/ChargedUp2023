@@ -11,6 +11,7 @@
 package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -90,6 +91,13 @@ public final class Constants {
     // *************************************** 
     // For auto constants
     public static final double snoutDepth = Units.inchesToMeters(2.75);
+
+    //*****************************************
+    // Fine placement constants
+    // Center of rotation for fine placement
+    public static final Translation2d RobotFrontRotationalCenter = new Translation2d(DRIVETRAIN_WHEELBASE_METERS/2 + snoutDepth + Units.inchesToMeters(10), 0.0);
+    // velocity for fine placement
+    public static final double FinePlacementRotationalVelocity = 0.7;
 
     // *******************************************************************
     // arm constants - preset positions
