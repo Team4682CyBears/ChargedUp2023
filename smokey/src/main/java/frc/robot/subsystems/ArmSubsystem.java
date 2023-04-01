@@ -125,7 +125,8 @@ public class ArmSubsystem extends SubsystemBase
           verticalEncoder,
           verticalArmBottomMageneticSensor,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmBottomSensorPlacementAlongExtensionMeters),
-          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2);
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.minimumVerticalArmExtensionMeters - 0.05), // assume below the reference zero point by 5 cm (~2 inches)
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters + 0.05)); // assume above the max travel by 5 cm (~2 inches)
       }
 
       if(InstalledHardware.verticalArmMiddleSensorInstalled) {
@@ -134,7 +135,8 @@ public class ArmSubsystem extends SubsystemBase
           verticalEncoder,
           verticalArmMiddleMageneticSensor,
           ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.verticalArmMiddleSensorPlacementAlongExtensionMeters),
-          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters) / 2);
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.minimumVerticalArmExtensionMeters - 0.05), // assume below the reference zero point by 5 cm (~2 inches)
+          ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(ArmSubsystem.maximumVerticalArmExtensionMeters + 0.05)); // assume above the max travel by 5 cm (~2 inches)
       }
 
       if(InstalledHardware.horizontalArmSensorInstalled) {
@@ -143,7 +145,8 @@ public class ArmSubsystem extends SubsystemBase
           horizontalEncoder,
           horizontalArmMageneticSensor,
           ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.horizontalArmSensorPlacementAlongExtensionMeters),
-          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.maximumHorizontalArmExtensionMeters) / 2);
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.minimumHorizontalArmExtensionMeters - 0.05), // assume below the reference zero point by 5 cm (~2 inches)
+          ArmSubsystem.convertHorizontalArmExtensionFromMetersToTicks(ArmSubsystem.maximumHorizontalArmExtensionMeters + 0.05)); // assume above the max travel by 5 cm (~2 inches)
       }
 
       CommandScheduler.getInstance().registerSubsystem(this);

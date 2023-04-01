@@ -26,21 +26,33 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
      * encoder position based on state change of DIO
      * @param revNeoEncoder - the REV Neo motor encoder
      * @param stateDevice - the DIO state device
-     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state changes between the current and previous calls into getCurrentEncoderPosition
-     * @param encoderInitialPositionTicks - the initial set point to use for the motors encoder 
+     * @param encoderTicksAtStateChange - the set point to use for the motors encoder when the state
+     * changes between the current and previous calls into getCurrentEncoderPosition
+     * @param sensorTriggeredEncoderInitialPositionTicks - the initial set point to use for the motors
+     * encoder when sensor IS triggered to start 
+     * @param sensorNotTriggeredEncoderInitialPositionTicks - the initial set point to use for the motors
+     * encoder when sensor is NOT triggered to start 
      */
     public CorrectableEncoderRevNeoPlusDigitalIoPort(
         RelativeEncoder revNeoEncoder,
         DigitalInput stateDevice,
         double encoderTicksAtStateChange,
-        double encoderInitialPositionTicks) {
+        double sensorTriggeredEncoderInitialPositionTicks,
+        double sensorNotTriggeredEncoderInitialPositionTicks) {
 
         revNeoMotorEncoder = revNeoEncoder;
         dioStateDevice = stateDevice;
         encoderTicksAtStateChangeSetPoint = encoderTicksAtStateChange;
 
         lastState = dioStateDevice.get();
-        this.revNeoMotorEncoder.setPosition(encoderInitialPositionTicks);
+
+        // dio state of false is 'triggered' (as in LED is illuminated for 2023 sensors)
+        if(lastState == false) {
+            this.revNeoMotorEncoder.setPosition(sensorTriggeredEncoderInitialPositionTicks);
+        }
+        else {
+            this.revNeoMotorEncoder.setPosition(sensorNotTriggeredEncoderInitialPositionTicks);
+        }
     }
 
     /**
