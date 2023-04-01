@@ -206,6 +206,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * A method to return the swerveDriveKinematics of the drivetrain
+   * @return kinematics
+   */
+  public SwerveDriveKinematics getSwerveKinematics() {
+    return swerveKinematics;
+  }
+
+  /**
    * Method to set the current speed reduction factor to a new value
    * @param value - the new speed reduction factor
    */

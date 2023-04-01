@@ -135,10 +135,8 @@ public class DriveTrajectoryCommand extends CommandBase{
     if( abs(delta.getX()) <= this.overTimeDelta.getX() &&
         abs(delta.getY()) <= this.overTimeDelta.getY() &&
         abs(MathUtil.angleModulus(delta.getRotation().getRadians())) <= MathUtil.angleModulus(this.overTimeDelta.getRotation().getRadians())) {
-      System.out.println("isDeltaReasonable == true ...........");
       return true;
     }
-    System.out.println("isDeltaReasonable == FALSE !!!!!!!!!!!!!!");
     return false;
   }
 }

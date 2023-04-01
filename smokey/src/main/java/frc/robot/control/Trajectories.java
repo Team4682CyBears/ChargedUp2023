@@ -73,11 +73,11 @@ public class Trajectories {
         this.RampFarWaypoint = new Pose2d(4.122, 2.41, //2.748
         Rotation2d.fromDegrees(0)); //90
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.41, Rotation2d.fromDegrees(180));
-        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.0, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.0, 2.41, Rotation2d.fromDegrees(90));
         // behind ramp position for node 1,2,8,9 paths
         Pose2d BehindTrajectoryEndPosition = new Pose2d(5.27, 2.41, Rotation2d.fromDegrees(180));
         // behind ramp position for node 5 path
-        Pose2d MiddlePathOverRampPosition = new Pose2d(6.5, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathOverRampPosition = new Pose2d(6.5, 2.41, Rotation2d.fromDegrees(90));
         
         // Left waypoints drive from Node 1 or 2 to a location out of the community
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -140,12 +140,12 @@ public class Trajectories {
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
         this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory;
-        System.out.println("Middle trajectory");
-        SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
-        System.out.println("");
-        SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
-        System.out.println("");
-        SwerveTrajectoryGenerator.printTrajectory(MiddlePathBehindToOntoRampTrajectory);
+        // System.out.println("Middle Trajectory Part 1");
+        // SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
+        // System.out.println("Middle Trajectory Part 2");
+        // SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
+        // System.out.println("Middle Trajectory Part 3");
+        // SwerveTrajectoryGenerator.printTrajectory(MiddlePathBehindToOntoRampTrajectory);
     }
 
     public SwerveTrajectoryConfig getConfig() {

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -22,6 +23,7 @@ import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.AutoBalanceCommand;
+import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.EveryBotPickerAutoCommand;
 import frc.robot.commands.ManipulatePickerCommand;
@@ -120,17 +122,24 @@ public class AutonomousChooser {
         IntoNodeWaypoints.add(NodePosition);
         IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         // use the default config for IntoNodeTrajectory
+        Timer timer = new Timer();
+        timer.reset();
+        timer.start();
         Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             IntoNodeWaypoints, 
             subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+        System.out.println("Generating into node trajectory.. ellapsed time: " + timer.get());
 
         ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
         OutOfNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         OutOfNodeWaypoints.add(NodePosition);
         // use the supplied config for OutOfNodeTrajectory
+        timer.reset();
+        timer.start();
         Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             OutOfNodeWaypoints, 
             config);
+        System.out.println("Generating out of node trajectory.. ellapsed time: " + timer.get());
 
         SequentialCommandGroup command = new SequentialCommandGroup();
         setRobotPose(command, NodePosition);
