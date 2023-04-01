@@ -21,12 +21,12 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.commands.ArmToLocationCommand;
 import frc.robot.commands.ArmToReferencePositionCommand;
-import frc.robot.commands.AutoBalanceStepCommand;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.DriveTrajectoryCommand;
 import frc.robot.commands.EveryBotPickerAutoCommand;
 import frc.robot.commands.ManipulatePickerCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
-import frc.robot.common.ChargedUpGamePiece;
+import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.common.EveryBotPickerAction;
 import frc.robot.common.SwerveTrajectoryGenerator;
 import frc.robot.common.VectorUtils;
@@ -100,7 +100,7 @@ public class AutonomousChooser {
             case NODE8_ROUTINE:
                 return this.getNode8Routine();
             case TEST_NODE5_SCORE_ROUTINE:
-                return this.getScoreRoutine(trajectories.getNode5Position());
+                return this.getScoreRoutine(trajectories.getNode5Position(), trajectories.getConfig());
         }
         return new InstantCommand();
     }
@@ -108,9 +108,10 @@ public class AutonomousChooser {
     /**
      * Builds a command list for use in auto routines.  This is the first part of the routine that scores the game piece. 
      * @param NodePosition
+     * @param config  - when the auto will drive another trajectory after scoring, supply a config with a higher ending velocity.   
      * @return
      */
-    private Command getScoreRoutine(Pose2d NodePosition){
+    private Command getScoreRoutine(Pose2d NodePosition, SwerveTrajectoryConfig config){
         // for now we will always assume that we are attempting to score the cube
         subsystems.getManualInputInterfaces().setTargetGamePieceAsCube();
 
@@ -118,6 +119,7 @@ public class AutonomousChooser {
         ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
         IntoNodeWaypoints.add(NodePosition);
         IntoNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
+        // use the default config for IntoNodeTrajectory
         Trajectory IntoNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             IntoNodeWaypoints, 
             subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
@@ -125,9 +127,10 @@ public class AutonomousChooser {
         ArrayList<Pose2d> OutOfNodeWaypoints = new ArrayList<Pose2d>();
         OutOfNodeWaypoints.add(VectorUtils.translatePose(NodePosition, intoNodeTranslation));
         OutOfNodeWaypoints.add(NodePosition);
+        // use the supplied config for OutOfNodeTrajectory
         Trajectory OutOfNodeTrajectory = SwerveTrajectoryGenerator.generateTrajectory(
             OutOfNodeWaypoints, 
-            subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+            config);
 
         SequentialCommandGroup command = new SequentialCommandGroup();
         setRobotPose(command, NodePosition);
@@ -141,7 +144,7 @@ public class AutonomousChooser {
         // move arm score into selected position
         if(this.subsystems.getArmSubsystem() != null) {
             SequentialCommandGroup armSequence = new SequentialCommandGroup();
-            armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
+            //armSequence.addCommands(new ArmToReferencePositionCommand(subsystems.getArmSubsystem()));
             armSequence.addCommands(this.getArmPositionRoutine(scoreHeight.getSelected()));
             intoNodeAndHighScore.addCommands(armSequence);
         }
@@ -233,7 +236,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectoryPart1()));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getMiddleTrajectoryPart2()));
-        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getBehindToOntoRampTrajectory()));
+        command.addCommands(getBalanceRoutine(balanceChooser.getSelected(), trajectories.getMiddlePathBehindToOntoRampTrajectory()));
         return command;
     }
 
@@ -266,7 +269,7 @@ public class AutonomousChooser {
      */
     private Command getScoreAndDriveRoutine (Pose2d NodePosition, Trajectory Trajectory){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreRoutine(NodePosition));
+        command.addCommands(getScoreRoutine(NodePosition, trajectories.getFirstSegmentConfig()));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), Trajectory));
         return command;
     }

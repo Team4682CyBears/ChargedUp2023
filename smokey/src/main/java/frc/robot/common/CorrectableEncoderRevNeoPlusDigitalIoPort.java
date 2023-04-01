@@ -35,6 +35,7 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
         RelativeEncoder revNeoEncoder,
         DigitalInput stateDevice,
         double encoderTicksAtStateChange,
+        double encoderInitialPositionTicks,
         boolean initalizeEncoderPositionOnDioTriggered) {
 
         revNeoMotorEncoder = revNeoEncoder;
@@ -42,6 +43,8 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
         encoderTicksAtStateChangeSetPoint = encoderTicksAtStateChange;
 
         lastState = dioStateDevice.get();
+
+        this.revNeoMotorEncoder.setPosition(encoderInitialPositionTicks);
 
         if(initalizeEncoderPositionOnDioTriggered == true && lastState == false) {
             this.revNeoMotorEncoder.setPosition(this.encoderTicksAtStateChangeSetPoint);
@@ -74,7 +77,5 @@ public class CorrectableEncoderRevNeoPlusDigitalIoPort implements ICorrectableEn
     public boolean getMotorEncoderEverReset() {
         return motorEncoderPositionReset;
     }
-
-
 
 }

@@ -26,39 +26,58 @@ public class Trajectories {
     private Trajectory RightToOntoRampTrajectory;
     private Trajectory BehindToOntoRampTrajectory;
     private Trajectory DirectToRampTrajectory;
+    private Trajectory MiddlePathBehindToOntoRampTrajectory;
+    
+    public SwerveTrajectoryConfig config;
+    public SwerveTrajectoryConfig firstSegmentConfig;
+    public SwerveTrajectoryConfig middleSegmentConfig;
+    public SwerveTrajectoryConfig lastSegmentConfig;
+
+    private DrivetrainSubsystem drivetrain;
 
     public Trajectories(DrivetrainSubsystem drivetrain){
+        this.drivetrain = drivetrain; 
 
-        SwerveTrajectoryConfig config = drivetrain.getTrajectoryConfig();
+        config = drivetrain.getTrajectoryConfig();
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.6); // less than max speed
         // trajectory config that will start at a slow velocity and drive that same speed throughout
-        double slowSteadyRampSpeed = 0.8; 
-        SwerveTrajectoryConfig slowSteadyConfig = new SwerveTrajectoryConfig(
-            slowSteadyRampSpeed, 
+        double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
+        SwerveTrajectoryConfig ontoRampConfig = new SwerveTrajectoryConfig(
+            ontoRampSpeed, 
             config.getMaxAcceleration(),
             config.getMaxRotationalVelocity(),
             config.getMaxRotationalAcceleration());
-        slowSteadyConfig.setStartVelocity(slowSteadyRampSpeed);
+        ontoRampConfig.setStartVelocity(ontoRampSpeed);
+        // trajectory configs for joining trajectory segments together without slowing down between segments
+        double trajectoryJoinSpeed = ontoRampSpeed; 
+        firstSegmentConfig = drivetrain.getTrajectoryConfig();
+        firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
+        middleSegmentConfig = drivetrain.getTrajectoryConfig();
+        middleSegmentConfig.setStartVelocity(trajectoryJoinSpeed).setEndVelocity(trajectoryJoinSpeed);
+        lastSegmentConfig = drivetrain.getTrajectoryConfig();
+        lastSegmentConfig.setStartVelocity(trajectoryJoinSpeed);
 
         this.Node1Position = new Pose2d(1.678, 4.994, Rotation2d.fromDegrees(180));
         this.Node2Position = new Pose2d(1.678, 4.433, Rotation2d.fromDegrees(180));
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
-        this.InfrontOfRampPosition = new Pose2d(2.0, 2.75, Rotation2d.fromDegrees(90));
+        this.InfrontOfRampPosition = new Pose2d(2.0, 2.41, //2.75
+        Rotation2d.fromDegrees(0)); //90
         
         // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
         // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
-        this.RampFarWaypoint = new Pose2d(4.122, 2.748, Rotation2d.fromDegrees(90));
-        Pose2d RampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
-        Pose2d MiddlePathRampNearWaypoint = new Pose2d(3.34, 2.748, Rotation2d.fromDegrees(180));
+        this.RampFarWaypoint = new Pose2d(4.122, 2.41, //2.748
+        Rotation2d.fromDegrees(0)); //90
+        Pose2d RampNearWaypoint = new Pose2d(3.34, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.0, 2.41, Rotation2d.fromDegrees(180));
         // behind ramp position for node 1,2,8,9 paths
-        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.07, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d BehindTrajectoryEndPosition = new Pose2d(5.27, 2.41, Rotation2d.fromDegrees(180));
         // behind ramp position for node 5 path
-        Pose2d MiddlePathOverRampPosition = new Pose2d(5.9, 2.748, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathOverRampPosition = new Pose2d(6.5, 2.41, Rotation2d.fromDegrees(180));
         
         // Left waypoints drive from Node 1 or 2 to a location out of the community
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -106,6 +125,7 @@ public class Trajectories {
         
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
         
+        // Construct the middle up and over ramp trajectory
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
@@ -115,18 +135,23 @@ public class Trajectories {
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathRampNearWaypoint);
         // use fastConfig for this trajectory 
-        Trajectory MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
+        this.MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
-        this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory
-            .concatenate(MiddlePathBehindToOntoRampTrajectory);
+        this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory;
         System.out.println("Middle trajectory");
         SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
         System.out.println("");
         SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
+        System.out.println("");
+        SwerveTrajectoryGenerator.printTrajectory(MiddlePathBehindToOntoRampTrajectory);
     }
 
+    public SwerveTrajectoryConfig getConfig() {
+        return config;
+    }
+    
     public Trajectory getBehindToOntoRampTrajectory() {
         return BehindToOntoRampTrajectory;
     }
@@ -135,8 +160,16 @@ public class Trajectories {
         return DirectToRampTrajectory;
     }
 
+    public SwerveTrajectoryConfig getFirstSegmentConfig() {
+        return firstSegmentConfig;
+    }
+
     public Pose2d getInfrontOfRampPosition() {
         return InfrontOfRampPosition;
+    }
+
+    public SwerveTrajectoryConfig getLastSegmentConfig() {
+        return lastSegmentConfig;
     }
 
     public Trajectory getLeftToOntoRampTrajectory() {
@@ -147,6 +180,15 @@ public class Trajectories {
         return LeftTrajectory;
     }
 
+    public Trajectory getMiddlePathBehindToOntoRampTrajectory() {
+        return MiddlePathBehindToOntoRampTrajectory;
+    }
+
+    public SwerveTrajectoryConfig getMiddleSegmentConfig() {
+     
+        return middleSegmentConfig;
+    }
+    
     public Trajectory getMiddleTrajectoryPart1() {
         return MiddleTrajectoryPart1;
     }

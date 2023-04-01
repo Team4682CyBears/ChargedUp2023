@@ -382,13 +382,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   */
   public SwerveTrajectoryConfig getTrajectoryConfig() {
     SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
-    MAX_VELOCITY_METERS_PER_SECOND,
-    1.0, //MAX_ACCELERATION_METERS_PER_SECOND_SQUARED, 
-    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-    6.0); //MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED);
+      MAX_VELOCITY_METERS_PER_SECOND, 
+      1.5, // 6.0,
+      MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+      8.0); //12.0);
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
-    }
+  }
 
   /**
    * Determines if the navx is level.  

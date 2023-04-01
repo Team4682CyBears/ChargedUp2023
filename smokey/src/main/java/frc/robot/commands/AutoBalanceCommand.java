@@ -14,7 +14,7 @@ import java.lang.Math;
  * Implements a command to perform a auto balancing routine. 
  */
 public class AutoBalanceCommand extends CommandBase{
-  private double velocityValue = 0.4;
+  private double velocityValue = 0.3;
   private PIDController pidController = new PIDController(velocityValue/Math.sin(Math.toRadians(10)),0.0,0.0);
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
