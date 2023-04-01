@@ -385,15 +385,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
-  * they do not affect other trajectories
+  * they do not affect other trajectories.
+  * Accelerations used in trjactories are lower than used for joystick driving. 
   * @return a SwerveTrajectoryConfig in use within the drive train subsystem
   */
   public SwerveTrajectoryConfig getTrajectoryConfig() {
     SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
       MAX_VELOCITY_METERS_PER_SECOND, 
-      1.5, // 6.0,
+      1.5, // 6.0 max
       MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-      8.0); //12.0);
+      8.0); // 12.0 max
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
   }
