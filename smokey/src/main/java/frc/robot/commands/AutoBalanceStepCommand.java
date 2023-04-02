@@ -41,7 +41,6 @@ public class AutoBalanceStepCommand extends CommandBase{
    * @param navxsubsystem
    */
   public AutoBalanceStepCommand(DrivetrainSubsystem drivetrainSubsystem) {
-    System.out.println("constructing auto balance step command");
     this.drivetrainsubsystem = drivetrainSubsystem;
 
     // do not need to add Navx as a requirement because it is read-only
@@ -51,7 +50,6 @@ public class AutoBalanceStepCommand extends CommandBase{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("initializaing auto balance step command");
     Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
     Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
     xVelocity = velocityVec.getX();

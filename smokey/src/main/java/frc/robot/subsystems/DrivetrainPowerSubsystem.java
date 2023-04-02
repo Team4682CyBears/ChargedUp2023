@@ -95,6 +95,11 @@ public class DrivetrainPowerSubsystem extends SubsystemBase {
         this.updateSpeedReductionFactor();
     }
 
+    public void setReducedPowerReductionFactor() {
+        speedReductionFactor = reducedSpeedReductionFactor;
+        this.updateSpeedReductionFactor();
+    }
+
     @Override
     public void periodic() {
     }

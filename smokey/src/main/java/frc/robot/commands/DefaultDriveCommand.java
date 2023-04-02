@@ -26,11 +26,6 @@ public class DefaultDriveCommand extends CommandBase {
     // true if field oriented drive, false for robot oriented drive
     private final Boolean fieldOrientedDrive = true;
     private ChassisSpeeds commandedChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-    private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-    private double maxAccelerationMPerS2 = 6.0;
-    private double maxAccelerationRadPerS2 = 10.0;
-    // TODO move this to Constants
-    private double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -63,37 +58,11 @@ public class DefaultDriveCommand extends CommandBase {
                 m_rotationSupplier.getAsDouble());
         }
    
-        commandedChassisSpeeds = limitChassisSpeedsAccel(commandedChassisSpeeds);
         m_drivetrainSubsystem.drive(commandedChassisSpeeds);        
-        previousChassisSpeeds = commandedChassisSpeeds;
     }
 
     @Override
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    }
-
-    private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
-        double xVelocityLimited = limitAxisSpeed(speeds.vxMetersPerSecond, previousChassisSpeeds.vxMetersPerSecond, maxAccelerationMPerS2);
-        double yVelocityLimited = limitAxisSpeed(speeds.vyMetersPerSecond, previousChassisSpeeds.vyMetersPerSecond, maxAccelerationMPerS2);
-        double omegaVelocityLimited = limitAxisSpeed(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond, maxAccelerationRadPerS2);
-        return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, omegaVelocityLimited);
-    }
-
-    /**
-     * Limits speed based on max allowable acceleration
-     * @param commandedSpeed
-     * @param previousSpeed
-     * @param maxAccel
-     * @return limited speed
-     */
-    private double limitAxisSpeed(double commandedSpeed, double previousSpeed, double maxAccel){
-        double accel = (commandedSpeed - previousSpeed)/deltaTimeSeconds;
-        double speedLimited = commandedSpeed;
-        if (Math.abs(accel) > maxAccel){
-            // new velocity is the old velocity + the maximum allowed change toward the new direction
-            speedLimited = previousSpeed + Math.copySign(maxAccel * deltaTimeSeconds, accel);
-        }
-        return speedLimited;
     }
 }

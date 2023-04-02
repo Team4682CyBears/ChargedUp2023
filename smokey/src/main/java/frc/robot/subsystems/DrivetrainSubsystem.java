@@ -25,6 +25,7 @@ import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
 import frc.robot.control.SwerveDriveMode;
 import frc.robot.common.MotorUtils;
+import frc.robot.common.SwerveDriveCenterOfRotation;
 import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
@@ -64,7 +65,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Gear ratio: 7.85:1. Free speed of 14.19 ft/s = 4.3251 m/s
    */
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.3251;
-  public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1.0;
+  public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 6.0;
+
   public static final double MIN_VELOCITY_BOUNDARY_METERS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND * 0.14; // 0.14 a magic number based on testing
   /**
    * The maximum angular velocity of the robot in radians per second.
@@ -75,9 +77,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
   public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.06; // 0.06 a magic number based on testing
+  private double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 10.0;
 
   private static final int PositionHistoryWindowTimeMilliseconds = 5000;
   private static final int CommandSchedulerPeriodMilliseconds = 20;
+  private final double deltaTimeSeconds = 0.02; // 20ms scheduler time tick
   private static final int CommandSchedulerCyclesPerSecond = 1000/CommandSchedulerPeriodMilliseconds;
   private static final int PositionHistoryStorageSize = PositionHistoryWindowTimeMilliseconds/CommandSchedulerPeriodMilliseconds;
 
@@ -115,10 +119,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
+  private ChassisSpeeds previousChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   private double speedReductionFactor = 1.0;
 
   private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
+  private SwerveDriveCenterOfRotation swerveDriveCenterOfRotation = SwerveDriveCenterOfRotation.RobotCenter;
 
   /**
    * Constructor for this DrivetrainSubsystem
@@ -203,6 +208,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public double getSpeedReductionFactor() {
     return this.speedReductionFactor;
+  }
+
+  /**
+   * A method to return the swerveDriveKinematics of the drivetrain
+   * @return kinematics
+   */
+  public SwerveDriveKinematics getSwerveKinematics() {
+    return swerveKinematics;
   }
 
   /**
@@ -372,18 +385,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
   * Function to obtain the TrajectoryConfig
   * returns a new trajectory config so that when customization are made downstream
-  * they do not affect other trajectories
+  * they do not affect other trajectories.
+  * Accelerations used in trjactories are lower than used for joystick driving. 
   * @return a SwerveTrajectoryConfig in use within the drive train subsystem
   */
   public SwerveTrajectoryConfig getTrajectoryConfig() {
     SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
-    MAX_VELOCITY_METERS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED, 
-    MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-    MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+      MAX_VELOCITY_METERS_PER_SECOND, 
+      1.5, // 6.0 max
+      MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+      8.0); // 12.0 max
     config.setReversed(false).setKinematics(swerveKinematics);
     return config;
-    }
+  }
 
   /**
    * Determines if the navx is level.  
@@ -422,9 +436,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
         chassisSpeeds.vyMetersPerSecond * this.speedReductionFactor, 
         // different speed reduction factor for rotation
         chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.25));
+
+      // apply acceleration control
+      reducedChassisSpeeds = limitChassisSpeedsAccel(reducedChassisSpeeds);
+      previousChassisSpeeds = reducedChassisSpeeds; 
+
       // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
       // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-      states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds);
+      if (swerveDriveCenterOfRotation == SwerveDriveCenterOfRotation.RobotFront) {
+        states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds, Constants.RobotFrontRotationalCenter);
+      } 
+      else { // normal rotation mode 
+        states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds);
+      }
       // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
       SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
     } 
@@ -482,6 +506,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.swerveDriveMode = swerveDriveMode;
     // if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE) DO NOT set chassis speeds to 0.0 here.
     // we need to allow the robot to decel properly so that it doesn't tip.  
+  }
+
+
+  /**
+   * A method to set the swerve rotation mode
+   * @param swerveDriveRotationMode
+   */
+  public void setSwerveDriveCenterOfRotation(SwerveDriveCenterOfRotation swerveDriveCenterOfRotation) {
+    this.swerveDriveCenterOfRotation = swerveDriveCenterOfRotation;
   }
 
   /**
@@ -593,6 +626,35 @@ public class DrivetrainSubsystem extends SubsystemBase {
   };
 
   /**
+   * Limits chassis speeds based on max allowable acceleration
+   * @param speeds
+   * @return
+   */
+  private ChassisSpeeds limitChassisSpeedsAccel(ChassisSpeeds speeds) {
+    double xVelocityLimited = limitAxisSpeed(speeds.vxMetersPerSecond, previousChassisSpeeds.vxMetersPerSecond, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    double yVelocityLimited = limitAxisSpeed(speeds.vyMetersPerSecond, previousChassisSpeeds.vyMetersPerSecond, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    double omegaVelocityLimited = limitAxisSpeed(speeds.omegaRadiansPerSecond, previousChassisSpeeds.omegaRadiansPerSecond, MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED);
+    return new ChassisSpeeds(xVelocityLimited, yVelocityLimited, omegaVelocityLimited);
+  }
+
+  /**
+   * Limits axis speed based on max allowable acceleration
+   * @param commandedSpeed
+   * @param previousSpeed
+   * @param maxAccel
+   * @return limited speed
+   */
+  private double limitAxisSpeed(double commandedSpeed, double previousSpeed, double maxAccel){
+      double accel = (commandedSpeed - previousSpeed)/deltaTimeSeconds;
+      double speedLimited = commandedSpeed;
+      if (Math.abs(accel) > maxAccel){
+          // new velocity is the old velocity + the maximum allowed change toward the new direction
+          speedLimited = previousSpeed + Math.copySign(maxAccel * deltaTimeSeconds, accel);
+      }
+      return speedLimited;
+  }
+
+/**
    * Method that will store roll
    */
   private void storeRoll(){
