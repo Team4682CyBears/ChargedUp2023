@@ -31,7 +31,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AllStopCommand;
 import frc.robot.commands.ArmToLocationCommand;
-import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.AutoBalanceStepCommand;
 import frc.robot.commands.ButtonPressCommand;
 import frc.robot.commands.DriveFinePlacementCommand;
@@ -218,7 +217,7 @@ public class ManualInputInterfaces {
         // bind the b button to auto balance
         this.driverController.b().onTrue(
           new ParallelCommandGroup(
-            new AutoBalanceCommand(localDrive),
+            new AutoBalanceStepCommand(localDrive),
             new ButtonPressCommand(
               "driverController.b()",
               "auto balance")

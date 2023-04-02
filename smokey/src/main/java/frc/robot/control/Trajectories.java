@@ -140,12 +140,6 @@ public class Trajectories {
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
             .concatenate(InfrontToOntoRampTrajectory);
         this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory;
-        // System.out.println("Middle Trajectory Part 1");
-        // SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart1);
-        // System.out.println("Middle Trajectory Part 2");
-        // SwerveTrajectoryGenerator.printTrajectory(MiddleTrajectoryPart2);
-        // System.out.println("Middle Trajectory Part 3");
-        // SwerveTrajectoryGenerator.printTrajectory(MiddlePathBehindToOntoRampTrajectory);
     }
 
     public SwerveTrajectoryConfig getConfig() {
