@@ -392,7 +392,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveTrajectoryConfig getTrajectoryConfig() {
     SwerveTrajectoryConfig config = new SwerveTrajectoryConfig(
       MAX_VELOCITY_METERS_PER_SECOND, 
-      1.5, // 6.0 max
+      1.25, // 6.0 max
       MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
       8.0); // 12.0 max
     config.setReversed(false).setKinematics(swerveKinematics);
