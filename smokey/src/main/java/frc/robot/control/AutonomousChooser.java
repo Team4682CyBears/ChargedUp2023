@@ -51,6 +51,10 @@ public class AutonomousChooser {
     private Command node8Routine;
     private Command testScoreRoutine;
     
+    // true if robot starts behind the line and has to drive into node
+    // false if robot starts already engaged into node
+    private boolean shouldDriveIntoNode = false;
+
     //Robot to travel in the negative x direction
     //want to make sure snout is deelply engaged in the node, so overdrive by tolerence amount
     private Translation2d intoNodeTranslation = new Translation2d(
@@ -152,13 +156,20 @@ public class AutonomousChooser {
             config);
 
         SequentialCommandGroup command = new SequentialCommandGroup();
-        setRobotPose(command, NodePosition);
+        if (shouldDriveIntoNode){
+            setRobotPose(command, NodePosition);
+        }
+        else {
+            setRobotPose(command, VectorUtils.translatePose(NodePosition, intoNodeTranslation));
+        }
         command.addCommands(new InstantCommand(
             () -> System.out.println("Begin Driving Trajectory from: " + subsystems.getDriveTrainSubsystem().getRobotPosition())));
 
         // drive into node
-        ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup(
-            new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
+        ParallelCommandGroup intoNodeAndHighScore = new ParallelCommandGroup();
+        if (shouldDriveIntoNode) {
+            intoNodeAndHighScore.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), IntoNodeTrajectory));
+        }
 
         // move arm score into selected position
         if(this.subsystems.getArmSubsystem() != null) {
