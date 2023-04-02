@@ -43,16 +43,15 @@ public class Trajectories {
         // have to get a new config so that changes to this one don't affect the original
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.6); // less than max speed
-        // trajectory config that will start at a slow velocity and drive that same speed throughout
-        double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
-        SwerveTrajectoryConfig ontoRampConfig = new SwerveTrajectoryConfig(
-            ontoRampSpeed, 
+        // trajectory config that will start limit to a slow velocity for driving off ramp
+        double offOfRampSpeed = 1.25; 
+        SwerveTrajectoryConfig offOfRampConfig = new SwerveTrajectoryConfig(
+            offOfRampSpeed, 
             config.getMaxAcceleration(),
             config.getMaxRotationalVelocity(),
             config.getMaxRotationalAcceleration());
-        ontoRampConfig.setStartVelocity(ontoRampSpeed);
         // trajectory configs for joining trajectory segments together without slowing down between segments
-        double trajectoryJoinSpeed = ontoRampSpeed; 
+        double trajectoryJoinSpeed = config.getMaxVelocity() * 0.4;
         firstSegmentConfig = drivetrain.getTrajectoryConfig();
         firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
         middleSegmentConfig = drivetrain.getTrajectoryConfig();
@@ -129,7 +128,7 @@ public class Trajectories {
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
-        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, offOfRampConfig);
         // Drive onto ramp from behind
         ArrayList<Pose2d> MiddlePathBehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
