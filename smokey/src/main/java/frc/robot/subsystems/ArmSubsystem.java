@@ -65,6 +65,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // ??
 
     private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 1.0 inches
+    private static final double lengthVerticalArmExtensionVeryCloseToPucksMeters = maximumVerticalArmExtensionMeters - Units.inchesToMeters(1.0); // 1.0 inches
     private static final double neoMotorSpeedReductionFactorVeryCloseToStop = 0.25; 
 
     private static final double verticalArmSensorResetRetractSpeed = -0.7;
@@ -327,6 +328,10 @@ public class ArmSubsystem extends SubsystemBase
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
           this.verticalMotor.set(0.0);
         }
+        // we are nearing puck-zone sometimes too fast
+        else if(currentVerticalExtensionInMeters > lengthVerticalArmExtensionVeryCloseToPucksMeters &&  this.requestedVerticalMotorSpeed > 0.0 ) {
+          this.verticalMotor.set(this.requestedVerticalMotorSpeed * neoMotorSpeedReductionFactorVeryCloseToStop);
+        }
         else {
           this.verticalMotor.set(this.requestedVerticalMotorSpeed * neoMotorSpeedReductionFactor);
         }
@@ -372,6 +377,14 @@ public class ArmSubsystem extends SubsystemBase
         }
         else if (isVerticalWithinTolerance) {
           this.verticalMotor.set(0.0);
+        }
+        // we are nearing puck-zone sometimes too fast
+        else if(currentVerticalExtensionInMeters > lengthVerticalArmExtensionVeryCloseToPucksMeters) {
+          double frogSpellExtensionDistance = 
+            (currentVerticalExtensionInMeters + this.requestedVerticalArmExtension) / 2;
+          verticalPidController.setReference(
+            ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
+            ControlType.kSmartMotion);
         }
         else {
           verticalPidController.setReference(
