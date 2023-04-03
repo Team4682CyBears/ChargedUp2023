@@ -102,11 +102,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // cause the angle reading to increase until it wraps back over to zero.
   private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
   private double yawOffsetDegrees = 0.0;
+  private double pitchOffsetDegrees = 0.0;
+  private double rollOffsetDegrees = 0.0;
 
   // store yaw/pitch history
   private static final int LevelListMaxSize = 12; // 12 * 20ms = 0.24s total history time
-  private ArrayList<Float> RecentRolls = new ArrayList<Float>();
-  private ArrayList<Float> RecentPitches = new ArrayList<Float>();
+  private ArrayList<Double> RecentRolls = new ArrayList<Double>();
+  private ArrayList<Double> RecentPitches = new ArrayList<Double>();
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule frontLeftModule;
@@ -181,6 +183,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
+    // We assume the robot is level at startup.  Take out any bias the NavX is reading on Pitch/Roll.  
+    removePitchRollBias(); 
   }
 
   /**
@@ -197,8 +202,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public EulerAngle getEulerAngle(){
     return new EulerAngle(
-      swerveNavx.getPitch(), 
-      swerveNavx.getRoll(), 
+      getNavxPitch(), 
+      getNavxRoll(), 
       swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
 
@@ -362,7 +367,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     * A method to obtain the recent pitches 
     * @return a listing of recent pitches
     */
-   public ArrayList<Float> getRecentPitches(){
+   public ArrayList<Double> getRecentPitches(){
      return RecentPitches;
    }
  
@@ -370,7 +375,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     * A method to obtain the recent rolls 
     * @return a listing of recent rolls
     */
-    public ArrayList<Float> getRecentRolls(){
+    public ArrayList<Double> getRecentRolls(){
      return RecentRolls;
    }
  
@@ -552,7 +557,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param recentAngles the recent set of angles recorded by navx 
    * @return true if the robot has been recently level
    */
-  private boolean areAllLevel(ArrayList<Float> recentAngles){
+  private boolean areAllLevel(ArrayList<Double> recentAngles){
     boolean levelChecker = true;
     for(int i = 0; i < LevelListMaxSize; i++){
       if (Math.abs(recentAngles.get(i))>=Constants.navxTolDegrees){
@@ -626,6 +631,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
   };
 
   /**
+   * A method to get the debiased navx pitch
+   * @return pitch in degrees
+   */
+  private double getNavxPitch(){
+    return swerveNavx.getPitch() + this.pitchOffsetDegrees;
+  }
+
+  /**
+   * A method to get the debiased navx roll
+   * @return roll in degrees
+   */
+  private double getNavxRoll(){
+    return swerveNavx.getRoll() + this.rollOffsetDegrees;
+  }
+
+  /**
    * Limits chassis speeds based on max allowable acceleration
    * @param speeds
    * @return
@@ -654,11 +675,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
       return speedLimited;
   }
 
+  /**
+   * A method to remove any bias in the pitch/roll. 
+   * Should only be called when the robot is on level ground!
+   */
+  private void removePitchRollBias(){
+    this.pitchOffsetDegrees = -1 * swerveNavx.getPitch(); 
+    this.rollOffsetDegrees = -1 * swerveNavx.getRoll(); 
+  }
+
 /**
    * Method that will store roll
    */
   private void storeRoll(){
-    this.RecentRolls.add(this.swerveNavx.getRoll());
+    this.RecentRolls.add(getNavxRoll());
     while(this.RecentRolls.size() > LevelListMaxSize)
     {
       RecentRolls.remove(0);
@@ -669,7 +699,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * Method that will store pitch
    */
   private void storePitch(){
-    RecentPitches.add(swerveNavx.getPitch());
+    RecentPitches.add(getNavxPitch());
     while(RecentPitches.size() > LevelListMaxSize)
     {
       RecentPitches.remove(0);
