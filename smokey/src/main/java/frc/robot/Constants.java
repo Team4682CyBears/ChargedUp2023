@@ -145,7 +145,7 @@ public final class Constants {
 
     // ********************************************************************
     // Controller Constants
-    public static final double rumbleTimeSeconds = 1.0;
+    public static final double rumbleTimeSeconds = 0.25;
 
     // ********************************************************************
     // PowerDistributionPanel Constants
