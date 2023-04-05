@@ -23,7 +23,7 @@ public class ArmToReferencePositionCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
     private Timer timer = new Timer();
     private boolean done = false;
-    private final double referenceMaximumTime = 3.0;
+    private final double referenceMaximumTime = 1.0;
 
     /**
      * The constructor to create a default command for the arm subsystem.

@@ -92,6 +92,8 @@ public class RobotContainer {
       new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.2, 3.0));
     SmartDashboard.putData("Arms to reference position", 
       new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
+    SmartDashboard.putData("Print NavX State", 
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printState));
   }
  
   /**

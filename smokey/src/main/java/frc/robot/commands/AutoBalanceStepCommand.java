@@ -26,12 +26,12 @@ public class AutoBalanceStepCommand extends CommandBase{
   private double waitDurationSecondsValue = 0.0;
   private double driveDurationSecondsValue = 0.2;  
   // higher velocity values caused the robot to slip on the polycarb and not advance as far
-  private double velocityValue = 0.3;
+  private double velocityValue = 0.35;
   private int numIterations = 0;
   // ramp max slope = 15 degrees, and then typically <10 degrees once the robot is mostly on.  
   // use velocity value for errors >= sin(10) degrees to have high velocity for getting onto the ramp
   // and then proprortaional for smaller errors to get the fine control needed to balance.  
-  private PIDController pidController = new PIDController(velocityValue/Math.sin(Math.toRadians(10)),0.0,0.0);
+  private PIDController pidController = new PIDController(velocityValue/Math.sin(Math.toRadians(10)),0.001,0.0);
 
   private DrivetrainSubsystem drivetrainsubsystem = null;
 

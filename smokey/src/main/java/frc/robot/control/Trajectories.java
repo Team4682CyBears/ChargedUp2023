@@ -43,16 +43,15 @@ public class Trajectories {
         // have to get a new config so that changes to this one don't affect the original
         SwerveTrajectoryConfig fastConfig = drivetrain.getTrajectoryConfig();
         fastConfig.setStartVelocity(fastConfig.getMaxVelocity() * 0.6); // less than max speed
-        // trajectory config that will start at a slow velocity and drive that same speed throughout
-        double ontoRampSpeed = config.getMaxVelocity() * 0.4; 
-        SwerveTrajectoryConfig ontoRampConfig = new SwerveTrajectoryConfig(
-            ontoRampSpeed, 
+        // trajectory config that will start limit to a slow velocity for driving off ramp
+        double offOfRampSpeed = 1.25; 
+        SwerveTrajectoryConfig offOfRampConfig = new SwerveTrajectoryConfig(
+            offOfRampSpeed, 
             config.getMaxAcceleration(),
             config.getMaxRotationalVelocity(),
             config.getMaxRotationalAcceleration());
-        ontoRampConfig.setStartVelocity(ontoRampSpeed);
         // trajectory configs for joining trajectory segments together without slowing down between segments
-        double trajectoryJoinSpeed = ontoRampSpeed; 
+        double trajectoryJoinSpeed = config.getMaxVelocity() * 0.4;
         firstSegmentConfig = drivetrain.getTrajectoryConfig();
         firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
         middleSegmentConfig = drivetrain.getTrajectoryConfig();
@@ -65,19 +64,19 @@ public class Trajectories {
         this.Node5Position = new Pose2d(1.678, 2.750, Rotation2d.fromDegrees(180));
         this.Node8Position = new Pose2d(1.678, 1.067, Rotation2d.fromDegrees(180));
         this.Node9Position = new Pose2d(1.678, 0.506, Rotation2d.fromDegrees(180));
-        this.InfrontOfRampPosition = new Pose2d(2.0, 2.41, //2.75
-        Rotation2d.fromDegrees(0)); //90
+        this.InfrontOfRampPosition = new Pose2d(2.0, 2.41, Rotation2d.fromDegrees(0)); 
         
-        // we need two different ramp waypoints.  There is slippage getting onto ramp, so 
-        // we need to overshoot the center to ensure the robot gets far enough onto the ramp.   
-        this.RampFarWaypoint = new Pose2d(4.122, 2.41, //2.748
-        Rotation2d.fromDegrees(0)); //90
+        // There is slippage getting onto ramp, so we need to overshoot the center 
+        // to ensure the robot gets far enough onto the ramp.   
+        this.RampFarWaypoint = new Pose2d(4.122, 2.41, Rotation2d.fromDegrees(0)); 
+
+        // behind ramp position for node 5 path
+        Pose2d MiddlePathOverRampPosition = new Pose2d(6.2, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.3, 2.41, Rotation2d.fromDegrees(180));
+        
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.41, Rotation2d.fromDegrees(180));
-        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.0, 2.41, Rotation2d.fromDegrees(90));
         // behind ramp position for node 1,2,8,9 paths
         Pose2d BehindTrajectoryEndPosition = new Pose2d(5.27, 2.41, Rotation2d.fromDegrees(180));
-        // behind ramp position for node 5 path
-        Pose2d MiddlePathOverRampPosition = new Pose2d(6.5, 2.41, Rotation2d.fromDegrees(90));
         
         // Left waypoints drive from Node 1 or 2 to a location out of the community
         ArrayList<Translation2d> LeftWaypoints = new ArrayList<Translation2d>();
@@ -129,7 +128,7 @@ public class Trajectories {
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
-        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, config);
+        Trajectory RampToBehindRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddleWaypoints, offOfRampConfig);
         // Drive onto ramp from behind
         ArrayList<Pose2d> MiddlePathBehindToOntoRampWaypoints = new ArrayList<Pose2d>();
         MiddlePathBehindToOntoRampWaypoints.add(MiddlePathOverRampPosition);
