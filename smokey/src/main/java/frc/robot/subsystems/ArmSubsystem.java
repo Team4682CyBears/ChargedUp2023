@@ -64,7 +64,10 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMinimumHorizontalArmMeters = Units.inchesToMeters(40.25); // 40.25 inches
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // ??
 
-    private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 1.0 inches
+    private static final double lengthHorizontalArmExtensionVeryCloseToEndMeters = maximumHorizontalArmExtensionMeters - Units.inchesToMeters(2.0); // max - 2.0 inches
+    private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 2.0 inches
+    private static final double lengthVerticalArmExtensionVeryCloseToPucksMeters = maximumVerticalArmExtensionMeters - Units.inchesToMeters(1.0); // max - 1.0 inch
+    private static final double lengthVerticalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(1.0); // 1.0 inch
     private static final double neoMotorSpeedReductionFactorVeryCloseToStop = 0.25; 
 
     private static final double verticalArmSensorResetRetractSpeed = -0.7;
@@ -313,7 +316,9 @@ public class ArmSubsystem extends SubsystemBase
           this.horizontalMotor.set(0.0);
         }
         // we are slapping the sensor too hard we need to figure out how to slow down before we smack it
-        else if(currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters &&  this.requestedHorizontalMotorSpeed < 0.0 ) {
+        else if(
+          (currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters &&  this.requestedHorizontalMotorSpeed < 0.0 ) ||
+          (currentHorizontalExtensionInMeters > lengthHorizontalArmExtensionVeryCloseToEndMeters &&  this.requestedHorizontalMotorSpeed > 0.0 )) {
           this.horizontalMotor.set(this.requestedHorizontalMotorSpeed * neoMotorSpeedReductionFactorVeryCloseToStop);
         }
         else {
@@ -326,6 +331,12 @@ public class ArmSubsystem extends SubsystemBase
         }
         else if(isVerticalArmAtOrAboveHighStop && this.requestedVerticalMotorSpeed > 0.0) {
           this.verticalMotor.set(0.0);
+        }
+        // we are nearing puck-zone or bottom sometimes too fast
+        else if(
+          (currentVerticalExtensionInMeters > lengthVerticalArmExtensionVeryCloseToPucksMeters &&  this.requestedVerticalMotorSpeed > 0.0 ) || 
+          (currentVerticalExtensionInMeters < lengthVerticalArmExtensionVeryCloseToStopMeters &&  this.requestedVerticalMotorSpeed < 0.0 )) {
+          this.verticalMotor.set(this.requestedVerticalMotorSpeed * neoMotorSpeedReductionFactorVeryCloseToStop);
         }
         else {
           this.verticalMotor.set(this.requestedVerticalMotorSpeed * neoMotorSpeedReductionFactor);
@@ -372,6 +383,22 @@ public class ArmSubsystem extends SubsystemBase
         }
         else if (isVerticalWithinTolerance) {
           this.verticalMotor.set(0.0);
+        }
+        // we are nearing puck-zone sometimes too fast
+        else if(currentVerticalExtensionInMeters > lengthVerticalArmExtensionVeryCloseToPucksMeters) {
+          double frogSpellExtensionDistance = 
+            (currentVerticalExtensionInMeters + this.requestedVerticalArmExtension) / 2;
+          verticalPidController.setReference(
+            ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
+            ControlType.kSmartMotion);
+        }
+        // we are nearing bottom stop zone sometimes too fast
+        else if(currentVerticalExtensionInMeters < lengthVerticalArmExtensionVeryCloseToStopMeters) {
+          double frogSpellExtensionDistance = 
+            (currentVerticalExtensionInMeters + this.requestedVerticalArmExtension) / 2;
+          verticalPidController.setReference(
+            ArmSubsystem.convertVerticalArmExtensionFromMetersToTicks(frogSpellExtensionDistance),
+            ControlType.kSmartMotion);
         }
         else {
           verticalPidController.setReference(
