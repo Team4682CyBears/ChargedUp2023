@@ -104,8 +104,8 @@ public final class Constants {
     public static final double armPresetPositionStowMetersHorizontalExtension = 0.0;
     public static final double armPresetPositionStowMetersVerticalExtension = 0.1952;
 
-    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = 0.3041;
-    public static final double armPresetPositionCubeGrabMetersVerticalExtension = 0.0691;
+    public static final double armPresetPositionCubeGrabMetersHorizontalExtension = 0.3041 - Units.inchesToMeters(1.5);
+    public static final double armPresetPositionCubeGrabMetersVerticalExtension = 0.0691 - Units.inchesToMeters(1.5);
     public static final double armPresetPositionCubeScoreHighMetersHorizontalExtension = 0.7262;
     public static final double armPresetPositionCubeScoreHighMetersVerticalExtension = 0.0058;
     public static final double armPresetPositionCubeScoreMediumMetersHorizontalExtension = 0.1880;
@@ -113,8 +113,8 @@ public final class Constants {
     public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = 0.0979;
     public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = 0.0224;
 
-    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192;
-    public static final double armPresetPositionConeGrabMetersVerticalExtension = 0.0589;
+    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192 - Units.inchesToMeters(1.5);
+    public static final double armPresetPositionConeGrabMetersVerticalExtension = 0.0589 - Units.inchesToMeters(1.5);
     public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = 0.6694;
     public static final double armPresetPositionConeScoreHighMetersVerticalExtension = 0.0672;
     public static final double armPresetPositionConeScoreMediumMetersHorizontalExtension = 0.2230;

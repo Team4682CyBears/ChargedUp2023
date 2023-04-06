@@ -44,19 +44,24 @@ public class VectorUtils{
      */
     public static Translation2d getAngleOfSteepestAscent(EulerAngle robotPose)
     {
+        // apply deadband to pitch/roll so that angles within tolerence are handled like 0
+        double tolDegrees = 2.0;
+        double roll = (Math.abs(robotPose.getRoll()) >= tolDegrees) ? robotPose.getRoll() : 0.0;
+        double pitch = (Math.abs(robotPose.getPitch()) >= tolDegrees) ? robotPose.getPitch() : 0.0;
+
         if (InstalledHardware.navx1Installed){
             // Move X proportional to the sin of the roll (rotation about y)
             // Move Y proportional to the sin or the pitch (rotation about x)
             return new Translation2d(
-                Math.sin(Math.toRadians(robotPose.getRoll())),
-                Math.sin(Math.toRadians(robotPose.getPitch())));
+                Math.sin(Math.toRadians(roll)),
+                Math.sin(Math.toRadians(pitch)));
         }
         else { //navx2 istalled
             // Move Y proportional to the sin of the roll (rotation about x)
             // Move X proportional to the sin or the pitch (rotation about y)
             return new Translation2d(
-                Math.sin(Math.toRadians(robotPose.getPitch())),
-                -1 * Math.sin(Math.toRadians(robotPose.getRoll())));
+                Math.sin(Math.toRadians(pitch)),
+                -1 * Math.sin(Math.toRadians(roll)));
         }
     }
 
