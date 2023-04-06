@@ -64,6 +64,7 @@ public class ArmSubsystem extends SubsystemBase
     private static final double lengthMinimumHorizontalArmMeters = Units.inchesToMeters(40.25); // 40.25 inches
     private static final double lengthMaximumHorizontalArmMeters = lengthMinimumHorizontalArmMeters + (maximumHorizontalArmExtensionMeters - minimumHorizontalArmExtensionMeters); // ??
 
+    private static final double lengthHorizontalArmExtensionVeryCloseToEndMeters = maximumHorizontalArmExtensionMeters - Units.inchesToMeters(2.0); // max - 2.0 inches
     private static final double lengthHorizontalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(2.0); // 2.0 inches
     private static final double lengthVerticalArmExtensionVeryCloseToPucksMeters = maximumVerticalArmExtensionMeters - Units.inchesToMeters(1.0); // max - 1.0 inch
     private static final double lengthVerticalArmExtensionVeryCloseToStopMeters = Units.inchesToMeters(1.0); // 1.0 inch
@@ -315,7 +316,9 @@ public class ArmSubsystem extends SubsystemBase
           this.horizontalMotor.set(0.0);
         }
         // we are slapping the sensor too hard we need to figure out how to slow down before we smack it
-        else if(currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters &&  this.requestedHorizontalMotorSpeed < 0.0 ) {
+        else if(
+          (currentHorizontalExtensionInMeters < lengthHorizontalArmExtensionVeryCloseToStopMeters &&  this.requestedHorizontalMotorSpeed < 0.0 ) ||
+          (currentHorizontalExtensionInMeters > lengthHorizontalArmExtensionVeryCloseToEndMeters &&  this.requestedHorizontalMotorSpeed > 0.0 )) {
           this.horizontalMotor.set(this.requestedHorizontalMotorSpeed * neoMotorSpeedReductionFactorVeryCloseToStop);
         }
         else {
