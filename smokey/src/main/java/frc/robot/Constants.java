@@ -101,7 +101,7 @@ public final class Constants {
 
     // *******************************************************************
     // arm constants - preset positions
-    public static final double armPresetPositionStowMetersHorizontalExtension = 0.0819;
+    public static final double armPresetPositionStowMetersHorizontalExtension = 0.0;
     public static final double armPresetPositionStowMetersVerticalExtension = 0.1952;
 
     public static final double armPresetPositionCubeGrabMetersHorizontalExtension = 0.3041;
@@ -145,7 +145,7 @@ public final class Constants {
 
     // ********************************************************************
     // Controller Constants
-    public static final double rumbleTimeSeconds = 1.0;
+    public static final double rumbleTimeSeconds = 0.15;
 
     // ********************************************************************
     // PowerDistributionPanel Constants
