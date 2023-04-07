@@ -39,6 +39,8 @@ public class Trajectories {
     public Trajectories(DrivetrainSubsystem drivetrain){
         this.drivetrain = drivetrain; 
 
+        double trajectoryJoinSpeed = config.getMaxVelocity() * 0.4;
+
         config = drivetrain.getTrajectoryConfig();
         // trajectory config with a fast starting velocity for ramp driving. 
         // have to get a new config so that changes to this one don't affect the original
@@ -51,8 +53,15 @@ public class Trajectories {
             config.getMaxAcceleration(),
             config.getMaxRotationalVelocity(),
             config.getMaxRotationalAcceleration());
+        offOfRampConfig.setStartVelocity(trajectoryJoinSpeed);
+
         // trajectory configs for joining trajectory segments together without slowing down between segments
-        double trajectoryJoinSpeed = config.getMaxVelocity() * 0.4;
+        // trajectory config with a fast starting velocity for ramp driving and non-zero ending speed
+        // have to get a new config so that changes to this one don't affect the original
+        SwerveTrajectoryConfig fastFlowConfig = drivetrain.getTrajectoryConfig();
+        fastFlowConfig.setStartVelocity(fastFlowConfig.getMaxVelocity() * 0.6); // less than max speed
+        fastFlowConfig.setEndVelocity(trajectoryJoinSpeed);
+
         firstSegmentConfig = drivetrain.getTrajectoryConfig();
         firstSegmentConfig.setEndVelocity(trajectoryJoinSpeed);
         middleSegmentConfig = drivetrain.getTrajectoryConfig();
@@ -126,6 +135,9 @@ public class Trajectories {
         this.DirectToRampTrajectory = Node5ToFrontOfRampTrajectory.concatenate(InfrontToOntoRampTrajectory);
         
         // Construct the middle up and over ramp trajectory
+        // use fastConfig for this trajectory, and end with non-zero speed
+        Trajectory InfrontToOntoRampFlowTrajectory = SwerveTrajectoryGenerator.generateTrajectory(InfrontToOntoRampWaypoints, fastFlowConfig);
+
         ArrayList<Pose2d> MiddleWaypoints = new ArrayList<Pose2d>();
         MiddleWaypoints.add(RampFarWaypoint);
         MiddleWaypoints.add(MiddlePathOverRampPosition);
@@ -138,7 +150,7 @@ public class Trajectories {
         this.MiddlePathBehindToOntoRampTrajectory = SwerveTrajectoryGenerator.generateTrajectory(MiddlePathBehindToOntoRampWaypoints, fastConfig); 
 
         this.MiddleTrajectoryPart1 = Node5ToFrontOfRampTrajectory
-            .concatenate(InfrontToOntoRampTrajectory);
+            .concatenate(InfrontToOntoRampFlowTrajectory);
         this.MiddleTrajectoryPart2 = RampToBehindRampTrajectory;
     }
 
