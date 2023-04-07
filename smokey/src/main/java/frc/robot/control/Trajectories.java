@@ -1,6 +1,7 @@
 package frc.robot.control;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.common.SwerveTrajectoryConfig;
@@ -71,7 +72,7 @@ public class Trajectories {
         this.RampFarWaypoint = new Pose2d(4.122, 2.41, Rotation2d.fromDegrees(0)); 
 
         // behind ramp position for node 5 path
-        Pose2d MiddlePathOverRampPosition = new Pose2d(6.2, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathOverRampPosition = new Pose2d(6.2 - Units.inchesToMeters(6), 2.41, Rotation2d.fromDegrees(180));
         Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.3, 2.41, Rotation2d.fromDegrees(180));
         
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.41, Rotation2d.fromDegrees(180));

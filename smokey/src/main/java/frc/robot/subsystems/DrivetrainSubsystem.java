@@ -106,7 +106,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private double rollOffsetDegrees = 0.0;
 
   // store yaw/pitch history
-  private static final int LevelListMaxSize = 12; // 12 * 20ms = 0.24s total history time
+  private static final int LevelListMaxSize = 9; // 12 * 20ms = 0.24s total history time
   private ArrayList<Double> RecentRolls = new ArrayList<Double>();
   private ArrayList<Double> RecentPitches = new ArrayList<Double>();
 
