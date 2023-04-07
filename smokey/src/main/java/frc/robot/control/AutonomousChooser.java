@@ -174,30 +174,21 @@ public class AutonomousChooser {
 
     private Command getDirectRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode5Position(),
-            trajectories.getDirectToRampTrajectory(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getDirectToRampTrajectory(), trajectories.getFirstSegmentConfig()));
         command.addCommands(new AutoBalanceStepCommand(subsystems.getDriveTrainSubsystem()));
         return command;
     }
 
     private Command getLeftRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode1Position(),
-            trajectories.getLeftTrajectory(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode1Position(), trajectories.getLeftTrajectory(), trajectories.getFirstSegmentConfig()));
         command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
     private Command getMiddleRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode5Position(),
-            trajectories.getMiddleTrajectoryPart1(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode5Position(), trajectories.getMiddleTrajectoryPart1(), trajectories.getFirstSegmentConfig()));
         command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getMiddleTrajectoryPart2()));
         command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getMiddlePathBehindToOntoRampTrajectory()));
         return command;
@@ -205,30 +196,21 @@ public class AutonomousChooser {
 
     private Command getNode2Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode2Position(),
-            trajectories.getNode2Trajectory(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode2Position(), trajectories.getNode2Trajectory(), trajectories.getFirstSegmentConfig()));
         command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getLeftToOntoRampTrajectory()));
         return command;
     }
 
     private Command getNode8Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode8Position(),
-            trajectories.getNode8Trajectory(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode8Position(), trajectories.getNode8Trajectory(), trajectories.getFirstSegmentConfig()));
         command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
 
     private Command getRightRoutine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
-        command.addCommands(getScoreAndDriveRoutine(
-            trajectories.getNode9Position(),
-            trajectories.getRightTrajectory(),
-            trajectories.getConfig()));
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode9Position(), trajectories.getRightTrajectory(), trajectories.getFirstSegmentConfig()));
         command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getRightToOntoRampTrajectory()));
         return command;
     }
