@@ -73,7 +73,7 @@ public class Trajectories {
 
         // behind ramp position for node 5 path
         Pose2d MiddlePathOverRampPosition = new Pose2d(6.2 - Units.inchesToMeters(6), 2.41, Rotation2d.fromDegrees(180));
-        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.3, 2.41, Rotation2d.fromDegrees(180));
+        Pose2d MiddlePathRampNearWaypoint = new Pose2d(4.3 - Units.inchesToMeters(6), 2.41, Rotation2d.fromDegrees(180));
         
         Pose2d RampNearWaypoint = new Pose2d(3.34, 2.41, Rotation2d.fromDegrees(180));
         // behind ramp position for node 1,2,8,9 paths
