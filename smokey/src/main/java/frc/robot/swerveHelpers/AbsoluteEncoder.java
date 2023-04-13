@@ -15,4 +15,10 @@ public interface AbsoluteEncoder {
      * @return ErrorCode
      */
     ErrorCode getLastError();
+
+    /**
+     * Get the state variable holding whether the encoder has ever synched
+     * @return true when the encoder has ever synched. False otherwise
+     */
+    boolean getHasEncoderEverSynched();
 }

@@ -100,7 +100,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
         public void addDashboardEntries(ShuffleboardContainer container, ControllerImplementation controller) {
             SteerControllerFactory.super.addDashboardEntries(container, controller);
             container.addNumber("Absolute Encoder Angle", () -> Math.toDegrees(controller.absoluteEncoder.getAbsoluteAngle())); 
-            container.addBoolean("Absolute Encoder Sync Status OK", () -> controller.absoluteEncoder.getLastError() == ErrorCode.OK);
+            container.addBoolean("Absolute Encoder Sync Status OK", () -> controller.absoluteEncoder.getHasEncoderEverSynched());
         }
 
         @Override

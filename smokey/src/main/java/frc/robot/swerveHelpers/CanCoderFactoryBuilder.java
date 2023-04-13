@@ -56,6 +56,7 @@ public class CanCoderFactoryBuilder {
         private final CANCoder encoder;
         // start out with a general error that is cleared upon first successful reading
         private ErrorCode encoderStatus = ErrorCode.GENERAL_ERROR; 
+        private boolean hasEncoderEverSynched = false;
 
         private EncoderImplementation(CANCoder encoder) {
             this.encoder = encoder;
@@ -71,6 +72,9 @@ public class CanCoderFactoryBuilder {
             if(encoderStatus != ErrorCode.OK){
                 System.out.println("ERROR: Reading absolute encoder position failed.");
             }
+            else {
+                hasEncoderEverSynched = true;
+            }
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
@@ -82,6 +86,11 @@ public class CanCoderFactoryBuilder {
         @Override
         public ErrorCode getLastError(){
             return encoderStatus;
+        }
+
+        @Override 
+        public boolean getHasEncoderEverSynched(){
+            return this.hasEncoderEverSynched;
         }
     }
 
