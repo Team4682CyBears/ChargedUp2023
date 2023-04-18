@@ -28,6 +28,7 @@ import frc.robot.common.MotorUtils;
 import frc.robot.common.SwerveDriveCenterOfRotation;
 import frc.robot.common.SwerveTrajectoryConfig;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
+import frc.robot.swerveHelpers.AbsoluteEncoderCollection;
 import frc.robot.swerveHelpers.SwerveModule;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
 import edu.wpi.first.math.MathUtil;
@@ -127,6 +128,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private SwerveDriveMode swerveDriveMode = SwerveDriveMode.NORMAL_DRIVING;
   private SwerveDriveCenterOfRotation swerveDriveCenterOfRotation = SwerveDriveCenterOfRotation.RobotCenter;
+
+  private AbsoluteEncoderCollection absoluteEncoderCollection = AbsoluteEncoderCollection.getInstance();
 
   /**
    * Constructor for this DrivetrainSubsystem
@@ -429,49 +432,53 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     this.displayDiagnostics();
 
-    SwerveModuleState[] states; 
-    if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE && chassisSpeedsAreZero()) {
-      // only change to ImmovableStance if chassis is not moving.
-      // otherwise, we could tip the robot moving to this stance when bot is at high velocity
-      states = getImmovableStanceStates();
-    }
-    else { // SwerveDriveMode.NORMAL_DRIVING
-      // apply the speed reduction factor to the chassis speeds
-      ChassisSpeeds reducedChassisSpeeds = new ChassisSpeeds(
-        chassisSpeeds.vxMetersPerSecond * this.speedReductionFactor, 
-        chassisSpeeds.vyMetersPerSecond * this.speedReductionFactor, 
-        // different speed reduction factor for rotation
-        chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.25));
-
-      // apply acceleration control
-      reducedChassisSpeeds = limitChassisSpeedsAccel(reducedChassisSpeeds);
-      previousChassisSpeeds = reducedChassisSpeeds; 
-
-      // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
-      // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
-      if (swerveDriveCenterOfRotation == SwerveDriveCenterOfRotation.RobotFront) {
-        states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds, Constants.RobotFrontRotationalCenter);
-      } 
-      else { // normal rotation mode 
-        states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds);
+    // confirm absolute encoder is primed and ready to go
+    // TODO - do we want to provide override for this?
+    if(this.absoluteEncoderCollection.size() >= 4 && this.absoluteEncoderCollection.getAllEncodersEverSynched()) {
+      SwerveModuleState[] states; 
+      if (swerveDriveMode == SwerveDriveMode.IMMOVABLE_STANCE && chassisSpeedsAreZero()) {
+        // only change to ImmovableStance if chassis is not moving.
+        // otherwise, we could tip the robot moving to this stance when bot is at high velocity
+        states = getImmovableStanceStates();
       }
-      // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
-    } 
-
-    // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
-    frontLeftModule.set(
-      states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-      states[0].angle.getRadians());
-    frontRightModule.set(
-      states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-      states[1].angle.getRadians());
-    backLeftModule.set(
-      states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-      states[2].angle.getRadians());
-    backRightModule.set(
-      states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
-      states[3].angle.getRadians());
+      else { // SwerveDriveMode.NORMAL_DRIVING
+        // apply the speed reduction factor to the chassis speeds
+        ChassisSpeeds reducedChassisSpeeds = new ChassisSpeeds(
+          chassisSpeeds.vxMetersPerSecond * this.speedReductionFactor, 
+          chassisSpeeds.vyMetersPerSecond * this.speedReductionFactor, 
+          // different speed reduction factor for rotation
+          chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.25));
+  
+        // apply acceleration control
+        reducedChassisSpeeds = limitChassisSpeedsAccel(reducedChassisSpeeds);
+        previousChassisSpeeds = reducedChassisSpeeds; 
+  
+        // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
+        // first we build a theoretical set of individual module states that the chassisSpeeds would corespond to
+        if (swerveDriveCenterOfRotation == SwerveDriveCenterOfRotation.RobotFront) {
+          states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds, Constants.RobotFrontRotationalCenter);
+        } 
+        else { // normal rotation mode 
+          states = swerveKinematics.toSwerveModuleStates(reducedChassisSpeeds);
+        }
+        // next we take the theoretical values and bring them down (if neecessary) to incorporate physical constraints (like motor maximum speeds)
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+      } 
+  
+      // now we take the four states and ask that the modules attempt to perform the wheel speed and direction built above
+      frontLeftModule.set(
+        states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+        states[0].angle.getRadians());
+      frontRightModule.set(
+        states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+        states[1].angle.getRadians());
+      backLeftModule.set(
+        states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+        states[2].angle.getRadians());
+      backRightModule.set(
+        states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+        states[3].angle.getRadians());  
+    }
   }
 
   /**
@@ -710,6 +717,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private void displayDiagnostics(){
     SmartDashboard.putBoolean("NavX is calibrating", swerveNavx.isCalibrating());
     SmartDashboard.putBoolean("NavX is calibrated", swerveNavx.isMagnetometerCalibrated());
+    SmartDashboard.putBoolean("Absolute encoders ready", this.absoluteEncoderCollection.getAllEncodersEverSynched());
   }
  
   /**

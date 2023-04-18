@@ -60,6 +60,7 @@ public class CanCoderFactoryBuilder {
 
         private EncoderImplementation(CANCoder encoder) {
             this.encoder = encoder;
+            AbsoluteEncoderCollection.getInstance().addAbsoluteEncoder(encoder.getDeviceID(), this);
         }
 
         @Override
