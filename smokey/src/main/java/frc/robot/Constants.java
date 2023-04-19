@@ -113,7 +113,7 @@ public final class Constants {
     public static final double armPresetPositionCubeScoreLowMetersHorizontalExtension = 0.0979;
     public static final double armPresetPositionCubeScoreLowMetersVerticalExtension = 0.0224;
 
-    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192 - Units.inchesToMeters(0.5);
+    public static final double armPresetPositionConeGrabMetersHorizontalExtension = 0.4192 - Units.inchesToMeters(1.5);
     public static final double armPresetPositionConeGrabMetersVerticalExtension = 0.0589 - Units.inchesToMeters(1.0);
     public static final double armPresetPositionConeScoreHighMetersHorizontalExtension = 0.6694;
     public static final double armPresetPositionConeScoreHighMetersVerticalExtension = 0.0;
