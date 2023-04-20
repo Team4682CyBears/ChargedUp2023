@@ -71,10 +71,10 @@ public class AutonomousChooser {
             this.trajectories = new Trajectories(subsystems.getDriveTrainSubsystem()); 
             System.out.println(">>>> finished creating auto trajectories");
             
-            autonomousPathChooser.setDefaultOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
+            autonomousPathChooser.setDefaultOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
+            autonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
             autonomousPathChooser.addOption("Node 1 (Left) Routine", AutonomousPath.LEFT_PATH);
             autonomousPathChooser.addOption("Node 2 (Left) Routine", AutonomousPath.NODE2_ROUTINE);
-            autonomousPathChooser.addOption("Node 5 Routine", AutonomousPath.MIDDLE_PATH);
             autonomousPathChooser.addOption("Node 8 (Right) Routine", AutonomousPath.NODE8_ROUTINE);
             autonomousPathChooser.addOption("Node 9 (Right) Routine", AutonomousPath.RIGHT_PATH);
             autonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
