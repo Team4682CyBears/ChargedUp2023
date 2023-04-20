@@ -89,8 +89,8 @@ public class AutoBalanceStepCommand extends CommandBase{
         // setup the next drive cycle
         numIterations += 1;
         System.out.println("auto balance step command: completed cycle " + numIterations + ".");
-        System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
-        System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
+        // System.out.println("RecentPitches " + this.drivetrainsubsystem.getRecentPitches());
+        // System.out.println("RecentRolls " + this.drivetrainsubsystem.getRecentRolls());
         Translation2d angleOfSteepestAscent = VectorUtils.getAngleOfSteepestAscent(this.drivetrainsubsystem.getEulerAngle());
         Translation2d velocityVec = normalizeXYVelocities(angleOfSteepestAscent);
         xVelocity = velocityVec.getX();
@@ -135,7 +135,7 @@ public class AutoBalanceStepCommand extends CommandBase{
     // Directionality is already accounted for in X and Y.    
     velocity = Math.abs(pidController.calculate(h, 0.0));
     velocity = MotorUtils.clamp(velocity, 0.0, velocityValue);
-    System.out.println("Setting velocity to " + velocity + " for angle error " + h);
+    // System.out.println("Setting velocity to " + velocity + " for angle error " + h);
     
     return new Translation2d((angles.getX()/h) * velocity, (angles.getY()/h) * velocity);
   }
