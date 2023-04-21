@@ -77,7 +77,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // Here we calculate the theoretical maximum angular velocity. You can also replace this with a measured amount.
   public static final double THEORETICAL_MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 3.29;
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 2.98;
   public static final double MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND = THEORETICAL_MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.06; // 0.06 a magic number based on testing
   private double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 8.0;
 
@@ -447,7 +447,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
           chassisSpeeds.vxMetersPerSecond * this.speedReductionFactor, 
           chassisSpeeds.vyMetersPerSecond * this.speedReductionFactor, 
           // different speed reduction factor for rotation
-          chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.94));
+          chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 2.13));
   
         // apply acceleration control
         reducedChassisSpeeds = limitChassisSpeedsAccel(reducedChassisSpeeds);
