@@ -46,6 +46,8 @@ public class AutonomousChooser {
     private Command leftRoutine;
     private Command rightRoutine;
     private Command middleRoutine;
+    private Command node4Routine;
+    private Command node6Routine;
     private Command directRoutine;
     private Command node2Routine;
     private Command node8Routine;
@@ -75,6 +77,8 @@ public class AutonomousChooser {
             autonomousPathChooser.addOption("Direct Onto Ramp Routine", AutonomousPath.DIRECT_PATH);
             autonomousPathChooser.addOption("Node 1 (Left) Routine", AutonomousPath.LEFT_PATH);
             autonomousPathChooser.addOption("Node 2 (Left) Routine", AutonomousPath.NODE2_ROUTINE);
+            autonomousPathChooser.addOption("Node 4 (Red Cone) Routine", AutonomousPath.NODE4_ROUTINE);
+            autonomousPathChooser.addOption("Node 6 (Blue Cone) Routine", AutonomousPath.NODE6_ROUTINE);
             autonomousPathChooser.addOption("Node 8 (Right) Routine", AutonomousPath.NODE8_ROUTINE);
             autonomousPathChooser.addOption("Node 9 (Right) Routine", AutonomousPath.RIGHT_PATH);
             autonomousPathChooser.addOption("Test Node5 Score Routine", AutonomousPath.TEST_NODE5_SCORE_ROUTINE);
@@ -93,6 +97,8 @@ public class AutonomousChooser {
             this.leftRoutine = getLeftRoutine();
             this.rightRoutine = getRightRoutine();
             this.middleRoutine = getMiddleRoutine();
+            this.node4Routine = getNode4Routine();
+            this.node6Routine = getNode6Routine();
             this.directRoutine = getDirectRoutine();
             this.node2Routine = getNode2Routine();
             this.node8Routine = getNode8Routine();
@@ -116,6 +122,10 @@ public class AutonomousChooser {
                 return this.rightRoutine;
             case MIDDLE_PATH :
                 return this.middleRoutine;
+            case NODE4_ROUTINE :
+                return this.node4Routine;
+            case NODE6_ROUTINE :
+                return this.node6Routine;
             case DIRECT_PATH :
                 return this.directRoutine;
             case NODE2_ROUTINE:
@@ -135,8 +145,8 @@ public class AutonomousChooser {
      * @return
      */
     private Command getScoreRoutine(Pose2d NodePosition, SwerveTrajectoryConfig config){
-        // for now we will always assume that we are attempting to score the cube
-        subsystems.getManualInputInterfaces().setTargetGamePieceAsCube();
+        // for now we will always assume that we are attempting to score the cone
+        subsystems.getManualInputInterfaces().setTargetGamePieceAsCone();
 
         // Build into/out of node trajectories in real time because they depend on the starting position
         ArrayList<Pose2d> IntoNodeWaypoints = new ArrayList<Pose2d>();
@@ -185,8 +195,8 @@ public class AutonomousChooser {
         if(this.subsystems.getPickerSubsystem() != null) {
             command.addCommands(new ManipulatePickerCommand(subsystems.getPickerSubsystem(), true));
         }
-        else if (this.subsystems.getEveryBotPickerSubsystem() != null) {// cube uses uptake command to expell
-            command.addCommands(new EveryBotPickerAutoCommand(EveryBotPickerAction.CubeExpel, subsystems.getEveryBotPickerSubsystem()));
+        else if (this.subsystems.getEveryBotPickerSubsystem() != null) {// cone uses uptake command to expell
+            command.addCommands(new EveryBotPickerAutoCommand(EveryBotPickerAction.ConeExpel, subsystems.getEveryBotPickerSubsystem()));
         }
 
         // drive out of the score position
@@ -282,6 +292,22 @@ public class AutonomousChooser {
         return command;
     }
 
+    private Command getNode4Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode4Position(), trajectories.getRed4TrajectoryPart1()));
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getRed4TrajectoryPart2()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getRed4PathBehindToOntoRampTrajectory()));
+        return command;
+    }
+
+    private Command getNode6Routine(){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        command.addCommands(getScoreAndDriveRoutine(trajectories.getNode6Position(), trajectories.getBlue6TrajectoryPart1()));
+        command.addCommands(new DriveTrajectoryCommand(subsystems.getDriveTrainSubsystem(), trajectories.getBlue6TrajectoryPart2()));
+        command.addCommands(getBalanceRoutine(balanceChooser, trajectories.getBlue6PathBehindToOntoRampTrajectory()));
+        return command;
+    }
+
     private Command getNode8Routine(){
         SequentialCommandGroup command = new SequentialCommandGroup();
         command.addCommands(getScoreAndDriveRoutine(trajectories.getNode8Position(), trajectories.getNode8Trajectory()));
@@ -328,6 +354,8 @@ public class AutonomousChooser {
         DIRECT_PATH,
         TEST_NODE5_SCORE_ROUTINE,
         NODE2_ROUTINE,
+        NODE4_ROUTINE,
+        NODE6_ROUTINE,
         NODE8_ROUTINE
     }
 
