@@ -24,6 +24,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
+import frc.robot.commands.PrintLimelightData;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.control.AutonomousChooser;
@@ -38,6 +39,7 @@ import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 import frc.robot.common.PortSpy;
+import frc.robot.commands.PrintLimelightData;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -84,6 +86,7 @@ public class RobotContainer {
     // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
+    SmartDashboard.putData("Get Limelight Values", new PrintLimelightData());
 
     // Command to drive the chassis for zeroing the swerve modules.
     SmartDashboard.putData("Drive Forward Robot Centric", 

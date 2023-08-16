@@ -38,7 +38,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -116,7 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private final SwerveModule backLeftModule;
   private final SwerveModule backRightModule;
 
-  private SwerveDriveOdometry swerveOdometry = null;
+  private SwerveDrivePoseEstimator swervePoseEstimator = null;
   private Pose2d currentPosition = new Pose2d();
   private ArrayDeque<Pose2d> historicPositions = new ArrayDeque<Pose2d>(PositionHistoryStorageSize + 1);
 
@@ -206,6 +206,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
       getNavxRoll(), 
       swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
+
+  public void AddVisionMeasurement(){
+    swervePoseEstimator.addVisionMeasurement(TrajectoryPoseTol, BACK_LEFT_MODULE_DRIVE_MOTOR);
+  } 
 
   /**
    * Method to get the current speed reduction factor
@@ -721,7 +725,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     frontRightModule.setDriveDistance(0.0);
     backLeftModule.setDriveDistance(0.0);
     backRightModule.setDriveDistance(0.0);
-    swerveOdometry = new SwerveDriveOdometry(
+    swervePoseEstimator = new SwerveDrivePoseEstimator(
         swerveKinematics,
         this.getGyroscopeRotation(),
         this.getSwerveModulePositions(),
@@ -762,7 +766,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     try{
       theLock.lock();
       positions = this.getSwerveModulePositions();
-      currentPosition = swerveOdometry.update(
+      currentPosition = swervePoseEstimator.update(
         angle,
         positions);
     }

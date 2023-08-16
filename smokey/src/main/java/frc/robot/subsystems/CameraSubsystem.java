@@ -12,10 +12,22 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import pabeles.concurrency.ConcurrencyOps.NewInstance;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class CameraSubsystem extends SubsystemBase {
+
+  float storedtid = -1;
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+
   /** Creates a new ExampleSubsystem. */
-  public CameraSubsystem() {}
+  public CameraSubsystem() {
+
+  }
 
   /**
    * Example command factory method.
@@ -27,7 +39,7 @@ public class CameraSubsystem extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          
         });
   }
 
@@ -36,18 +48,21 @@ public class CameraSubsystem extends SubsystemBase {
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    NetworkTableEntry tid = table.getEntry("tid");
+    NetworkTableEntry botpose = table.getEntry("botpose");
+    Double timestamp = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
+    if (tid != -1 && storedtid != tid){
+      DrivetrainSubsystem.AddVisionMeasurement(botpose, timestamp);
+    }
   }
+
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 }
+
