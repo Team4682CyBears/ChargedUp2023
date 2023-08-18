@@ -38,6 +38,7 @@ import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.common.PortSpy;
 import frc.robot.commands.PrintLimelightData;
 
@@ -63,6 +64,9 @@ public class RobotContainer {
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
     this.initializeStablizerSubsystem();
+
+    //init the camera
+    this.initializeCameraSubsystem();
 
     // init the input system 
     this.initializeManualInputInterfaces();
@@ -269,7 +273,12 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeStablizer");
     }
-  } 
+  }
+  
+  private void initializeCameraSubsystem(){
+    subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
+    System.out.println("SUCCESS: initialize CAMERA!!!!");
+  }
 
   /**
    * A method to calculate the initial position of the robot

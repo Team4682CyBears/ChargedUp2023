@@ -17,16 +17,18 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.control.SubsystemCollection;
 
 public class CameraSubsystem extends SubsystemBase {
-
-  float storedtid = -1;
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  DrivetrainSubsystem drivetrainSubsystem;
+  double storedtid = -1;
 
   /** Creates a new ExampleSubsystem. */
-  public CameraSubsystem() {
-
+  public CameraSubsystem(SubsystemCollection subsystems) {
+    drivetrainSubsystem = subsystems.getDriveTrainSubsystem();
   }
 
   /**
@@ -51,11 +53,19 @@ public class CameraSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    NetworkTableEntry tid = table.getEntry("tid");
-    NetworkTableEntry botpose = table.getEntry("botpose");
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    double tid = table.getEntry("tid").getDouble(0);
+    double[] botpose = table.getEntry("botpose").getDoubleArray(new double[7]);
     Double timestamp = Timer.getFPGATimestamp() - (botpose[6]/1000.0);
-    if (tid != -1 && storedtid != tid){
-      DrivetrainSubsystem.AddVisionMeasurement(botpose, timestamp);
+    Translation2d botTranslation = new Translation2d(botpose[0], botpose[2]);
+    Rotation2d botYaw = new Rotation2d(botpose[5]);
+    Pose2d RealBotpos = new Pose2d(botTranslation, botYaw);
+
+    //drivetrainSubsystem.AddVisionMeasurement(RealBotpos, timestamp);
+
+    if (tid != -1){
+      drivetrainSubsystem.AddVisionMeasurement(RealBotpos, timestamp);
+      storedtid = tid;
     }
   }
 

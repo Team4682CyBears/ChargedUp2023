@@ -207,8 +207,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
 
-  public void AddVisionMeasurement(){
-    swervePoseEstimator.addVisionMeasurement(TrajectoryPoseTol, BACK_LEFT_MODULE_DRIVE_MOTOR);
+  public void AddVisionMeasurement(Pose2d RobotPos, double Timestamp){
+    swervePoseEstimator.addVisionMeasurement(RobotPos, Timestamp);
   } 
 
   /**
