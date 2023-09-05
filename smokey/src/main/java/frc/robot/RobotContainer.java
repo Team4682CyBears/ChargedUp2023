@@ -25,6 +25,7 @@ import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.PrintLimelightData;
+import frc.robot.commands.AllignWithTag;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.control.AutonomousChooser;
@@ -91,6 +92,7 @@ public class RobotContainer {
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
     SmartDashboard.putData("Get Limelight Values", new PrintLimelightData());
+    SmartDashboard.putData("Allign With Tag", new AllignWithTag(1, this.subsystems.getDriveTrainSubsystem()));
 
     // Command to drive the chassis for zeroing the swerve modules.
     SmartDashboard.putData("Drive Forward Robot Centric", 

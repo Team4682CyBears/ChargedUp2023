@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -64,8 +65,9 @@ public class CameraSubsystem extends SubsystemBase {
     //drivetrainSubsystem.AddVisionMeasurement(RealBotpos, timestamp);
 
     if (tid != -1){
+      Pose2d prevPose = drivetrainSubsystem.getRobotPosition();
       drivetrainSubsystem.AddVisionMeasurement(RealBotpos, timestamp);
-      storedtid = tid;
+      Pose2d newPose = drivetrainSubsystem.getRobotPosition();
     }
   }
 
