@@ -47,7 +47,7 @@ public class AllignWithTag extends CommandBase{
         }
         else {
             double velocity = yPID.calculate(relativeBotY, 0.0);
-            velocity = MotorUtils.clamp(velocity, -velocityValue, velocityValue);
+            velocity = -1 * MotorUtils.clamp(velocity, -velocityValue, velocityValue);
             drivetrainsubsystem.drive(new ChassisSpeeds(0, velocity, 0));
             System.out.println("driving!!!!!!");
         }
