@@ -82,8 +82,10 @@ public class RobotContainer {
     System.out.println(">>>> Finished initializing button bindings.");
 
     // NavX Testing
-    SmartDashboard.putData("Drive forward",
-        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 0, 0));
+    SmartDashboard.putData("Turn Clockwise",
+        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 0));
+    SmartDashboard.putData("Turn counterclockwise",
+        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 0));
 
     this.initializeDebugDashboard();
     this.autonomousChooser = new AutonomousChooser(subsystems);
