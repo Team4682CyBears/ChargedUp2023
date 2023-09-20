@@ -83,9 +83,9 @@ public class RobotContainer {
 
     // NavX Testing
     SmartDashboard.putData("Turn Clockwise",
-        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 0));
+        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 5));
     SmartDashboard.putData("Turn counterclockwise",
-        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 0));
+        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 5));
 
     this.initializeDebugDashboard();
     this.autonomousChooser = new AutonomousChooser(subsystems);
