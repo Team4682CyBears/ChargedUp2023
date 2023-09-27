@@ -11,6 +11,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +24,7 @@ import frc.robot.commands.ArmToReferencePositionCommand;
 import frc.robot.commands.DefaultArmCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
+import frc.robot.commands.DriveToPointCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
 import frc.robot.commands.RumbleCommand;
@@ -38,6 +41,10 @@ import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 import frc.robot.common.PortSpy;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.common.TestTrajectories;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -82,10 +89,34 @@ public class RobotContainer {
     System.out.println(">>>> Finished initializing button bindings.");
 
     // NavX Testing
-    SmartDashboard.putData("Turn Clockwise",
-        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 5));
-    SmartDashboard.putData("Turn counterclockwise",
-        new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0, 0, 180, 5));
+    TestTrajectories testTrajectories = new TestTrajectories(subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+
+    SmartDashboard.putData("Drive Forward", new SequentialCommandGroup(
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+      new DriveTrajectoryCommand(
+        this.subsystems.getDriveTrainSubsystem(),
+        testTrajectories.traverseSimpleForward))
+        );
+    SmartDashboard.putData("Drive 270", new SequentialCommandGroup(
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+      new DriveTrajectoryCommand(
+        this.subsystems.getDriveTrainSubsystem(),
+        testTrajectories.traverseTurn270))
+        );
+    SmartDashboard.putData("Drive Left", new SequentialCommandGroup(
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+      new DriveTrajectoryCommand(
+        this.subsystems.getDriveTrainSubsystem(),
+        testTrajectories.traverseSimpleLeft))
+        );
+    SmartDashboard.putData("Drive Arc", new SequentialCommandGroup(
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+      new DriveTrajectoryCommand(
+        this.subsystems.getDriveTrainSubsystem(),
+        testTrajectories.traverseForwardArc))
+        );
+    
+
 
     this.initializeDebugDashboard();
     this.autonomousChooser = new AutonomousChooser(subsystems);
