@@ -151,7 +151,7 @@ public final class Constants {
     // PowerDistributionPanel Constants
     public static final int currentPowerDistributionPanelCanId = 19;
     public static final ModuleType currentPowerDistributionPanelType = ModuleType.kRev;
-    public static final double overcurrentRumbleTimeSeconds = 0.25;
+    public static final double overcurrentRumbleTimeSeconds = 0.1;
     public static final int EveryBotMotorPdpPortId = 8;
     public static final double EveryBotMotorMaximuCurrentAmps = 45.5;
 
