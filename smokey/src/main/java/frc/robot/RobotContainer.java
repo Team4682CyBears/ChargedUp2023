@@ -87,20 +87,43 @@ public class RobotContainer {
 
     // Command to drive the chassis for zeroing the swerve modules.
     SmartDashboard.putData("Drive Forward Robot Centric", 
-      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.0, 3.0));
+      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 
+      new ChassisSpeeds(0.6, 0.0, 0.0), 3.0));
     SmartDashboard.putData("Drive Forward with rotation", 
-      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.6, 0.0, 0.2, 3.0));
+      new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 
+      new ChassisSpeeds(0.6, 0.0, 0.2), 3.0));
     SmartDashboard.putData("Arms to reference position", 
       new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
     SmartDashboard.putData("Print NavX State", 
       new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printState));
     // commands to test lateral drift while rotating
     SmartDashboard.putData("Drive Forward at high speed no rotation", 
-    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.0, 2.0));
+    new DriveTimeCommand(
+      this.subsystems.getDriveTrainSubsystem(), 
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.0 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
+      1.5));
     SmartDashboard.putData("Drive Forward at high speed med rotation", 
-    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.25, 2.0));
+    new DriveTimeCommand(
+      this.subsystems.getDriveTrainSubsystem(), 
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
+      1.5));
     SmartDashboard.putData("Drive Forward at high speed large rotation", 
-    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.5, 2.0));
+    new DriveTimeCommand(
+      this.subsystems.getDriveTrainSubsystem(), 
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+        0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
+      1.5));
   }
  
   /**

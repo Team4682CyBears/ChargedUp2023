@@ -19,9 +19,7 @@ public class DriveTimeCommand extends CommandBase
   private DrivetrainSubsystem drivetrain;
   private Timer timer = new Timer();
   private boolean done = false;
-  private double xVelocity = 0.0;
-  private double yVelocity = 0.0;
-  private double rotVelocity = 0.0;
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
   private double durationSecondsValue = 0.0;
   
   /** 
@@ -33,18 +31,14 @@ public class DriveTimeCommand extends CommandBase
   */
   public DriveTimeCommand(
     DrivetrainSubsystem drivetrainSubsystem,
-    double x,
-    double y,
-    double rot,
+    ChassisSpeeds chassisSpeeds,
     double durationSeconds)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrainSubsystem;
     addRequirements(drivetrainSubsystem);
+    this.chassisSpeeds = chassisSpeeds;
 
-    xVelocity = x;
-    yVelocity = y;
-    rotVelocity = rot;
     durationSecondsValue = durationSeconds;
   }
 
@@ -62,8 +56,7 @@ public class DriveTimeCommand extends CommandBase
   @Override
   public void execute()
   {
-    drivetrain.drive(
-      new ChassisSpeeds(xVelocity, yVelocity, rotVelocity));
+    drivetrain.drive(chassisSpeeds);
     if (timer.hasElapsed(this.durationSecondsValue))
     {
       done = true;
