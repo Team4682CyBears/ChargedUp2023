@@ -12,7 +12,6 @@ package frc.robot.subsystems;
 
 import java.util.*;
 import java.lang.Math;
-import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -442,8 +441,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // different speed reduction factor for rotation
         chassisSpeeds.omegaRadiansPerSecond * Math.min(1.0, this.speedReductionFactor * 1.25));
 
-      // apply acceleration control
-      reducedChassisSpeeds = limitChassisSpeedsAccel(reducedChassisSpeeds);
+      // apply acceleration control and discretization correction
+      reducedChassisSpeeds = discretize(limitChassisSpeedsAccel(reducedChassisSpeeds));
       previousChassisSpeeds = reducedChassisSpeeds; 
 
       // take the current 'requested' chassis speeds and ask the ask the swerve modules to attempt this
@@ -615,6 +614,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
     MIN_ANGULAR_VELOCITY_BOUNDARY_RADIANS_PER_SECOND, 
     MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
   }
+
+  private ChassisSpeeds discretize(ChassisSpeeds speeds) {
+    // a fudge factor to increase the size of the discretization correction. 
+    // other teams use [1..4]
+    double timeScaleFactor = 1; 
+    var desiredDeltaPose = new Pose2d(
+      speeds.vxMetersPerSecond * deltaTimeSeconds, 
+      speeds.vyMetersPerSecond * deltaTimeSeconds, 
+      new Rotation2d(speeds.omegaRadiansPerSecond * deltaTimeSeconds * timeScaleFactor)
+    );
+    var twist = new Pose2d().log(desiredDeltaPose);
+
+    return new ChassisSpeeds(
+      (twist.dx / deltaTimeSeconds), 
+      (twist.dy / deltaTimeSeconds), 
+      (speeds.omegaRadiansPerSecond));
+  }
+
 
   private SwerveModuleState[] getImmovableStanceStates(){
     // set wheels in "X" pattern

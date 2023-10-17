@@ -94,6 +94,13 @@ public class RobotContainer {
       new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
     SmartDashboard.putData("Print NavX State", 
       new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printState));
+    // commands to test lateral drift while rotating
+    SmartDashboard.putData("Drive Forward at high speed no rotation", 
+    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.0, 2.0));
+    SmartDashboard.putData("Drive Forward at high speed med rotation", 
+    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.25, 2.0));
+    SmartDashboard.putData("Drive Forward at high speed large rotation", 
+    new DriveTimeCommand(this.subsystems.getDriveTrainSubsystem(), 0.9, 0.0, 0.5, 2.0));
   }
  
   /**
