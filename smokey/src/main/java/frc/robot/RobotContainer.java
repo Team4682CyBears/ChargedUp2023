@@ -100,30 +100,27 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Forward at high speed no rotation", 
     new DriveTimeCommand(
       this.subsystems.getDriveTrainSubsystem(), 
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.0 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
-        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
-      1.5));
+      new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.0 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+      1.5, 
+      true));
     SmartDashboard.putData("Drive Forward at high speed med rotation", 
     new DriveTimeCommand(
       this.subsystems.getDriveTrainSubsystem(), 
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
-        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
-      1.5));
+      new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.25 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+      1.5,
+      true));
     SmartDashboard.putData("Drive Forward at high speed large rotation", 
     new DriveTimeCommand(
       this.subsystems.getDriveTrainSubsystem(), 
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-        0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
-        this.subsystems.getDriveTrainSubsystem().getGyroscopeRotation()), 
-      1.5));
+      new ChassisSpeeds(0.8 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.0 * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      0.5 * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+      1.5,
+      true));
   }
  
   /**
