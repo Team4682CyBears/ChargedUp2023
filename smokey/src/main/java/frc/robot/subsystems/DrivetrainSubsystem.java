@@ -788,7 +788,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       theLock.unlock();
     }
 
-    SmartDashboard.putNumber("RobotFieldHeadingDegrees", currentPosition.getRotation().getDegrees());
+    SmartDashboard.putNumber("RobotFieldHeadingDegrees", this.getGyroscopeRotation().getDegrees() );//currentPosition.getRotation().getDegrees());
     SmartDashboard.putNumber("RobotFieldXCoordinateMeters", currentPosition.getX());
     SmartDashboard.putNumber("RobotFieldYCoordinateMeters", currentPosition.getY());
     SmartDashboard.putNumber("RobotPitchDegrees", this.getEulerAngle().getPitch());
