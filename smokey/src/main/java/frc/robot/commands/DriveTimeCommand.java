@@ -20,26 +20,44 @@ public class DriveTimeCommand extends CommandBase
   private Timer timer = new Timer();
   private boolean done = false;
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+  private Boolean fieldRelativeMode = false;
   private double durationSecondsValue = 0.0;
   
-  /** 
-  * Creates a new driveCommand. 
-  * 
-  * @param drivetrainSubsystem - the drive train subsystem
-  * @param x - the x velocity
-  * @param y - the y velocity
-  */
+  /**
+   * Create a new drive time command
+   * @param drivetrainSubsystem 
+   * @param chassisSpeeds - desired chassis speeds
+   * @param durationSeconds - desired drive time
+   * @param fieldRelativeMode - if true, chassisSpeeds are interpreted as field-relative, 
+   *                            otherwise they are interpreted as robot-centric
+   */
   public DriveTimeCommand(
     DrivetrainSubsystem drivetrainSubsystem,
     ChassisSpeeds chassisSpeeds,
-    double durationSeconds)
+    double durationSeconds,
+    Boolean fieldRelativeMode)
   {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrainSubsystem;
     addRequirements(drivetrainSubsystem);
     this.chassisSpeeds = chassisSpeeds;
+    this.fieldRelativeMode = fieldRelativeMode;
 
     durationSecondsValue = durationSeconds;
+  }
+
+  /**
+   * Create a new robot-centric drive time command.
+   * @param drivetrainSubsystem
+   * @param chassisSpeeds
+   * @param durationSeconds
+   */
+  public DriveTimeCommand(
+    DrivetrainSubsystem drivetrainSubsystem,
+    ChassisSpeeds chassisSpeeds,
+    double durationSeconds)
+  {
+    this(drivetrainSubsystem, chassisSpeeds, durationSeconds, false);
   }
 
   // Called when the command is initially scheduled.
@@ -56,7 +74,15 @@ public class DriveTimeCommand extends CommandBase
   @Override
   public void execute()
   {
-    drivetrain.drive(chassisSpeeds);
+    if(fieldRelativeMode) 
+    {
+      drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+        chassisSpeeds,  
+        drivetrain.getGyroscopeRotation())); 
+    }
+    else{
+      drivetrain.drive(chassisSpeeds);
+    }
     if (timer.hasElapsed(this.durationSecondsValue))
     {
       done = true;
