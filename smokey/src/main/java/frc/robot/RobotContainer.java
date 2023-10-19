@@ -38,6 +38,8 @@ import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
 import frc.robot.common.PortSpy;
+import frc.robot.commands.DriveTrajectoryCommand;
+import frc.robot.common.TestTrajectories;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,6 +51,7 @@ public class RobotContainer {
 
   private SubsystemCollection subsystems = new SubsystemCollection();
   private final AutonomousChooser autonomousChooser; 
+  private TestTrajectories testTrajectories;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -94,6 +97,31 @@ public class RobotContainer {
       new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
     SmartDashboard.putData("Print NavX State", 
       new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printState));
+
+    testTrajectories = new TestTrajectories(subsystems.getDriveTrainSubsystem().getTrajectoryConfig());
+    // Shuffleboard buttons for trajectory driving
+    SmartDashboard.putData("Drive forward trajectory", 
+      new SequentialCommandGroup(
+        new InstantCommand(subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+        new DriveTrajectoryCommand(
+          this.subsystems.getDriveTrainSubsystem(),
+          testTrajectories.traverseSimpleForward)));
+
+    SmartDashboard.putData("Drive left trajectory", 
+      new SequentialCommandGroup(
+        new InstantCommand(subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+        new DriveTrajectoryCommand(
+          this.subsystems.getDriveTrainSubsystem(),
+          testTrajectories.traverseSimpleLeft)));
+
+    SmartDashboard.putData("Drive 270 trajectory", 
+      new SequentialCommandGroup(
+        new InstantCommand(subsystems.getDriveTrainSubsystem()::zeroRobotPosition),
+        new DriveTrajectoryCommand(
+          this.subsystems.getDriveTrainSubsystem(),
+          testTrajectories.traverseTurn270)));
+
+    
   }
  
   /**
