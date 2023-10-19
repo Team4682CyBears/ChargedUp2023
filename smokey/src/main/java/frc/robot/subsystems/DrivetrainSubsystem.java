@@ -618,7 +618,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private ChassisSpeeds discretize(ChassisSpeeds speeds) {
     // a fudge factor to increase the size of the discretization correction. 
     // other teams use [1..4]
-    double timeScaleFactor = 1; 
+    double timeScaleFactor = 1.9; 
     var desiredDeltaPose = new Pose2d(
       speeds.vxMetersPerSecond * deltaTimeSeconds, 
       speeds.vyMetersPerSecond * deltaTimeSeconds, 
