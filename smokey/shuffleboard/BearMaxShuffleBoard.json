@@ -162,45 +162,6 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
-          },
-          "9,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Drive Forward at high speed med rotation",
-              "_title": "SmartDashboard/Drive Forward at high speed med rotation",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Drive Forward at high speed large rotation",
-              "_title": "SmartDashboard/Drive Forward at high speed large rotation",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///SmartDashboard/Drive Forward at high speed no rotation",
-              "_title": "SmartDashboard/Drive Forward at high speed no rotation",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
           }
         }
       }
@@ -355,7 +316,7 @@
   "windowGeometry": {
     "x": -7.0,
     "y": 0.0,
-    "width": 1929.0,
+    "width": 1519.0,
     "height": 836.0
   }
 }
