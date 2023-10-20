@@ -11,6 +11,8 @@
 package frc.robot.swerveHelpers;
 
 public interface SwerveModule {
+    double getAbsoluteEncoderOffset();
+
     double getDriveVelocity();
 
     double getDriveDistance();
@@ -19,4 +21,6 @@ public interface SwerveModule {
     double getSteerAngle();
 
     void set(double driveVoltage, double steerAngle);
+
+    void setAbsoluteEncoderOffset();
 }

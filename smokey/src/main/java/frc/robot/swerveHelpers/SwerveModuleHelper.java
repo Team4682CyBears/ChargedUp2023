@@ -11,7 +11,6 @@
 package frc.robot.swerveHelpers;
 
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.SteerControllerFactory;
 import com.swervedrivespecialties.swervelib.ctre.CanCoderAbsoluteConfiguration;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerConfiguration;
 

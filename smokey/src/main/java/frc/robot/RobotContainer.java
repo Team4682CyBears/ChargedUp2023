@@ -94,6 +94,12 @@ public class RobotContainer {
       new ArmToReferencePositionCommand(this.subsystems.getArmSubsystem()));
     SmartDashboard.putData("Print NavX State", 
       new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printState));
+    SmartDashboard.putData("Print AbsoluteEncoder Offsets", 
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::printAbsoluteEncoderOrrsets));
+    // require drivetrainsubsystem while setting absolute encoder offsets!!
+    SmartDashboard.putData("Set Absolute Encoder Offsets",
+      new InstantCommand(this.subsystems.getDriveTrainSubsystem()::setAbsoluteEncoderOffsets, 
+      this.subsystems.getDriveTrainSubsystem()));
   }
  
   /**

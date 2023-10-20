@@ -48,17 +48,19 @@ public class CanCoderFactoryBuilder {
 
             CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
-            return new EncoderImplementation(encoder);
+            return new EncoderImplementation(encoder, config.magnetOffsetDegrees);
         };
     }
 
     private static class EncoderImplementation implements AbsoluteEncoder {
         private final CANCoder encoder;
+        private final double offsetDegrees;
         // start out with a general error that is cleared upon first successful reading
         private ErrorCode encoderStatus = ErrorCode.GENERAL_ERROR; 
 
-        private EncoderImplementation(CANCoder encoder) {
+        private EncoderImplementation(CANCoder encoder, double offsetDegrees) {
             this.encoder = encoder;
+            this.offsetDegrees = offsetDegrees;
         }
 
         @Override
@@ -82,6 +84,16 @@ public class CanCoderFactoryBuilder {
         @Override
         public ErrorCode getLastError(){
             return encoderStatus;
+        }
+
+        @Override
+        public double getOffset(){
+            return encoder.configGetMagnetOffset(250);
+        }
+
+        @Override
+        public void setOffset(){
+            CtreUtils.checkCtreError(encoder.configMagnetOffset(offsetDegrees, 250), "Failed to configure CANCoder Offset!");
         }
     }
 

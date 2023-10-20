@@ -11,8 +11,7 @@
 package frc.robot.swerveHelpers;
 
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.SteerController;
-import com.swervedrivespecialties.swervelib.SteerControllerFactory;
+import frc.robot.swerveHelpers.SteerController;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -62,6 +61,11 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         }
 
         @Override
+        public double getAbsoluteEncoderOffset(){
+            return steerController.getAbsoluteEncoderOffset();
+        }
+
+        @Override
         public double getDriveVelocity() {
             return driveController.getStateVelocity();
         }
@@ -69,6 +73,11 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
         @Override
         public double getDriveDistance() {
             return driveController.getDistance();
+        }
+
+        @Override
+        public void setAbsoluteEncoderOffset(){
+            steerController.setAbsoluteEncoderOffset();
         }
 
         @Override

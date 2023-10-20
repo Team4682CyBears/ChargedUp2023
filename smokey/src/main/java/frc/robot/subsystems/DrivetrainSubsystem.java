@@ -12,7 +12,6 @@ package frc.robot.subsystems;
 
 import java.util.*;
 import java.lang.Math;
-import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -197,6 +196,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /**
+   * returns the CAN Coder programmed offsets
+   * @return
+   */
+  public double[] getAbsoluteEncoderOffsets(){
+    return new double[] {
+      frontLeftModule.getAbsoluteEncoderOffset(), 
+      frontRightModule.getAbsoluteEncoderOffset(),
+      backLeftModule.getAbsoluteEncoderOffset(),
+      backRightModule.getAbsoluteEncoderOffset()};
+  }
+
+  /**
    * returns navx euler angle (pitch, roll, yaw) in degrees
    * @return EulerAngle
    */
@@ -223,6 +234,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return swerveKinematics;
   }
 
+  /**
+   * sets the Can Coder offsets
+   * @return
+   */
+  public void setAbsoluteEncoderOffsets(){
+    frontLeftModule.setAbsoluteEncoderOffset();
+    frontRightModule.setAbsoluteEncoderOffset();
+    backLeftModule.setAbsoluteEncoderOffset();
+    backRightModule.setAbsoluteEncoderOffset();
+    System.out.println("Setting Absolute Encoder Offsets");
+  }
+  
   /**
    * Method to set the current speed reduction factor to a new value
    * @param value - the new speed reduction factor
@@ -482,6 +505,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     System.out.println("Roll, Pitch, Yaw ------>" + this.getEulerAngle());
     System.out.println("Is the robot level? -------->" + this.isLevel());
     System.out.println("SteepestAscent --->" + VectorUtils.getAngleOfSteepestAscent(getEulerAngle()));
+  }
+
+  /**
+   * A method to print absolute encoder offsets
+   * @param updatedPosition
+   */
+  public void printAbsoluteEncoderOrrsets(){
+    System.out.println("AbsoluteEncoderOffsets -----> " + this.getAbsoluteEncoderOffsets());
   }
 
   /**

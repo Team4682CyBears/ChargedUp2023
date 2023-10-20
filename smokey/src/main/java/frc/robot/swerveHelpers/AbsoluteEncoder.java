@@ -15,4 +15,8 @@ public interface AbsoluteEncoder {
      * @return ErrorCode
      */
     ErrorCode getLastError();
+
+    double getOffset();
+
+    void setOffset();
 }
