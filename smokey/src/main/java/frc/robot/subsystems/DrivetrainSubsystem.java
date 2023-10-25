@@ -12,13 +12,14 @@ package frc.robot.subsystems;
 
 import java.util.*;
 import java.lang.Math;
-import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static frc.robot.Constants.*;
 
-import com.kauailabs.navx.frc.AHRS;
+// Use navx2 workaround from https://github.com/Thunderstamps/navx2workaround, 
+// rather than com.kauailabs.navx.frc.AHRS.  To fix MXP/SPI discconnect issues. 
+import frc.robot.NavX.AHRS;
 
 import frc.robot.Constants;
 import frc.robot.common.EulerAngle;
@@ -99,7 +100,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
           new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
   );
 
-  private byte navxSampleRate = InstalledHardware.navx2Installed? (byte) 50 : (byte) 200;
+  // private byte navxSampleRate = InstalledHardware.navx2Installed? (byte) 50 : (byte) 200;
+  private byte navxSampleRate = (byte) 50;
   private final AHRS swerveNavx = new AHRS(SPI.Port.kMXP, navxSampleRate); // NavX connected over MXP
   private boolean navxHasCalibrated = false;
   private double yawOffsetDegrees = 0.0;
