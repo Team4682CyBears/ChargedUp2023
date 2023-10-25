@@ -47,6 +47,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -429,13 +430,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     this.displayDiagnostics();
 
-    if (!navxHasCalibrated) { // wait for NavX to finish calibrating before moving
-      System.out.println("Drivetrain is waiting for NavX calibration");
-      navxHasCalibrated = swerveNavx.isMagnetometerCalibrated();
-    }
-    else {
-      this.setSwerveStates();
-    }
+    //if (!navxHasCalibrated) { // wait for NavX to finish calibrating before moving
+    //  System.out.println("Drivetrain is waiting for NavX calibration");
+    //  navxHasCalibrated = swerveNavx.isMagnetometerCalibrated();
+    //}
+    //else {
+    this.setSwerveStates();
+    //}
   }
 
   /**
@@ -743,6 +744,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RobotPitchDegrees", this.getEulerAngle().getPitch());
     SmartDashboard.putNumber("RobotRollDegrees", this.getEulerAngle().getRoll());
     SmartDashboard.putBoolean("IsMagneticDisturbance", swerveNavx.isMagneticDisturbance());
+    SmartDashboard.putBoolean("IsNavxConnected", swerveNavx.isConnected());
     if(positions != null){
       SmartDashboard.putNumber("FrontLeftAngleDegrees", positions[0].angle.getDegrees());
       SmartDashboard.putNumber("FrontLeftDistanceMeters", positions[0].distanceMeters);
