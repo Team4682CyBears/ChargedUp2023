@@ -24,11 +24,15 @@ public class SubsystemCollection
     private EveryBotPickerSubsystem everyBotPickerSubsystem = null;
     private PowerDistributionPanelWatcherSubsystem powerDistributionPanelWatcherSubsystem = null; 
     private StabilizerSubsystem stabilizerSubsystem = null;
+    private CameraSubsystem cameraSubsystem = null;
 
     /**
      * Default constructor
      */
     public SubsystemCollection() {}
+
+    public CameraSubsystem getCameraSubsystem() { return cameraSubsystem; }
+    public void setCameraSubsystem(CameraSubsystem value) { cameraSubsystem = value; }
 
     public ArmSubsystem getArmSubsystem() { return armSubsystem; }
     public void setArmSubsystem(ArmSubsystem value) { armSubsystem = value; }

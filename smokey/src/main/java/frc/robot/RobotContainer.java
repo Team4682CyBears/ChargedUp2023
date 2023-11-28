@@ -24,6 +24,8 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
+import frc.robot.commands.PrintLimelightData;
+import frc.robot.commands.AllignWithTag;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.control.AutonomousChooser;
@@ -37,7 +39,9 @@ import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.common.PortSpy;
+import frc.robot.commands.PrintLimelightData;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,6 +66,9 @@ public class RobotContainer {
     this.initializeDrivetrainSubsystem();
     this.initializeStablizerSubsystem();
 
+    //init the camera
+    this.initializeCameraSubsystem();
+
     // init the input system 
     this.initializeManualInputInterfaces();
 
@@ -84,6 +91,8 @@ public class RobotContainer {
     // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
+    SmartDashboard.putData("Get Limelight Values", new PrintLimelightData());
+    SmartDashboard.putData("Allign With Tag", new AllignWithTag(1, this.subsystems.getDriveTrainSubsystem()));
 
     // Command to drive the chassis for zeroing the swerve modules.
     SmartDashboard.putData("Drive Forward Robot Centric", 
@@ -266,7 +275,12 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeStablizer");
     }
-  } 
+  }
+  
+  private void initializeCameraSubsystem(){
+    subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
+    System.out.println("SUCCESS: initialize CAMERA!!!!");
+  }
 
   /**
    * A method to calculate the initial position of the robot
