@@ -275,8 +275,13 @@ public class RobotContainer {
   }
   
   private void initializeCameraSubsystem(){
-    subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
-    System.out.println("SUCCESS: initialize CAMERA!!!!");
+    if(InstalledHardware.limelightInstalled) {
+      subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
+      System.out.println("SUCCESS: initializeCamera");
+    }
+    else {
+      System.out.println("FAIL: initializeCamera");
+    }
   }
 
   /**
