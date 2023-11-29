@@ -34,14 +34,12 @@ public class AllignWithTag extends CommandBase{
         addRequirements(drivetrainsubsystem);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         done = false;
         drivetrainsubsystem.drive(new ChassisSpeeds(0,0,0));
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double tid = table.getEntry("tid").getDouble(0.0);
@@ -62,7 +60,6 @@ public class AllignWithTag extends CommandBase{
 
         }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
@@ -71,7 +68,7 @@ public class AllignWithTag extends CommandBase{
         }
     }
 
-    // Returns true when the command should end.
+    // Returns true when the robot is alligned
     @Override
     public boolean isFinished() {
         double[] relativeBotpos = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
