@@ -1,3 +1,13 @@
+// ************************************************************
+// Bishop Blanchet Robotics
+// Home of the Cybears
+// FRC - Charged Up - 2023
+// File: AllignWithTag.java
+// Intent: Forms a command to allign itself with a designated april tag.
+// ************************************************************
+
+// ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ ʕ •ᴥ•ʔ ʕ•ᴥ•  ʔ ʕ  •ᴥ•ʔ ʕ •`ᴥ´•ʔ ʕ° •° ʔ 
+
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -43,13 +53,11 @@ public class AllignWithTag extends CommandBase{
 
         if (tid != tagID){
             done = true;
-            System.out.println("tag ID NOT MATCHING");
         }
         else {
             double velocity = yPID.calculate(relativeBotY, 0.0);
             velocity = -1 * MotorUtils.clamp(velocity, -velocityValue, velocityValue);
             drivetrainsubsystem.drive(new ChassisSpeeds(0, velocity, 0));
-            System.out.println("driving!!!!!!");
         }
 
         }
@@ -70,7 +78,6 @@ public class AllignWithTag extends CommandBase{
         double relativeBotY = relativeBotpos[0];
         // close enough is abs(robot pose y) < 0.05
         if (Math.abs(relativeBotY) < 0.05){
-            System.out.println("done!!!!!!!");
             done = true;
         }
         return done;
