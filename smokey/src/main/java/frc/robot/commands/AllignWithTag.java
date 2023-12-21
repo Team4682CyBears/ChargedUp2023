@@ -18,48 +18,69 @@ import frc.robot.common.MotorUtils;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class AllignWithTag extends CommandBase{
+/**
+ * A class that forms a command to move the robot in the Y direction to
+ * center on an april tag.
+ */
+public class AllignWithTag extends CommandBase {
     private boolean done = false;
-    private double tagID;
-    private double velocityValue = 0.3;
-    private PIDController yPID = new PIDController(1.0, 0.0, 0.0);
+    private double designatedTagId;
+    private final double velocityValue = 0.3;
+    private PIDController yPid = new PIDController(1.0, 0.0, 0.0);
     private DrivetrainSubsystem drivetrainsubsystem = null;
+    private final int defaultDoubleArraySize = 6;
+    //in the "botpose_targetspace" array the relative bot y is the first value
+    private final int indexOfrelativeBotY = 0;
+    private final double lateralBotPositionTolerance = 0.05;
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    
-    public AllignWithTag(double tagID, DrivetrainSubsystem drivetrainSubsystem){
-        this.tagID = tagID;
 
+    /**
+     * A constructor for the AlignWithTag command.
+     * 
+     * @param tagID               - the tag ID of the desired april tag
+     * @param drivetrainSubsystem - the drivetrain subsystem to be contorlled
+     */
+    public AllignWithTag(double tagID, DrivetrainSubsystem drivetrainSubsystem) {
+        this.designatedTagId = tagID;
         this.drivetrainsubsystem = drivetrainSubsystem;
-
         addRequirements(drivetrainsubsystem);
     }
 
+    /**
+     * A method to inialize the AlignWithAprilTag command
+     */
     @Override
     public void initialize() {
         done = false;
         drivetrainsubsystem.drive(new ChassisSpeeds(0,0,0));
     }
 
+    /**
+     * A method that runs in every clock cycle
+     */
     @Override
     public void execute() {
-        double tid = table.getEntry("tid").getDouble(0.0);
-        double[] relativeBotpos = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
-        double relativeBotY = relativeBotpos[0];
+        // "tid" is the network table entry for the Tag ID
+        // using 0.0 as the default value for getDouble so that if the tag isn't read, the robot doesn't move. 
+        double tagId = table.getEntry("tid").getDouble(0.0);
+        double[] relativeBotpos = table.getEntry("botpose_targetspace").getDoubleArray(new double[defaultDoubleArraySize]);
+        double relativeBotY = relativeBotpos[indexOfrelativeBotY];
 
-        System.out.println(relativeBotY);
-
-
-        if (tid != tagID){
+        if (tagId != designatedTagId) {
             done = true;
-        }
+        } 
         else {
-            double velocity = yPID.calculate(relativeBotY, 0.0);
+            double velocity = yPid.calculate(relativeBotY, 0.0);
             velocity = -1 * MotorUtils.clamp(velocity, -velocityValue, velocityValue);
             drivetrainsubsystem.drive(new ChassisSpeeds(0, velocity, 0));
         }
+    }
 
-        }
-
+    /**
+     * A method to run at the end of the command
+     * 
+     * @param interrupted - whether the command was interrupted
+     */
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
@@ -68,16 +89,16 @@ public class AllignWithTag extends CommandBase{
         }
     }
 
-    // Returns true when the robot is alligned
+    /**
+     * A method that returns true when the robot is alligned
+     */
     @Override
     public boolean isFinished() {
-        double[] relativeBotpos = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
-        double relativeBotY = relativeBotpos[0];
-        // close enough is abs(robot pose y) < 0.05
-        if (Math.abs(relativeBotY) < 0.05){
+        double[] relativeBotpos = table.getEntry("botpose_targetspace").getDoubleArray(new double[defaultDoubleArraySize]);
+        double relativeBotY = relativeBotpos[indexOfrelativeBotY];
+        if (Math.abs(relativeBotY) < lateralBotPositionTolerance) {
             done = true;
         }
         return done;
     }
-    
 }

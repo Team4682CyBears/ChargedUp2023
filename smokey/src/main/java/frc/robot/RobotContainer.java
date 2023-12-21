@@ -228,6 +228,19 @@ public class RobotContainer {
   }
 
   /**
+   * A mothod to init the Limelight
+   */
+  private void initializeCameraSubsystem(){
+    if(InstalledHardware.limelightInstalled) {
+      subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
+      System.out.println("SUCCESS: initializeCamera");
+    }
+    else {
+      System.out.println("FAIL: initializeCamera");
+    }
+  }
+
+  /**
    * A method to init the picker
    */
   private void initializePickerSubsystem() {
@@ -271,16 +284,6 @@ public class RobotContainer {
     }
     else {
       System.out.println("FAIL: initializeStablizer");
-    }
-  }
-  
-  private void initializeCameraSubsystem(){
-    if(InstalledHardware.limelightInstalled) {
-      subsystems.setCameraSubsystem(new CameraSubsystem(subsystems));
-      System.out.println("SUCCESS: initializeCamera");
-    }
-    else {
-      System.out.println("FAIL: initializeCamera");
     }
   }
 
