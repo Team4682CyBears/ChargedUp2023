@@ -52,7 +52,6 @@ public class AllignWithTag extends CommandBase {
     @Override
     public void initialize() {
         done = false;
-        drivetrainsubsystem.drive(new ChassisSpeeds(0,0,0));
     }
 
     /**

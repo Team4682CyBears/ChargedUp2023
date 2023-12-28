@@ -23,9 +23,11 @@ import frc.robot.Constants;
 import frc.robot.common.EulerAngle;
 import frc.robot.common.VectorUtils;
 import frc.robot.control.SwerveDriveMode;
+import frc.robot.control.SubsystemCollection;
 import frc.robot.common.MotorUtils;
 import frc.robot.common.SwerveDriveCenterOfRotation;
 import frc.robot.common.SwerveTrajectoryConfig;
+import frc.robot.common.VisionMeasurement;
 import frc.robot.swerveHelpers.SwerveModuleHelper;
 import frc.robot.swerveHelpers.SwerveModule;
 import frc.robot.swerveHelpers.WcpModuleConfigurations;
@@ -49,6 +51,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+
+  CameraSubsystem cameraSubsystem;
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -131,7 +135,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * Constructor for this DrivetrainSubsystem
    */
-  public DrivetrainSubsystem() {
+  public DrivetrainSubsystem(SubsystemCollection subsystems) {
+    cameraSubsystem = subsystems.getCameraSubsystem();
+
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     frontLeftModule = SwerveModuleHelper.createFalcon500(
@@ -208,7 +214,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
 
-  public void AddVisionMeasurement(Pose2d RobotPos, double Timestamp){
+  public void addVisionMeasurement(Pose2d RobotPos, double Timestamp){
     swervePoseEstimator.addVisionMeasurement(RobotPos, Timestamp);
   } 
 
@@ -425,11 +431,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // refresh the position of the robot
     this.refreshRobotPosition();
+    // update robot position with vision 
+    VisionMeasurement visionMeasurement = cameraSubsystem.getVisionPosition();
+    if (visionMeasurement.getRobotPosition() != null){
+      this.addVisionMeasurement(visionMeasurement.getRobotPosition(), visionMeasurement.getTimestamp());
+    }
     // store the recalculated position
     this.storeUpdatedPosition();
     // store navx info
     this.storePitch();
-    this.storeRoll();    
+    this.storeRoll();   
 
     this.displayDiagnostics();
 
