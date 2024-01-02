@@ -29,6 +29,7 @@ public class CameraSubsystem extends SubsystemBase {
   private final int botPositionXIndex = 0;
   private final int botPositionYIndex = 2;
   private final int botRotationIndex = 5;
+  private final int noTagInSightId = -1;
 
   /**
    * a constructor for the camera subsystem class
@@ -50,8 +51,7 @@ public class CameraSubsystem extends SubsystemBase {
     Rotation2d botYaw = new Rotation2d(botpose[botRotationIndex]);
     Pose2d realRobotPosition = new Pose2d(botTranslation, botYaw);
 
-    // the tag ID is -1 if there is no tag in view, return a null pose. 
-    if (tagId == -1){
+    if (tagId == noTagInSightId){
       return new VisionMeasurement(null, 0.0);
     }
     else{

@@ -214,10 +214,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
       swerveNavx.getYaw() + this.yawOffsetDegrees);
   }
 
-  public void addVisionMeasurement(Pose2d RobotPos, double Timestamp){
-    swervePoseEstimator.addVisionMeasurement(RobotPos, Timestamp);
-  } 
-
   /**
    * Method to get the current speed reduction factor
    * @return - the current speed reduction factor
@@ -433,9 +429,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.refreshRobotPosition();
     // update robot position with vision 
     VisionMeasurement visionMeasurement = cameraSubsystem.getVisionPosition();
-    if (visionMeasurement.getRobotPosition() != null){
-      this.addVisionMeasurement(visionMeasurement.getRobotPosition(), visionMeasurement.getTimestamp());
-    }
+    this.addVisionMeasurement(visionMeasurement.getRobotPosition(), visionMeasurement.getTimestamp());
     // store the recalculated position
     this.storeUpdatedPosition();
     // store navx info
@@ -567,6 +561,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
   {
     this.setRobotPosition(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
   }
+
+  /**
+   * a method that updates the robot position with vision
+   */
+  private void addVisionMeasurement(Pose2d RobotPos, double Timestamp){
+    VisionMeasurement visionMeasurement = cameraSubsystem.getVisionPosition();
+    if (visionMeasurement.getRobotPosition() != null){
+      swervePoseEstimator.addVisionMeasurement(RobotPos, Timestamp);
+    }
+  } 
 
   /**
    * Determine if recent navx is all level
