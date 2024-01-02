@@ -24,6 +24,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveTimeCommand;
 import frc.robot.commands.EveryBotPickerDefaultCommand;
 import frc.robot.commands.EveryBotPickerOverCurrentCommand;
+import frc.robot.commands.AllignWithTag;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.ArmToLocationCommand.ArmLocation;
 import frc.robot.control.AutonomousChooser;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.EveryBotPickerSubsystem;
 import frc.robot.subsystems.PickerSubsystem;
 import frc.robot.subsystems.PowerDistributionPanelWatcherSubsystem;
 import frc.robot.subsystems.StabilizerSubsystem;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.common.PortSpy;
 
 /**
@@ -57,6 +59,9 @@ public class RobotContainer {
 
     // init the pdp watcher
     this.initializePowerDistributionPanelWatcherSubsystem();
+
+    //init the camera (before the drivetrain)
+    this.initializeCameraSubsystem();
 
     // init the various subsystems
     this.initializeDrivetrainSubsystem();
@@ -84,6 +89,7 @@ public class RobotContainer {
     // bindBasicDriveToPointButtonsToDriverXboxController and bindDriveTrajectoryButtonsToDriverXboxController 
     // to instead be commands on the shuffleboard like this:
     // SmartDashboard.putData("Example Command", exampleCommand);
+    SmartDashboard.putData("Allign With Tag", new AllignWithTag(1, this.subsystems.getDriveTrainSubsystem()));
 
     // Command to drive the chassis for zeroing the swerve modules.
     SmartDashboard.putData("Drive Forward Robot Centric", 
@@ -174,7 +180,7 @@ public class RobotContainer {
       InstalledHardware.rightRearDriveInstalled &&
       InstalledHardware.navxInstalled) {
       // The robot's subsystems and commands are defined here...
-      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem());
+      subsystems.setDriveTrainSubsystem(new DrivetrainSubsystem(subsystems));
       subsystems.setDriveTrainPowerSubsystem(new DrivetrainPowerSubsystem(subsystems.getDriveTrainSubsystem()));
       SmartDashboard.putData("Debug: DrivetrainSub", subsystems.getDriveTrainSubsystem());
       System.out.println("SUCCESS: initializeDrivetrain");
@@ -218,6 +224,19 @@ public class RobotContainer {
     }
     else {
       System.out.println("FAIL: initializeArm");
+    }
+  }
+
+  /**
+   * A mothod to init the Limelight
+   */
+  private void initializeCameraSubsystem(){
+    if(InstalledHardware.limelightInstalled) {
+      subsystems.setCameraSubsystem(new CameraSubsystem());
+      System.out.println("SUCCESS: initializeCamera");
+    }
+    else {
+      System.out.println("FAIL: initializeCamera");
     }
   }
 
@@ -266,7 +285,7 @@ public class RobotContainer {
     else {
       System.out.println("FAIL: initializeStablizer");
     }
-  } 
+  }
 
   /**
    * A method to calculate the initial position of the robot

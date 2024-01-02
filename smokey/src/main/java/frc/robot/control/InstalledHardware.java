@@ -33,11 +33,11 @@ public class InstalledHardware
     public static final boolean navx2Installed = false;
     public static final boolean navx1Installed = true;
     public static final boolean navxInstalled = navx1Installed || navx2Installed;
-    public static final boolean limelightInstalled = false;
+    public static final boolean limelightInstalled = true;
 
     // External Input Hardware
     public static final boolean driverXboxControllerInstalled = true;
-    public static final boolean coDriverXboxControllerInstalled = true;
+    public static final boolean coDriverXboxControllerInstalled = false;
 
     // DriveTrain Related Hardware
     public static final boolean leftFrontDriveInstalled = true;
@@ -58,7 +58,7 @@ public class InstalledHardware
     public static final boolean stablizerPneumaticsInstalled = false;
 
     // EveryBot Picker Related Hardware
-    public static final boolean everyBotPickerInstalled = true;
+    public static final boolean everyBotPickerInstalled = false;
 
     // Arm Sensor Related Hardware
     public static final boolean verticalArmBottomSensorInstalled = false;
